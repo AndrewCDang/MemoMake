@@ -1,0 +1,96 @@
+@import "../../../styles/colours.scss";
+
+.cardModalContainer {
+    position: fixed;
+    height: 100lvh;
+    width: 100vw;
+    background-color: rgba($col-black, 0.2);
+    top: 0;
+}
+
+.cardModal {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    background-color: $col-white;
+    border-radius: 0.5rem;
+    background-color: $col-white;
+    width: clamp(300px, calc(256px + 5vw), 560px);
+    box-shadow: $box-shadow-default;
+    height: fit-content;
+    padding: 1rem;
+}
+
+.miscOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: fit-content;
+    margin-bottom: 1rem;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    & > button {
+        margin: 0 auto;
+    }
+}
+
+.cardsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.cardItem {
+    display: flex;
+    gap: 1rem;
+    border: 1px solid $col-grey;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    width: fit-content;
+    align-items: center;
+}
+
+.tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    & > p {
+        border: 1px solid $col-grey;
+        padding: 0 0.5rem;
+        color: $col-grey;
+        border-radius: 0.25rem;
+    }
+}
+.difficulty {
+    height: 1rem;
+    width: 1rem;
+    svg {
+        height: 1rem;
+        width: 1rem;
+    }
+}
+
+.na {
+    svg {
+        fill: $col-grey;
+    }
+}
+.easy {
+    svg {
+        fill: $col-green;
+    }
+}
+.medium {
+    svg {
+        fill: $col-yellow;
+    }
+}
+.hard {
+    svg {
+        fill: $col-red;
+    }
+}

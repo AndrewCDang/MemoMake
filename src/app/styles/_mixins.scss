@@ -1,0 +1,85 @@
+@import "/src/app/styles/breakpoints.scss";
+
+@mixin gridBox {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: clamp(0.5rem, 0.4rem + 0.2vw, 0.75rem);
+    max-width: 1200px;
+}
+
+@mixin smallAbsolute {
+    position: absolute;
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem;
+    width: 105%;
+    height: fit-content;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: $col-white;
+    background-color: rgba($col-black, 0.7);
+    white-space: wrap;
+
+    transition: bottom 0.15s ease-in-out;
+}
+
+@mixin scrollX($class) {
+    #{$class}::-webkit-scrollbar {
+        -webkit-appearance: none;
+        background-color: unset;
+    }
+
+    #{$class}::-webkit-scrollbar:horizontal {
+        height: 11px;
+        background-color: rgba($col-grey, 0.5);
+        border-radius: 8px;
+    }
+
+    #{$class}::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        background-color: rgba($col-black, 0.7);
+        transition: all 0.1s ease-in-out;
+    }
+    #{$class}::-webkit-scrollbar-thumb:hover {
+        background-color: $col-black;
+        cursor: pointer;
+    }
+}
+
+@mixin scrollHidden($class) {
+    #{$class}::-webkit-scrollbar {
+        display: none;
+    }
+
+    #{$class}::-webkit-scrollbar:horizontal {
+        height: none;
+    }
+}
+
+@mixin bouncingAnimationData {
+    animation-name: bouncingAnimation;
+    animation-duration: 2000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes bouncingAnimation {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    65% {
+        transform: translateY(-6px);
+    }
+}
+
+@mixin textAreaStyle($class) {
+    #{$class}:focus {
+        outline: unset;
+    }
+    #{$class} {
+        border: unset;
+        resize: none;
+    }
+}

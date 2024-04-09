@@ -1,0 +1,25 @@
+@import "../../styles/colours.scss";
+
+.cardModalContainer {
+    position: fixed;
+    height: 100lvh;
+    width: 100vw;
+    background-color: rgba($col-black, 0.2);
+    top: 0;
+}
+
+.cardModal {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    background-color: $col-white;
+    border-radius: 0.5rem;
+    background-color: $col-white;
+    width: clamp(300px, calc(256px + 5vw), 560px);
+    box-shadow: $box-shadow-default;
+    height: fit-content;
+    padding: 1rem;
+    h3 {
+        margin-bottom: 1rem;
+    }
+}

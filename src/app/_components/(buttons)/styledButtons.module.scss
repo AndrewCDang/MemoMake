@@ -1,0 +1,192 @@
+@import "/src/app/styles/colours.scss";
+
+.anchor {
+    position: relative;
+    overflow: hidden;
+}
+
+@mixin buttonStyle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    transition: box-shadow 0.05s ease-in-out;
+
+    & > div {
+        width: 1rem;
+        aspect-ratio: 1;
+        margin: 0;
+        display: flex;
+        transition: transform 0.05s ease-in-out;
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+@mixin whiteBtn {
+    color: $col-black;
+    background-color: $col-white;
+    & > div {
+        svg {
+            fill: $col-black;
+        }
+    }
+}
+
+@mixin blackBtn {
+    color: $col-white;
+    background-color: $col-black;
+    & > div {
+        svg {
+            fill: $col-white;
+        }
+    }
+}
+
+.button {
+    position: relative;
+    border: 2px solid $col-black;
+    height: fit-content;
+    width: fit-content;
+    border-radius: 8px;
+
+    overflow: hidden;
+    & > div {
+        @include buttonStyle;
+        @include whiteBtn();
+
+        span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            clip-path: circle(0% at 0% 50%);
+            transition: clip-path 0.2s ease-in-out;
+            & > div {
+                @include buttonStyle;
+                @include blackBtn();
+            }
+        }
+        &:hover span {
+            clip-path: circle(150% at 0% 50%);
+        }
+    }
+    &:has(.blackVarient) > div {
+        @include blackBtn;
+        span {
+            & > div {
+                @include whiteBtn;
+            }
+        }
+    }
+}
+
+// .linkButton1 {
+//     @include buttonStyle;
+//     color: $col-black;
+
+//     span {
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//         height: 100%;
+//         width: 100%;
+//         clip-path: circle(0% at 0% 50%);
+//         transition: clip-path 0.2s ease-in-out;
+//         z-index: 10;
+
+//         & > div {
+//             @include buttonStyle;
+//             background-color: unset;
+
+//             color: $col-white;
+//             & > div {
+//                 fill: $col-white;
+//                 svg {
+//                     width: 100%;
+//                     height: 100%;
+//                     fill: $col-white;
+//                 }
+//             }
+//         }
+//     }
+//     &:hover span {
+//         clip-path: circle(150% at 0% 50%);
+//     }
+//     &:hover .span2 > div {
+//         @include animation-rotate-2;
+//     }
+
+//     .span2 {
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//         height: 100%;
+//         width: 100%;
+//         background-color: $col-black;
+//         clip-path: circle(0% at 0% 50%);
+//         transition: clip-path 0.2s ease-in-out;
+//         z-index: 5;
+
+//         & > div {
+//             height: 100%;
+//             width: 100%;
+//             scale: 5;
+//             filter: blur(4px);
+//             background: conic-gradient(
+//                 from 180deg at 50% 50%,
+//                 $col-red 0deg,
+//                 $col-yellow 30deg,
+//                 $col-blue 120deg,
+//                 $col-red 180deg,
+//                 $col-yellow 240deg,
+//                 $col-blue 280deg,
+//                 $col-red 300deg
+//             );
+//         }
+//     }
+
+//     &:hover .span2 {
+//         clip-path: circle(150% at 0% 50%);
+//     }
+
+//     &:hover {
+//         box-shadow: 0px 0px 12px $col-white;
+//     }
+// }
+
+// .linkButton2 {
+//     @include buttonStyle2;
+
+//     &:hover {
+//         box-shadow: 0px 0px 8px $col-white;
+//     }
+//     span {
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//         height: 100%;
+//         width: 100%;
+//         background-color: $col-white;
+//         clip-path: circle(0% at 0% 50%);
+//         transition: clip-path 0.2s ease-in-out;
+
+//         & > div {
+//             @include buttonStyle2;
+//             color: $col-black;
+//             & > div {
+//                 fill: $col-black;
+//                 svg {
+//                     fill: $col-black;
+//                 }
+//             }
+//         }
+//     }
+//     &:hover span {
+//         clip-path: circle(150% at 0% 50%);
+//     }
+// }

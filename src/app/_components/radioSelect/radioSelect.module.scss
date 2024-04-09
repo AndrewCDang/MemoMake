@@ -1,0 +1,67 @@
+@import "../../styles/colours.scss";
+
+.radioContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    & > label {
+        font-size: 0.7rem;
+        margin-left: 0.5rem;
+    }
+}
+
+.radioSelect {
+    display: flex;
+    width: 100%;
+    fieldset {
+        flex: 1;
+        width: fit-content;
+        height: fit-content;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    }
+    border-radius: 0.5rem;
+
+    input {
+        width: 0;
+        height: 0;
+        margin: 0;
+        display: none;
+    }
+    input[type="radio"]:checked + .na {
+        background-color: $col-black;
+        color: $col-white;
+    }
+    input[type="radio"]:checked + .easy {
+        color: $col-black;
+        background-color: $col-green;
+        @include colouredDropShadow($col-green);
+    }
+    input[type="radio"]:checked + .medium {
+        color: $col-black;
+        background-color: $col-yellow;
+        @include colouredDropShadow($col-yellow);
+    }
+    input[type="radio"]:checked + .hard {
+        color: $col-black;
+        background-color: $col-red;
+        @include colouredDropShadow($col-red);
+    }
+    label {
+        width: 100%;
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        padding: 0.5rem 0rem;
+        text-decoration: underline;
+        // transition: background-color 0.2s ease-in-out;
+        cursor: pointer;
+    }
+    .na {
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
+    .hard {
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+}

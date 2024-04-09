@@ -1,0 +1,28 @@
+@import "../../styles/colours.scss";
+
+.genericButton {
+    padding: 1rem 2rem;
+    border: 0.5px solid $col-grey;
+    border-radius: 0.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    svg {
+        width: 2rem;
+        height: 2rem;
+    }
+}
+
+.genericButton:hover {
+    background-color: rgba($col-grey, 0.2);
+}
+
+.hyperlinkButton {
+    color: rgba($col-grey, 1);
+    cursor: pointer;
+}
+
+.hyperlinkButton:hover {
+    text-decoration: underline;
+}

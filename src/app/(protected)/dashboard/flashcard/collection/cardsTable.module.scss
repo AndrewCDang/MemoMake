@@ -1,0 +1,532 @@
+@import "../../../../styles/colours.scss";
+@import "../../../../_components/categoryInput/categoryInput.module.scss";
+@import "../../../../styles/mixins";
+
+.tableContainer {
+    display: flex;
+    flex-direction: column;
+    overflow-x: scroll;
+    width: fit-content;
+    overflow: visible;
+    padding-bottom: 1rem;
+    & > section {
+        padding-left: 3rem;
+    }
+    * {
+        color: $col-black;
+    }
+}
+
+.tableRow {
+    display: flex;
+    // border-right: 1px solid $col-grey;
+    width: fit-content;
+    position: relative;
+    overflow: visible;
+    cursor: pointer;
+
+    .headerRow {
+        padding: 1rem;
+        border-left: 1px solid $col-grey;
+        border-bottom: 1px solid $col-grey;
+    }
+
+    & > .tableItem {
+        padding: 1rem;
+        border-left: 1px solid $col-grey;
+        max-width: 100%;
+        position: relative;
+    }
+
+    ul {
+        display: flex;
+        gap: 1rem;
+    }
+    & > h6 {
+        border: 1px solid #ccc; /* Add border */
+    }
+}
+
+.tableRow:not(:last-of-type) {
+    & > .tableItem {
+        border-bottom: 1px solid $col-grey;
+    }
+}
+
+.tableWordBreak {
+    word-break: break-all;
+}
+
+.colWidthController {
+    position: absolute;
+    top: 0;
+    right: -0.5rem;
+    display: flex;
+    height: 100%;
+    width: 1rem;
+    z-index: 10;
+    cursor: pointer;
+    justify-content: center;
+    & > span {
+        height: 100%;
+        width: 2px;
+        background-color: unset;
+        transition: background-color 0.15s ease-in-out;
+    }
+}
+.colWidthController:hover span {
+    background-color: $col-black;
+    box-shadow: 0px 0px 4px rgba($col-black, 0.2);
+}
+.tableHeading {
+    // user-select: none;
+    overflow: hidden;
+    cursor: grab;
+}
+
+.tableHeadingContainer {
+    position: relative;
+}
+.rowContainer {
+    padding: 0;
+    display: flex;
+    // border-top: 1px solid $col-grey;
+}
+.selCol {
+    width: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+}
+.itemHandler {
+    position: absolute;
+    left: -2rem;
+}
+
+.selHandler {
+    border: unset;
+    width: 3rem;
+    position: relative;
+    left: -1rem;
+}
+
+.tableRow:hover .rowAction {
+    opacity: 1;
+}
+
+.rowAction {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    height: 1rem;
+    width: 1rem;
+    opacity: 0;
+    transition: all 0.12s ease-in-out;
+    cursor: pointer;
+    background-color: unset !important;
+    svg {
+        height: 1rem;
+        width: 1rem;
+        fill: $col-grey;
+    }
+    transform: translateY(-50%);
+    z-index: 10;
+
+    &:hover {
+        opacity: 1;
+
+        svg {
+            fill: $col-black;
+        }
+    }
+    .rowActionRel {
+        height: 1rem;
+        width: 1rem;
+        display: flex;
+        position: relative;
+        background-color: red;
+        z-index: 10;
+
+        .rowActionPopOver {
+            border-radius: 0.5rem;
+            position: absolute;
+            width: 2rem;
+            height: 2rem;
+            background-color: $col-white;
+            box-shadow: $box-shadow-default;
+            display: flex;
+            justify-content: center;
+            inset: 0;
+            margin: auto;
+            z-index: 10;
+            left: -0.5rem;
+            svg {
+                place-self: center;
+                width: fit-content;
+            }
+        }
+    }
+}
+
+.tableItemRel {
+    position: relative;
+}
+.tableItemLabel {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.itemInput {
+    width: 0 !important;
+    height: 0 !important;
+    visibility: hidden;
+    user-select: none;
+    pointer-events: none;
+    z-index: -10;
+}
+
+.itemInput:checked + .itemInputEdit {
+    background-color: $col-white;
+    visibility: visible !important;
+}
+
+.itemInputEdit {
+    position: absolute;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    min-width: 120%;
+    width: fit-content;
+    height: fit-content;
+    min-height: 120%;
+    visibility: hidden;
+    outline: none;
+    border: 1px solid $col-grey;
+    box-shadow: $box-shadow-default;
+    display: flex;
+}
+.itemInputEdit {
+    textarea {
+        width: 100%;
+        height: 50%;
+        place-self: center;
+    }
+    @include textAreaStyle(textarea);
+    z-index: 20;
+}
+.tagContainer {
+    @include categoryItemCSS;
+    gap: 0.5rem;
+    overflow: hidden;
+    width: fit-content;
+    max-width: 100%;
+}
+.popoverTagContainer {
+    & > section {
+        @include categoryItemCSS;
+        gap: 0.5rem;
+        width: fit-content;
+    }
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    .tagInput {
+        border-top: 1px solid $col-grey;
+        padding-top: 1rem;
+        & > input {
+            max-width: min(120px, 100%);
+        }
+    }
+}
+.itemTag {
+    width: fit-content;
+}
+
+// Difficulty
+@mixin labelStyle {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+.difficultyLabelValue {
+    width: fit-content;
+    @include labelStyle;
+    position: relative;
+    display: flex;
+    & > div {
+        @include removeCategoryCSS;
+    }
+    max-width: 100%;
+}
+.difficultyLabelItem {
+    overflow: hidden;
+}
+
+.difficultyPopContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.otherDiffSelection {
+    display: flex;
+    gap: 1rem;
+    height: fit-content;
+    border-top: 1px solid $col-grey;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    flex-wrap: wrap;
+    fieldset {
+        display: flex;
+        height: fit-content;
+        margin: 0;
+        border: unset;
+        padding: 0rem 0rem;
+    }
+    .difficultyLabelValue {
+        cursor: pointer;
+    }
+    input[type="radio"] {
+        background-color: red;
+        width: 0;
+        height: 0;
+        visibility: hidden;
+        margin: 0;
+    }
+}
+
+// LastModified
+.lastModifedValue {
+    overflow: hidden;
+}
+
+// Table Row Filter
+.headerRowPop {
+    min-width: 110%;
+    min-height: 110%;
+    width: fit-content;
+    height: fit-content;
+    left: 50%;
+    top: 50%;
+    z-index: 10;
+}
+@mixin SVGBtn {
+    svg {
+        place-self: center;
+        width: 1.5rem;
+        height: 1.5rem;
+        transition: all 0.12 ease-out;
+    }
+    svg:hover {
+        width: 1.2rem;
+        height: 1.2rem;
+    }
+}
+.rowFilterContainer {
+    transform: translate(-50%, -2rem);
+
+    .rowFilterBtnWrap {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 0.5rem;
+        border: 0.5px solid $col-grey;
+        box-shadow: $box-shadow-default;
+        background-color: $col-white;
+        .closeObjPop {
+            position: absolute;
+            top: -0.75rem;
+            right: -0.75rem;
+            background-color: $col-white;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 1.5rem;
+            display: flex;
+            border: 0.5px solid $col-grey;
+            box-shadow: $box-shadow-sm;
+            justify-content: center;
+            @include SVGBtn;
+        }
+        .filterCount {
+            color: $col-blue-select;
+            font-size: 0.75rem;
+            line-height: 1.5rem;
+            border: 0.5px solid $col-blue-select;
+            padding: 0 0.5rem;
+            border-radius: 0.5rem;
+        }
+    }
+    .buttonContainer {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        button {
+            text-wrap: nowrap;
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            width: 100%;
+            svg {
+                width: 1.4rem;
+                height: 1.4rem;
+            }
+        }
+
+        button:hover {
+            background-color: rgba($col-grey, 0.2);
+        }
+    }
+}
+
+.headingLabel {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.filterPopOver {
+    background-color: $col-white;
+    padding: 1rem;
+    box-shadow: $box-shadow-default;
+    border-radius: 0.5rem;
+    border: 0.5px solid $col-grey;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    cursor: unset;
+    .tagsContainer {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        border-top: 0.5px solid $col-grey;
+        padding-top: 1rem;
+        margin-top: 1rem;
+        .filterTagItem {
+            cursor: pointer;
+            @include labelStyle();
+            background-color: rgba($col-grey, 0.5);
+        }
+        .filterTagItem:hover {
+            scale: 1.05;
+        }
+        .filterDiffItem {
+            cursor: pointer;
+            @include labelStyle();
+        }
+        .filterDiffItem:hover {
+            scale: 1.05;
+        }
+    }
+    .returnPopOver {
+        align-self: flex-end;
+        svg {
+            height: 1.5rem;
+            width: 1.5rem;
+        }
+        svg:hover {
+            scale: 0.95;
+        }
+    }
+    .selectedTagFilter {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding-top: 1rem;
+        .selectedTagContainer {
+            position: relative;
+            & > div {
+                position: absolute;
+                display: flex;
+                background-color: $col-white;
+                top: -0.5rem;
+                right: -0.5rem;
+                width: fit-content;
+                height: fit-content;
+                border-radius: 1rem;
+                padding: 0.1rem;
+                box-shadow: $box-shadow-default;
+                svg {
+                    height: 1rem;
+                    width: 1rem;
+                }
+            }
+            & > div:hover {
+                scale: 0.95;
+            }
+        }
+        .filterTagItem {
+            cursor: pointer;
+            @include labelStyle();
+            background-color: $col-black;
+            color: $col-white;
+        }
+        .filterTagItem:hover {
+            scale: 1.05;
+        }
+        .filterDiffItem {
+            cursor: pointer;
+            @include labelStyle();
+        }
+        .filterDiffItem:hover {
+            scale: 1.05;
+        }
+    }
+}
+
+// Applied Filter
+.appliedFiltersContainer {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0rem;
+    .appliedBtnContainer {
+        position: relative;
+        button {
+            position: relative;
+            border: 2px solid $col-blue-select;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            z-index: 10;
+            span {
+                color: $col-grey;
+                font-size: 0.8rem;
+            }
+        }
+
+        .closeBtn {
+            cursor: pointer;
+            svg {
+                width: 1.2rem;
+                height: 1.2rem;
+            }
+            &:hover {
+                scale: 0.9;
+            }
+            position: absolute;
+            display: flex;
+            border-radius: 1rem;
+            top: -0.75rem;
+            right: -0.75rem;
+            background-color: $col-white;
+            box-shadow: $box-shadow-sm;
+        }
+
+        .glowingBorder {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            border: 2px solid rgba($col-blue-select, 0.8);
+            filter: blur(4px);
+            @include animation-pulse;
+            inset: 0;
+            margin: auto;
+            z-index: 0;
+        }
+    }
+}

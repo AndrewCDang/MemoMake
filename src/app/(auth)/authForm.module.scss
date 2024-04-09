@@ -1,0 +1,97 @@
+@import "../styles/colours.scss";
+
+.authContainer {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    & > section {
+        position: relative;
+        height: 100%;
+        width: 100%;
+    }
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: clamp(344px, calc(280px + 3vw), 420px);
+    gap: 0.5rem;
+    margin-top: 1rem;
+    // & > button {
+    //     margin: 0 auto;
+    //     margin-top: 1rem;
+    // }
+}
+
+.authTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.formContainer {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    padding: 1rem;
+    background-color: $col-white;
+    border-radius: 0.5rem;
+    box-shadow: 0px 8px 16px rgba($col-black, 0.3);
+}
+.authBorder {
+    display: flex;
+    align-items: center;
+    margin: 2rem 0rem;
+    & > p {
+        width: fit-content;
+        margin: 0px 1rem;
+    }
+
+    &:after {
+        content: "";
+        border-top: 0.5px solid $col-grey;
+        height: 1px;
+        flex: 1;
+    }
+    &:before {
+        content: "";
+        border-top: 0.5px solid $col-grey;
+        height: 1px;
+
+        flex: 1;
+    }
+}
+.authOther {
+    margin-top: 2rem;
+    & > p {
+        cursor: pointer;
+    }
+}
+
+.authBtn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.passwordRequirements {
+    padding-left: unset !important;
+    li {
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+        list-style: none;
+    }
+    & > div {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+}
+.centerBtn {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}

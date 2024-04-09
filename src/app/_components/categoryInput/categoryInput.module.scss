@@ -1,0 +1,51 @@
+@import "../../styles/colours.scss";
+
+@mixin removeCategoryCSS {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background-color: $col-white;
+    height: 1.2rem;
+    width: 1.2rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: scale 0.1s ease-out;
+    box-shadow: $box-shadow-sm;
+    display: flex;
+    justify-content: center;
+
+    svg {
+        align-self: center;
+        height: 1rem;
+        width: 1rem;
+    }
+}
+
+@mixin categoryItemCSS {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    & > div {
+        background-color: rgba($col-grey, 0.5);
+        padding: 0.25rem 1rem;
+        border-radius: 0.25rem;
+        position: relative;
+        & > div {
+            @include removeCategoryCSS;
+        }
+        & > div:hover {
+            scale: 0.92;
+        }
+    }
+}
+
+.categoriesDisplay {
+    @include categoryItemCSS();
+}
+
+.inputField {
+    padding: 0.2rem !important;
+    label {
+        pointer-events: none;
+    }
+}

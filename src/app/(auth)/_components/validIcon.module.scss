@@ -1,0 +1,25 @@
+@import "../../styles/colours.scss";
+
+.verifyIcon {
+    height: 1rem;
+    width: 1rem;
+    border-radius: 1rem;
+    position: relative;
+    svg {
+        position: absolute;
+        height: 1rem;
+        width: 1rem;
+    }
+}
+
+.passwordInvalid {
+    background-color: $col-red;
+}
+
+.passwordValid {
+    background-color: $col-green;
+}
+
+.passwordNull {
+    background-color: rgba($col-grey, 0.5);
+}

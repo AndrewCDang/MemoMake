@@ -1,0 +1,14 @@
+.close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    svg {
+        width: 2rem !important;
+        height: 2rem !important;
+        cursor: pointer;
+    }
+    svg:hover {
+        scale: 0.95;
+    }
+    z-index: 10;
+}

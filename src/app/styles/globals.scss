@@ -1,0 +1,124 @@
+@import "./colours.scss";
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box !important;
+}
+
+h1 {
+    font-size: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+    line-height: clamp(1.8rem, 1.2rem + 2.5vw, 3.6rem); /* Adjusted */
+}
+
+h2 {
+    font-size: clamp(1.3rem, 1rem + 2vw, 2.5rem);
+    line-height: clamp(1.56rem, 1.2rem + 2vw, 3rem); /* Adjusted */
+}
+
+h3 {
+    font-size: clamp(1.2rem, 0.9rem + 1.75vw, 2rem);
+    line-height: clamp(1.44rem, 1.08rem + 1.75vw, 2.4rem); /* Adjusted */
+}
+
+h4 {
+    font-size: clamp(1.1rem, 0.8rem + 1.5vw, 1.75rem);
+    line-height: clamp(1.32rem, 0.96rem + 1.5vw, 2.1rem); /* Adjusted */
+}
+
+h5 {
+    font-size: clamp(1rem, 0.7rem + 1.25vw, 1.5rem);
+    line-height: clamp(1.2rem, 0.84rem + 1.25vw, 1.8rem); /* Adjusted */
+}
+
+h6 {
+    font-size: clamp(0.9rem, 0.6rem + 1vw, 1.25rem);
+    line-height: clamp(1.08rem, 0.72rem + 1vw, 1.5rem); /* Adjusted */
+}
+
+p {
+    font-size: clamp(0.8rem, 0.7rem + 1vw, 1rem);
+    line-height: clamp(1.12rem, 0.96rem + 1vw, 1.4rem); /* Adjusted */
+}
+
+label {
+    font-size: clamp(0.7rem, 0.6rem + 1vw, 1rem);
+    line-height: clamp(1rem, 0.95rem + 1vw, 1.2rem);
+    color: $col-grey;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}
+
+ul {
+    padding-left: 1rem;
+    margin: 0;
+}
+
+html {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+.mainLayout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body {
+    margin: 0;
+    & > section {
+        min-height: calc(100vh - 3.5rem);
+    }
+    position: relative;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: unset;
+}
+
+button,
+textarea,
+input {
+    font-family: inherit;
+}
+
+button {
+    all: unset;
+}
+
+// Custom Radio
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border: 1.5px solid rgb(173, 173, 173);
+    border-radius: 1rem;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.12s ease-in-out, width 0.16s ease-in-out,
+        height 0.2s ease-in-out;
+}
+
+input[type="checkbox"]:checked {
+    background-color: rgb(173, 173, 173);
+    border-color: rgb(173, 173, 173);
+    box-shadow: 0px 0px 10px rgba(150, 150, 150, 0.5);
+    width: 0.5rem;
+    height: 0.5rem;
+}
