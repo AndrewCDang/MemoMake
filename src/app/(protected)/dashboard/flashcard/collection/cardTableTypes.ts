@@ -8,7 +8,7 @@ export type ColumnName =
 
 // Column Widths
 export type ColsWidthType = {
-    [key in ColumnName]: number;
+    [key in ColumnName]?: number;
 };
 
 // Edit Item Logic

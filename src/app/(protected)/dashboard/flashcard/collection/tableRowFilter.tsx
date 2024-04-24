@@ -8,8 +8,9 @@ import { useState } from "react";
 import { HiOutlineX } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiArrowUturnLeft } from "react-icons/hi2";
-import { labelColour } from "./difficultyTableItem";
-import { diffArray } from "./difficultyTableItem";
+import { labelColour } from "./tableItems/difficultyTableItem";
+import { diffArray } from "./tableItems/difficultyTableItem";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 type TableRowFilterTypes = {
     filterContainerRefs: MutableRefObject<Refs<HTMLElement>>;
@@ -44,6 +45,8 @@ function TableRowFilter({
     setHiddenColumns,
     hiddenColumns,
 }: TableRowFilterTypes) {
+    const [parent] = useAutoAnimate();
+
     // Controls secondary PopOver
     const [secondaryPopOver, setSecondaryPopOver] = useState<boolean>(false);
 
@@ -252,10 +255,12 @@ function TableRowFilter({
                                         </span>
                                     )}
                                 </div>
-                                <div className={style.tagsContainer}>
+                                <div
+                                    ref={parent}
+                                    className={style.tagsContainer}
+                                >
                                     {selectableTags.map((tag) => (
-                                        <motion.label
-                                            layout
+                                        <label
                                             onClick={(e) =>
                                                 filterTagsHandler(tag)
                                             }
@@ -263,7 +268,7 @@ function TableRowFilter({
                                             key={tag}
                                         >
                                             {tag}
-                                        </motion.label>
+                                        </label>
                                     ))}
                                 </div>
                             </>
@@ -313,13 +318,13 @@ function TableRowFilter({
                                         </span>
                                     )}
                                 </div>
-                                <form className={style.otherDiffSelection}>
+                                <form
+                                    ref={parent}
+                                    className={style.otherDiffSelection}
+                                >
                                     {selectableFilter.map((diff, index) => {
                                         return (
-                                            <motion.fieldset
-                                                key={diff}
-                                                layout="position"
-                                            >
+                                            <fieldset key={diff}>
                                                 <label
                                                     style={{
                                                         backgroundColor:
@@ -338,7 +343,7 @@ function TableRowFilter({
                                                 >
                                                     {diff}
                                                 </label>
-                                            </motion.fieldset>
+                                            </fieldset>
                                         );
                                     })}
                                 </form>

@@ -1,0 +1,96 @@
+@import "../../styles/colours.scss";
+.studyContainer {
+    margin: 0 auto;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height: 80vh;
+    position: relative;
+    .newCardLight {
+        position: absolute;
+        width: 80vw;
+        height: 50vh;
+        top: 0%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        background-color: $col-white;
+        opacity: 0.5;
+        border-radius: 80vw;
+        filter: blur(4rem);
+        z-index: 100;
+        pointer-events: none;
+        mix-blend-mode: overlay;
+    }
+
+    .flashCardContainer {
+        position: relative;
+        padding-bottom: 2rem;
+        width: 100vw;
+        flex: 1;
+        z-index: 10;
+
+        .flashCardItemDrag {
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: fit-content;
+            height: fit-content;
+
+            .flashCardListItem {
+                width: fit-content;
+                height: fit-content;
+                perspective: 1000px;
+                transform-style: preserve-3d;
+
+                .flashCardWrapper {
+                    width: fit-content;
+                    height: fit-content;
+                    transform-style: preserve-3d;
+                    cursor: pointer;
+
+                    &:hover {
+                        padding: 5rem;
+                    }
+                    .flashCard {
+                        transform-style: preserve-3d;
+                        aspect-ratio: 2/3;
+                        width: clamp(320px, calc(300px + 5vw), 400px);
+                        border: 2px solid $col-grey;
+                        border-radius: 1rem;
+                        position: relative;
+                        user-select: none;
+                        .flashFront,
+                        .flashBack {
+                            border-radius: 1rem;
+                            width: 100%;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            transform-style: preserve-3d;
+                        }
+                        .flashFront {
+                            position: absolute;
+                            background-color: $col-red;
+                            border: 2px solid $col-red;
+                        }
+                        .flashBack {
+                            position: absolute;
+                            background-color: $col-blue;
+                            border: 2px solid $col-blue;
+                            transform: rotateY(180deg);
+                            backface-visibility: hidden;
+                        }
+                        .flashCardQuestion {
+                            width: fit-content;
+                            font-size: 2rem;
+                            font-weight: 500;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

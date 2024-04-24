@@ -1,0 +1,25 @@
+@import "../../styles/colours.scss";
+@mixin validateIcon($colour) {
+    stroke: $colour;
+    border: 1.5px solid $colour;
+    border-radius: 1.5rem;
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+
+    svg {
+        stroke: $colour;
+        fill: $colour;
+        stroke-width: 1.5;
+        padding: 0.1rem 0.1rem;
+        height: 1rem;
+        width: 1rem;
+    }
+}
+.tickValidate {
+    @include validateIcon($col-green);
+}
+
+.crossValidate {
+    @include validateIcon($col-red);
+}

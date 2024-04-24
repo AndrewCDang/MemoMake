@@ -10,11 +10,13 @@ function Button({
     handler,
     loading,
     variant,
+    disabled = false,
 }: {
     text: string;
     handler?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     loading?: boolean;
     variant?: "black" | "white";
+    disabled?: boolean;
 }) {
     const loadingSpinAni = (
         <div style={{ stroke: "black", width: "100%" }}>
@@ -30,7 +32,7 @@ function Button({
     return (
         <button
             onClick={(e) => handler && handler(e)}
-            className={`${style.button}`}
+            className={`${style.button} ${disabled && style.disabled}`}
         >
             <div className={variant === "black" ? `${style.blackVarient}` : ""}>
                 <h6>{text}</h6>

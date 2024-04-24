@@ -41,6 +41,10 @@ $box-shadow-sm: 0px 2px 4px rgba($col-black, 0.2);
     box-shadow: 0px 0px 12px rgba($property, 0.8);
 }
 
+@mixin colouredDropShadowSm($property) {
+    box-shadow: 0px 0px 6px rgba($property, 0.3);
+}
+
 @mixin animation-rotate {
     animation-name: animation-rotate;
     animation-duration: 10s;

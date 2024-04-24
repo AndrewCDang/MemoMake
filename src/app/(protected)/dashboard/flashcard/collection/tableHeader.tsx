@@ -129,7 +129,7 @@ function TableHeader({
     }, [headingRefs, objPopOver]);
 
     return (
-        <section ref={headingRef}>
+        <section className={style.headingContainer} ref={headingRef}>
             <Reorder.Group
                 className={`${style.tableRow} ${style.rowContainer}`}
                 axis="x"

@@ -4,13 +4,36 @@ import style from "./close.module.scss";
 
 type CloseHandler = {
     handler: () => void;
+    cornerSpace?: "normal" | "tight";
+    type?: "withinCorner" | "circleCorner";
 };
 
-function CornerClose({ handler }: CloseHandler) {
+function CornerClose({
+    handler,
+    cornerSpace,
+    type = "withinCorner",
+}: CloseHandler) {
+    const cornerSpacing =
+        cornerSpace === "tight"
+            ? { top: "0.1rem", right: "0.1rem" }
+            : { top: "0.5rem", right: "0.5rem" };
     return (
-        <button onClick={handler} className={style.close}>
-            <HiMiniXMark />
-        </button>
+        <>
+            {type === "withinCorner" && (
+                <button
+                    onClick={handler}
+                    style={cornerSpacing}
+                    className={style.close}
+                >
+                    <HiMiniXMark />
+                </button>
+            )}
+            {type === "circleCorner" && (
+                <button onClick={handler} className={style.closeCircleCorner}>
+                    <HiMiniXMark />
+                </button>
+            )}
+        </>
     );
 }
 

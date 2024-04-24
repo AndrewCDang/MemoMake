@@ -2,19 +2,30 @@
 @import "../../../../_components/categoryInput/categoryInput.module.scss";
 @import "../../../../styles/mixins";
 
+.tableContainerWrapper {
+    position: relative;
+}
+
 .tableContainer {
     display: flex;
     flex-direction: column;
+    position: relative;
     overflow-x: scroll;
     width: fit-content;
-    overflow: visible;
-    padding-bottom: 1rem;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    padding-bottom: 3rem;
+    padding-right: 4rem;
+    max-height: 70vh;
     & > section {
         padding-left: 3rem;
     }
     * {
         color: $col-black;
     }
+}
+.overflowWrapper {
+    overflow-x: scroll;
 }
 
 .tableRow {
@@ -83,6 +94,13 @@
     overflow: hidden;
     cursor: grab;
 }
+.headingContainer {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: linear-gradient(to top, rgba($col-white, 0.8), $col-white 95%);
+    backdrop-filter: blur(0.5rem);
+}
 
 .tableHeadingContainer {
     position: relative;
@@ -117,7 +135,7 @@
 
 .rowAction {
     position: absolute;
-    left: 1rem;
+    left: 2rem;
     top: 50%;
     height: 1rem;
     width: 1rem;
@@ -176,6 +194,7 @@
     position: absolute;
     height: 100%;
     width: 100%;
+    z-index: 10;
 }
 
 .itemInput {
@@ -310,8 +329,8 @@
     width: fit-content;
     height: fit-content;
     left: 50%;
-    top: 50%;
-    z-index: 10;
+    top: 100%;
+    z-index: 20;
 }
 @mixin SVGBtn {
     svg {
@@ -487,6 +506,7 @@
     padding: 1rem 0rem;
     .appliedBtnContainer {
         position: relative;
+        text-wrap: nowrap;
         button {
             position: relative;
             border: 2px solid $col-blue-select;

@@ -68,6 +68,10 @@ export type Flashcard_set = {
     last_modified: Date;
 };
 
+export type Flashcard_set_with_count = Flashcard_set & {
+    count: number;
+};
+
 enum Difficulty {
     NA = "NA",
     EASY = "EASY",

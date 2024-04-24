@@ -20,11 +20,13 @@ function CreateSet() {
                 }
                 text="Create new set"
             />
-            {modal && (
-                <Modal modalTitle="Create new set" setModal={setModal}>
-                    <CreateSetModal setModal={setModal} />
-                </Modal>
-            )}
+            <Modal
+                modalOn={modal}
+                modalTitle="Create new set"
+                setModal={setModal}
+            >
+                <CreateSetModal setModal={setModal} />
+            </Modal>
         </section>
     );
 }

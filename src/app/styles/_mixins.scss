@@ -56,6 +56,18 @@
         height: none;
     }
 }
+@mixin customScrollbar($className) {
+    #{$className}::-webkit-scrollbar {
+        width: 0.5rem;
+        background: rgba($col-grey, 0.25);
+        border-radius: 0.5rem;
+    }
+    #{$className}::-webkit-scrollbar-thumb {
+        width: 0.5rem;
+        background: $col-grey;
+        border-radius: 0.5rem;
+    }
+}
 
 @mixin bouncingAnimationData {
     animation-name: bouncingAnimation;
@@ -82,4 +94,12 @@
         border: unset;
         resize: none;
     }
+}
+
+@mixin labelItem {
+    display: flex;
+    width: fit-content;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
 }

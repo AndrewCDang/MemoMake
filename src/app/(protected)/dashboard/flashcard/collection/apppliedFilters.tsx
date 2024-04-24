@@ -1,8 +1,10 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { ColumnName } from "./cardTableTypes";
 import style from "./cardsTable.module.scss";
-import CornerClose from "@/app/_components/cornerClose/cornerClose";
 import { HiOutlineX } from "react-icons/hi";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { object } from "zod";
+import React from "react";
 
 type AppliedFiltersTypes = {
     filteredTags: string[];
@@ -12,6 +14,8 @@ type AppliedFiltersTypes = {
     setHiddenColumns: Dispatch<SetStateAction<ColumnName[]>>;
     hiddenColumns: ColumnName[];
     setColumns: Dispatch<SetStateAction<ColumnName[]>>;
+    setSelectableTagsArray: Dispatch<SetStateAction<string[] | null>>;
+    tagArray: string[];
 };
 
 type FilterOptions = "difficulty" | "item_tags" | "hiddenCol";
@@ -21,7 +25,7 @@ type AppliedFilterBtnTypes = {
     object: FilterOptions;
 };
 
-export default function ApppliedFilters({
+function ApppliedFilters({
     filteredDiff,
     setFilteredDiff,
     filteredTags,
@@ -29,7 +33,11 @@ export default function ApppliedFilters({
     hiddenColumns,
     setColumns,
     setHiddenColumns,
+    setSelectableTagsArray,
+    tagArray,
 }: AppliedFiltersTypes) {
+    const [parent] = useAutoAnimate();
+
     const removeAppliedFilter = ({ item, object }: AppliedFilterBtnTypes) => {
         switch (object) {
             case "difficulty":
@@ -39,10 +47,6 @@ export default function ApppliedFilters({
                             (diff) => diff !== item
                         );
                         return removedArray;
-                    });
-                } else {
-                    setFilteredDiff((prevDiff) => {
-                        return [...prevDiff, item];
                     });
                 }
                 break;
@@ -54,9 +58,13 @@ export default function ApppliedFilters({
                         );
                         return removedArray;
                     });
-                } else {
-                    setFilteredTags((prevTags) => {
-                        return [...prevTags, item];
+                    setSelectableTagsArray((prevTags) => {
+                        let array = prevTags as string[];
+                        if (prevTags === null) {
+                            array = tagArray;
+                        }
+
+                        return [...array, item];
                     });
                 }
                 break;
@@ -66,12 +74,10 @@ export default function ApppliedFilters({
                         const removedArray = prevCols.filter(
                             (col) => col !== item
                         );
-                        setColumns(removedArray);
+
                         return removedArray;
                     });
-                } else {
-                    setHiddenColumns((prevState) => {
-                        setColumns([...prevState, item as ColumnName]);
+                    setColumns((prevState) => {
                         return [...prevState, item as ColumnName];
                     });
                 }
@@ -103,26 +109,47 @@ export default function ApppliedFilters({
         );
     };
 
+    const filterCallack = useCallback(() => {
+        const diffArray = filteredDiff.map((item) => {
+            return {
+                item: item,
+                object: "difficulty",
+            };
+        });
+
+        const tagsArray = filteredTags.map((item) => {
+            return {
+                item: item,
+                object: "item_tags",
+            };
+        });
+
+        const hiddenArray = hiddenColumns.map((item) => {
+            return {
+                item: item,
+                object: "hiddenCol",
+            };
+        });
+
+        const filterCollection = [...diffArray, ...tagsArray, ...hiddenArray];
+
+        return filterCollection;
+    }, [hiddenColumns, filteredTags, filteredDiff]);
+
     return (
-        <section className={style.appliedFiltersContainer}>
-            {filteredDiff.length > 0 &&
-                filteredDiff.map((item) => {
+        <section ref={parent} className={style.appliedFiltersContainer}>
+            {filterCallack().length > 0 &&
+                filterCallack().map((item) => {
                     return (
-                        <AppliedFilterBtn item={item} object={"difficulty"} />
-                    );
-                })}
-            {filteredTags.length > 0 &&
-                filteredTags.map((item) => {
-                    return (
-                        <AppliedFilterBtn item={item} object={"item_tags"} />
-                    );
-                })}
-            {hiddenColumns.length > 0 &&
-                hiddenColumns.map((item) => {
-                    return (
-                        <AppliedFilterBtn item={item} object={"hiddenCol"} />
+                        <AppliedFilterBtn
+                            key={`${item.object}-${item.item}`}
+                            item={item.item}
+                            object={item.object as FilterOptions}
+                        />
                     );
                 })}
         </section>
     );
 }
+
+export default React.memo(ApppliedFilters);

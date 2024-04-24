@@ -1,4 +1,5 @@
 @import "../../styles/colours.scss";
+@import "../../styles/mixins.scss";
 
 .cardModalContainer {
     position: fixed;
@@ -6,6 +7,7 @@
     width: 100vw;
     background-color: rgba($col-black, 0.2);
     top: 0;
+    z-index: 50;
 }
 
 .cardModal {
@@ -23,3 +25,11 @@
         margin-bottom: 1rem;
     }
 }
+
+.overflowY {
+    overflow-y: auto;
+    max-height: 720px;
+    padding: 0rem 0.75rem;
+}
+
+@include customScrollbar(".overflowY");

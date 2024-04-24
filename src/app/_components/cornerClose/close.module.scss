@@ -1,3 +1,5 @@
+@import "../..//styles/colours.scss";
+
 .close {
     position: absolute;
     top: 0.5rem;
@@ -6,6 +8,29 @@
         width: 2rem !important;
         height: 2rem !important;
         cursor: pointer;
+        fill: $col-black;
+    }
+    svg:hover {
+        scale: 0.95;
+    }
+    z-index: 10;
+}
+
+.closeCircleCorner {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background-color: $col-white;
+    border: 0.5px solid $col-grey;
+    border-radius: 0.5rem;
+    width: 1rem !important;
+    height: 1rem !important;
+    display: flex;
+    svg {
+        width: 1rem !important;
+        height: 1rem !important;
+        cursor: pointer;
+        fill: $col-black;
     }
     svg:hover {
         scale: 0.95;

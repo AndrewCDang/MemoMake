@@ -1,11 +1,12 @@
 import React, { MutableRefObject, useEffect, useRef } from "react";
-import { ColumnName, Refs, InputValues } from "./cardTableTypes";
+import { ColumnName, Refs, InputValues } from "../cardTableTypes";
 import { UpdateCardTypes } from "@/app/_actions/updateCard";
-import style from "./cardsTable.module.scss";
+import style from "../cardsTable.module.scss";
 import { Flashcard_item } from "@/app/_types/types";
 import PopToggler from "./popToggler";
 import { HiOutlineX } from "react-icons/hi";
 import { motion } from "framer-motion";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 type GenericField = {
     item: ColumnName;
@@ -48,6 +49,9 @@ const TagsTableItem = ({
     handleValueChange,
     editInputRef,
 }: GenericField) => {
+    const [parent] = useAutoAnimate();
+    const [parentLabel] = useAutoAnimate();
+
     const displayValue =
         (inputValues[`${item}~${card.id}`] as string[]) ??
         (item !== "last_modified" ? card[item] : "");
@@ -126,19 +130,19 @@ const TagsTableItem = ({
                 ref={(el) => {
                     tableItemRef.current[`${item}~${card.id}`] = el;
                 }}
-                className={style.tagContainer}
             >
-                {displayValue.map((tag, index) => {
-                    return (
-                        <motion.div
-                            layout
-                            className={style.itemTag}
-                            key={`${item}-${card.id}-tag-${index}`}
-                        >
-                            {tag}
-                        </motion.div>
-                    );
-                })}
+                <div ref={parentLabel} className={style.tagContainer}>
+                    {displayValue.map((tag, index) => {
+                        return (
+                            <div
+                                className={style.itemTag}
+                                key={`${item}-${card.id}-tag-${index}`}
+                            >
+                                {tag}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
             {/* Invisible Input */}
             <PopToggler
@@ -155,18 +159,15 @@ const TagsTableItem = ({
                     itemEditRef.current[`${item}~${card.id}`] = el;
                 }}
             >
-                <section>
+                <section ref={parent}>
                     {displayValue.map((tag, index) => {
                         return (
-                            <motion.div
-                                key={`${item}-${card.id}-popItem-${tag}`}
-                                layout
-                            >
+                            <div key={`${item}-${card.id}-popItem-${tag}`}>
                                 {tag}
                                 <div onClick={() => removeFromCategory(tag)}>
                                     <HiOutlineX />
                                 </div>
-                            </motion.div>
+                            </div>
                         );
                     })}
                 </section>
@@ -186,21 +187,3 @@ const TagsTableItem = ({
 };
 
 export default TagsTableItem;
-// onChange={(e) =>
-//     handleInputChange(e, `${item}~${card.id}`)
-// }
-
-// Turn back on
-
-// onKeyDown={(e) =>
-//     labelEditEnterHandler(e, item, card.id)
-// }
-
-// onBlur={(e) =>
-//     e.target.value &&
-//     updateCardHandler({
-//         id: card.id,
-//         object: item,
-//         value: e.target.value,
-//     })
-// }

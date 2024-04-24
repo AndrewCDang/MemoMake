@@ -12,11 +12,6 @@ export default async function Home({ children }: { children: ReactNode }) {
                 <section>
                     <button>Add Flash Card</button>
                 </section>
-                <section>
-                    <Link href={"/dashboard/abc123"}>
-                        <div>FlashCard 1</div>
-                    </Link>
-                </section>
                 {children}
                 {/* <EmailTemplate
                     userName={session?.user.name || "Tim"}

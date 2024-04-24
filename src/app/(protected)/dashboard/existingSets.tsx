@@ -5,7 +5,6 @@ import { Flashcard_set } from "@/app/_types/types";
 import style from "./existingSets.module.scss";
 import { HiArrowRightCircle } from "react-icons/hi2";
 import Link from "next/link";
-import { HiMiniStop } from "react-icons/hi2";
 
 async function ExistingSets({ session }: { session: Session | null }) {
     if (!session) return null;

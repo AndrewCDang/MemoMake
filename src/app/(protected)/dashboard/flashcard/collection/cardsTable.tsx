@@ -9,12 +9,15 @@ import { HiMiniTrash } from "react-icons/hi2";
 import { delCard } from "@/app/_actions/delCard";
 import { updateCard, UpdateCardTypes } from "@/app/_actions/updateCard";
 import { ColumnName, ColsWidthType, Refs, InputValues } from "./cardTableTypes";
-import GenericTableItem from "./genericTableItem";
-import TagsTableItem from "./tagsTableItem";
-import LastModifiedTableItem from "./lastModifiedTableItem";
-import DifficultyTableItem, { diffArray } from "./difficultyTableItem";
+import GenericTableItem from "./tableItems/genericTableItem";
+import TagsTableItem from "./tableItems/tagsTableItem";
+import LastModifiedTableItem from "./tableItems/lastModifiedTableItem";
+import DifficultyTableItem, {
+    diffArray,
+} from "./tableItems/difficultyTableItem";
 import TableHeader from "./tableHeader";
 import ApppliedFilters from "./apppliedFilters";
+import TableShadow from "./shadowComponent/tableShadow";
 
 // Type of Card Object
 type CardTableTypes = {
@@ -70,6 +73,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
             ? filterCardCollection()
             : cardCollection;
 
+    const cardsCount = displayCardCollection.length;
     /**
      // Resizable columns logic --
      */
@@ -96,6 +100,33 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
     const isMouseDownRef = useRef<boolean>(false);
     const targetSlideHeading = useRef<ColumnName | null>(null);
     const initialXRef = useRef<number | null>(null);
+    const containerRef = useRef<HTMLElement>(null);
+    const [extraWidth, setExtraWidth] = useState<number>(0);
+
+    // On document mount, or hidden columns, measure extra remaining spaces(if any) to be shared between columns
+    useEffect(() => {
+        if (containerRef.current) {
+            const containerWidth = containerRef.current.offsetWidth;
+            const windowWidth = window.innerWidth;
+            const sumDefaultWidths = Object.values(defaultWidths).reduce(
+                (prevValue, num) => prevValue + num,
+                0
+            );
+            if (windowWidth < 600) return;
+
+            const sharedWidths =
+                (windowWidth - containerWidth) / columns.length;
+            setColWidths((prevColWidths) =>
+                Object.entries(colsWidth).reduce(
+                    (acc, [key, value]) => ({
+                        ...acc,
+                        [key]: value + sharedWidths,
+                    }),
+                    {}
+                )
+            );
+        }
+    }, [containerRef, hiddenColumns, columns]);
 
     // 1) Tracks initial x position and allows movemouse logic
     const headingDownHandler = (e: MouseEvent) => {
@@ -118,7 +149,8 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
             setColWidths((prevState) => {
                 return {
                     ...prevState,
-                    [targetHeading]: prevState[targetHeading] + differenceX,
+                    [targetHeading]:
+                        (prevState[targetHeading] as number) + differenceX,
                 };
             });
             initialXRef.current = e.clientX;
@@ -402,8 +434,11 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
         }
     };
 
+    // Shadow at bottom/top fading in out on scroll y position
+    const containerWrapRef = useRef<HTMLElement>(null);
+
     return (
-        <motion.section className={style.tableContainer} layout="position">
+        <section className={style.tableContainerWrapper} ref={containerWrapRef}>
             {/* Displaying current toggled filters */}
             <ApppliedFilters
                 filteredDiff={filteredDiff}
@@ -413,175 +448,191 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                 hiddenColumns={hiddenColumns}
                 setColumns={setColumns}
                 setHiddenColumns={setHiddenColumns}
-            />
-            <TableHeader
-                headingRef={headingRef}
-                columns={columns}
-                setColumns={setColumns}
-                colsWidth={colsWidth}
-                targetSlideHeading={targetSlideHeading}
-                tagArray={tagArray}
-                setFilteredTags={setFilteredTags}
-                filteredTags={filteredTags}
-                selectableTagsArray={selectableTagsArray}
                 setSelectableTagsArray={setSelectableTagsArray}
-                filteredDiff={filteredDiff}
-                setFilteredDiff={setFilteredDiff}
-                setHiddenColumns={setHiddenColumns}
-                hiddenColumns={hiddenColumns}
+                tagArray={tagArray}
             />
+            {/* Table */}
+            <motion.section
+                className={style.tableContainer}
+                ref={containerRef}
+                layout="position"
+            >
+                <TableHeader
+                    headingRef={headingRef}
+                    columns={columns}
+                    setColumns={setColumns}
+                    colsWidth={colsWidth}
+                    targetSlideHeading={targetSlideHeading}
+                    tagArray={tagArray}
+                    setFilteredTags={setFilteredTags}
+                    filteredTags={filteredTags}
+                    selectableTagsArray={selectableTagsArray}
+                    setSelectableTagsArray={setSelectableTagsArray}
+                    filteredDiff={filteredDiff}
+                    setFilteredDiff={setFilteredDiff}
+                    setHiddenColumns={setHiddenColumns}
+                    hiddenColumns={hiddenColumns}
+                />
 
-            {displayCardCollection &&
-                displayCardCollection.map((card) => {
-                    return (
-                        <section
-                            style={{
-                                opacity: selDeleting.includes(card.id)
-                                    ? 0.3
-                                    : 1,
-                                transition: "opacity 0.12s ease-in-out",
-                            }}
-                            key={card.id}
-                            className={style.tableRow}
-                        >
-                            <aside className={style.rowAction}>
-                                <div className={style.rowActionRel}>
-                                    {/* <HiSquares2X2 /> */}
-                                    <div
-                                        onClick={() => delRowHandler(card.id)}
-                                        className={style.rowActionPopOver}
-                                    >
-                                        <HiMiniTrash />
-                                    </div>
-                                </div>
-                            </aside>
-                            <div
+                {displayCardCollection &&
+                    displayCardCollection.map((card) => {
+                        return (
+                            <section
                                 style={{
-                                    backgroundColor: selItems.includes(card.id)
-                                        ? colours.grey(0.2)
-                                        : "",
+                                    opacity: selDeleting.includes(card.id)
+                                        ? 0.3
+                                        : 1,
+                                    transition: "opacity 0.12s ease-in-out",
                                 }}
-                                className={style.selCol}
+                                key={card.id}
+                                className={style.tableRow}
                             >
-                                <Checkbox id={card.id} handler={selHandler} />
-                            </div>
-                            {columns.map((item) => {
-                                // Column Item Types
-                                const isQuestionOrAnswer = [
-                                    "item_question",
-                                    "item_answer",
-                                ].includes(item);
+                                <aside className={style.rowAction}>
+                                    <div className={style.rowActionRel}>
+                                        {/* <HiSquares2X2 /> */}
+                                        <div
+                                            onClick={() =>
+                                                delRowHandler(card.id)
+                                            }
+                                            className={style.rowActionPopOver}
+                                        >
+                                            <HiMiniTrash />
+                                        </div>
+                                    </div>
+                                </aside>
+                                <div
+                                    style={{
+                                        backgroundColor: selItems.includes(
+                                            card.id
+                                        )
+                                            ? colours.grey(0.2)
+                                            : "",
+                                    }}
+                                    className={style.selCol}
+                                >
+                                    <Checkbox
+                                        id={card.id}
+                                        handler={selHandler}
+                                    />
+                                </div>
+                                {columns.map((item) => {
+                                    // Column Item Types
+                                    const isQuestionOrAnswer = [
+                                        "item_question",
+                                        "item_answer",
+                                    ].includes(item);
 
-                                const isTags = ["item_tags"].includes(item);
+                                    const isTags = ["item_tags"].includes(item);
 
-                                const isDifficulty = ["difficulty"].includes(
-                                    item
-                                );
+                                    const isDifficulty = [
+                                        "difficulty",
+                                    ].includes(item);
 
-                                const isLastModified = [
-                                    "last_modified",
-                                ].includes(item);
+                                    const isLastModified = [
+                                        "last_modified",
+                                    ].includes(item);
 
-                                return (
-                                    <section
-                                        style={{
-                                            width: `${colsWidth[item]}px`,
-                                            backgroundColor: selItems.includes(
-                                                card.id
-                                            )
-                                                ? colours.grey(0.2)
-                                                : "",
-                                        }}
-                                        className={` ${style.tableItem} ${style.tableItemRel}`}
-                                    >
-                                        <label
-                                            className={style.tableItemLabel}
-                                            key={`${item}-${card.id}`}
-                                            htmlFor={`${item}-${card.id}-input`}
-                                        ></label>
-                                        {/* Table item -  Generic string output */}
-                                        {isQuestionOrAnswer && (
-                                            <GenericTableItem
-                                                item={item}
-                                                tableItemRef={tableItemRef}
-                                                card={card}
-                                                itemEditRef={itemEditRef}
-                                                inputValues={inputValues}
-                                                handleInputChange={
-                                                    handleInputChange
-                                                }
-                                                labelEditEnterHandler={
-                                                    labelEditEnterHandler
-                                                }
-                                                updateCardHandler={
-                                                    updateCardHandler
-                                                }
-                                                editInputRef={editInputRef}
-                                                // Props for PopOver Toggler (Invisible)
-                                                labelItemEditHandler={
-                                                    labelItemEditHandler
-                                                }
-                                                itemLabelRef={itemLabelRef}
-                                            />
-                                        )}
-                                        {isTags && (
-                                            <TagsTableItem
-                                                item={item}
-                                                tableItemRef={tableItemRef}
-                                                card={card}
-                                                itemEditRef={itemEditRef}
-                                                inputValues={inputValues}
-                                                handleInputChange={
-                                                    handleInputChange
-                                                }
-                                                labelEditEnterHandler={
-                                                    labelEditEnterHandler
-                                                }
-                                                updateCardHandler={
-                                                    updateCardHandler
-                                                }
-                                                editInputRef={editInputRef}
-                                                // Props for PopOver Toggler (Invisible)
-                                                labelItemEditHandler={
-                                                    labelItemEditHandler
-                                                }
-                                                itemLabelRef={itemLabelRef}
-                                                handleValueChange={
-                                                    handleValueChange
-                                                }
-                                            />
-                                        )}
-                                        {isDifficulty && (
-                                            <DifficultyTableItem
-                                                item={item}
-                                                tableItemRef={tableItemRef}
-                                                card={card}
-                                                itemEditRef={itemEditRef}
-                                                inputValues={inputValues}
-                                                // Props for PopOver Toggler (Invisible)
-                                                labelItemEditHandler={
-                                                    labelItemEditHandler
-                                                }
-                                                itemLabelRef={itemLabelRef}
-                                                handleValueChange={
-                                                    handleValueChange
-                                                }
-                                            />
-                                        )}
+                                    return (
+                                        <section
+                                            style={{
+                                                width: `${colsWidth[item]}px`,
+                                                backgroundColor:
+                                                    selItems.includes(card.id)
+                                                        ? colours.grey(0.2)
+                                                        : "",
+                                            }}
+                                            className={` ${style.tableItem} ${style.tableItemRel}`}
+                                        >
+                                            <label
+                                                className={style.tableItemLabel}
+                                                key={`${item}-${card.id}`}
+                                                htmlFor={`${item}-${card.id}-input`}
+                                            ></label>
+                                            {/* Table item -  Generic string output */}
+                                            {isQuestionOrAnswer && (
+                                                <GenericTableItem
+                                                    item={item}
+                                                    tableItemRef={tableItemRef}
+                                                    card={card}
+                                                    itemEditRef={itemEditRef}
+                                                    inputValues={inputValues}
+                                                    handleInputChange={
+                                                        handleInputChange
+                                                    }
+                                                    labelEditEnterHandler={
+                                                        labelEditEnterHandler
+                                                    }
+                                                    updateCardHandler={
+                                                        updateCardHandler
+                                                    }
+                                                    editInputRef={editInputRef}
+                                                    // Props for PopOver Toggler (Invisible)
+                                                    labelItemEditHandler={
+                                                        labelItemEditHandler
+                                                    }
+                                                    itemLabelRef={itemLabelRef}
+                                                />
+                                            )}
+                                            {isTags && (
+                                                <TagsTableItem
+                                                    item={item}
+                                                    tableItemRef={tableItemRef}
+                                                    card={card}
+                                                    itemEditRef={itemEditRef}
+                                                    inputValues={inputValues}
+                                                    handleInputChange={
+                                                        handleInputChange
+                                                    }
+                                                    labelEditEnterHandler={
+                                                        labelEditEnterHandler
+                                                    }
+                                                    updateCardHandler={
+                                                        updateCardHandler
+                                                    }
+                                                    editInputRef={editInputRef}
+                                                    // Props for PopOver Toggler (Invisible)
+                                                    labelItemEditHandler={
+                                                        labelItemEditHandler
+                                                    }
+                                                    itemLabelRef={itemLabelRef}
+                                                    handleValueChange={
+                                                        handleValueChange
+                                                    }
+                                                />
+                                            )}
+                                            {isDifficulty && (
+                                                <DifficultyTableItem
+                                                    item={item}
+                                                    tableItemRef={tableItemRef}
+                                                    card={card}
+                                                    itemEditRef={itemEditRef}
+                                                    inputValues={inputValues}
+                                                    // Props for PopOver Toggler (Invisible)
+                                                    labelItemEditHandler={
+                                                        labelItemEditHandler
+                                                    }
+                                                    itemLabelRef={itemLabelRef}
+                                                    handleValueChange={
+                                                        handleValueChange
+                                                    }
+                                                />
+                                            )}
 
-                                        {isLastModified && (
-                                            <LastModifiedTableItem
-                                                card={card}
-                                                item={item}
-                                            />
-                                        )}
-                                    </section>
-                                );
-                            })}
-                        </section>
-                    );
-                })}
-        </motion.section>
+                                            {isLastModified && (
+                                                <LastModifiedTableItem
+                                                    card={card}
+                                                    item={item}
+                                                />
+                                            )}
+                                        </section>
+                                    );
+                                })}
+                            </section>
+                        );
+                    })}
+            </motion.section>
+            <TableShadow targetRef={containerRef} cardsCount={cardsCount} />
+        </section>
     );
 }
 

@@ -1,7 +1,7 @@
 import React from "react";
-import { ColumnName } from "./cardTableTypes";
+import { ColumnName } from "../cardTableTypes";
 import { Flashcard_item } from "@/app/_types/types";
-import style from "./cardsTable.module.scss";
+import style from "../cardsTable.module.scss";
 
 type GenericField = {
     item: ColumnName;

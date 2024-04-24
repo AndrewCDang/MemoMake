@@ -1,7 +1,12 @@
 import React from "react";
 import { MutableRefObject } from "react";
-import style from "./cardsTable.module.scss";
-import { ColumnName, ColsWidthType, Refs, InputValues } from "./cardTableTypes";
+import style from "../cardsTable.module.scss";
+import {
+    ColumnName,
+    ColsWidthType,
+    Refs,
+    InputValues,
+} from "../cardTableTypes";
 import { Flashcard_item } from "@/app/_types/types";
 
 type PopTogglerTypes = {

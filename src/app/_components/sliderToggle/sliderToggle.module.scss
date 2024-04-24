@@ -1,0 +1,40 @@
+@import "../../styles/colours.scss";
+
+.sliderToggleContainer {
+    position: relative;
+    height: 2rem;
+    width: 4rem;
+    border-radius: 2rem;
+    background-color: rgba($col-grey, 0.3);
+
+    input {
+        height: 0;
+        width: 0;
+        visibility: hidden;
+    }
+    label {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        z-index: 10;
+        position: relative;
+        cursor: pointer;
+    }
+    .sliderBall {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        aspect-ratio: 1;
+        background-color: $col-grey;
+        border-radius: 100%;
+        box-shadow: $box-shadow-default;
+        transform: translateX(-50%);
+        left: 25%;
+        transition: left 0.12s ease-in-out;
+        cursor: pointer;
+    }
+
+    .sliderInput:checked + .sliderBall {
+        left: 75%;
+    }
+}
