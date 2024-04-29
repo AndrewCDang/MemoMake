@@ -9,7 +9,7 @@ async function Nav() {
 
     return (
         <nav className={style.nav}>
-            <section>Logo</section>
+            <section>MM</section>
             <section className={style.navButtons}>
                 {session ? (
                     <form
