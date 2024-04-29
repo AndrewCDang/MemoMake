@@ -1,0 +1,36 @@
+@import "../../../../../styles/colours.scss";
+
+$strokeWidth: 12px;
+$graphSize: clamp(120px, calc(120px + 0.35vw), 240px);
+
+.graphContainer {
+    position: relative;
+
+    .svgContainer {
+        transform: rotate(-90deg);
+        display: flex;
+        background-color: $col-white;
+        border-radius: 100%;
+
+        .svgProgress,
+        .svgTrack {
+        }
+        .svgProgress {
+            stroke: $col-green;
+            stroke-linecap: round;
+        }
+
+        .svgTrack {
+            stroke: rgba($col-red, 0.8);
+        }
+    }
+    .percentText {
+        position: absolute;
+        width: fit-content;
+        height: fit-content;
+        inset: 0;
+        margin: auto;
+        font-weight: 700;
+        font-size: clamp(16px, calc(12px + 1vw), 36px);
+    }
+}

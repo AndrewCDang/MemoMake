@@ -1,0 +1,30 @@
+@import "../../styles/colours.scss";
+
+.defaultButton {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    height: 100%;
+    align-items: center;
+    border: 0.5px solid $col-grey;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    svg {
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        border-color: $col-black;
+        background-color: rgba($col-grey, 0.1);
+    }
+}
+
+.defaultButtonBlack {
+    background-color: $col-black;
+    color: $col-white;
+    &:hover {
+        background-color: rgba($col-black, 0.8);
+    }
+}

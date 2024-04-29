@@ -1,17 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CombinedType } from "../page";
 import style from "./flashResults.module.scss";
 import ExpandHeightToggler from "@/app/_components/expandHeightToggler/expandHeightToggler";
 import MaxHeightToggler from "./maxHeightToggler";
 import diffColour from "@/app/_components/difficultyColour/diffColour";
 import { TbEdit } from "react-icons/tb";
+import { HiCheck } from "react-icons/hi2";
+import { HiMiniXMark } from "react-icons/hi2";
+import { HiArrowRight } from "react-icons/hi2";
+import { motion } from "framer-motion";
 
 type FlashResults = {
     flashCardItemsTest: CombinedType[];
+    testIncorrect: boolean;
+    setTestIncorrect: Dispatch<SetStateAction<boolean>>;
+    setIncorrectQuestions: Dispatch<SetStateAction<CombinedType[] | undefined>>;
 };
 
-function FlashResults({ flashCardItemsTest }: FlashResults) {
+function FlashResults({
+    flashCardItemsTest,
+    testIncorrect,
+    setTestIncorrect,
+    setIncorrectQuestions,
+}: FlashResults) {
     let emptyObject = {};
     flashCardItemsTest.forEach((item) => {
         emptyObject = { ...emptyObject, [item.id]: false };
@@ -60,11 +72,19 @@ function FlashResults({ flashCardItemsTest }: FlashResults) {
     };
 
     const sortedArray = sortByCorrect(sortByDiff(flashCardItemsTest));
+
     return (
-        <div className={style.resultsContainer}>
+        <motion.section
+            className={style.resultsContainer}
+            key={"ResultsContainer"}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
             {sortedArray.map((item) => {
                 return (
-                    <section className={style.resultContainer}>
+                    <section key={item.id} className={style.resultContainer}>
                         <aside className={style.itemEdit}>
                             <TbEdit />
                         </aside>
@@ -83,12 +103,51 @@ function FlashResults({ flashCardItemsTest }: FlashResults) {
                             <section className={style.resultsCompact}>
                                 <aside
                                     style={{
-                                        backgroundColor: diffColour({
-                                            diff: item.difficulty,
-                                        }),
+                                        width:
+                                            item.difficulty !== "NA"
+                                                ? "8rem"
+                                                : "fit-content",
                                     }}
-                                    className={style.difficultyIcon}
-                                ></aside>
+                                    className={style.resultInfo}
+                                >
+                                    {item.correct ? (
+                                        <div className={style.correctSVG}>
+                                            {<HiCheck />}
+                                        </div>
+                                    ) : (
+                                        <div className={style.incorrectSVG}>
+                                            <HiMiniXMark />
+                                        </div>
+                                    )}
+                                    {item.difficulty !== "NA" && (
+                                        <aside>
+                                            <div
+                                                style={{
+                                                    color: diffColour({
+                                                        diff: item.difficulty,
+                                                    }),
+                                                    borderColor: diffColour({
+                                                        diff: item.difficulty,
+                                                    }),
+                                                    backgroundColor: diffColour(
+                                                        {
+                                                            diff: item.difficulty,
+                                                            alpha: 0.1,
+                                                        }
+                                                    ),
+                                                    borderWidth: "1.5px",
+                                                    borderStyle: "solid",
+                                                }}
+                                                className={style.diffLabel}
+                                            >
+                                                {item.difficulty[0] +
+                                                    item.difficulty
+                                                        .slice(1)
+                                                        .toLocaleLowerCase()}
+                                            </div>
+                                        </aside>
+                                    )}
+                                </aside>
                                 <div>
                                     <MaxHeightToggler
                                         isToggled={toggleOn[item.id]}
@@ -96,6 +155,9 @@ function FlashResults({ flashCardItemsTest }: FlashResults) {
                                     >
                                         {item.item_question}
                                     </MaxHeightToggler>
+                                    <div className={style.arrow}>
+                                        <HiArrowRight />
+                                    </div>
                                     <MaxHeightToggler
                                         isToggled={toggleOn[item.id]}
                                         isQuestion={false}
@@ -106,26 +168,6 @@ function FlashResults({ flashCardItemsTest }: FlashResults) {
                             </section>
                             <ExpandHeightToggler isOn={toggleOn[item.id]}>
                                 <div className={style.toggledContainer}>
-                                    {item.difficulty !== "NA" && (
-                                        <div
-                                            style={{
-                                                color: diffColour({
-                                                    diff: item.difficulty,
-                                                }),
-                                                borderColor: diffColour({
-                                                    diff: item.difficulty,
-                                                }),
-                                                borderWidth: "1.5px",
-                                                borderStyle: "solid",
-                                            }}
-                                            className={style.diffLabel}
-                                        >
-                                            {item.difficulty[0] +
-                                                item.difficulty
-                                                    .slice(1)
-                                                    .toLocaleLowerCase()}
-                                        </div>
-                                    )}
                                     <div className={style.tagContainer}>
                                         {item.item_tags &&
                                             item.item_tags.map((tag, index) => {
@@ -155,7 +197,7 @@ function FlashResults({ flashCardItemsTest }: FlashResults) {
                     </section>
                 );
             })}
-        </div>
+        </motion.section>
     );
 }
 

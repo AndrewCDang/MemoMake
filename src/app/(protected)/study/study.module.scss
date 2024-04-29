@@ -1,4 +1,6 @@
 @import "../../styles/colours.scss";
+@import "../../styles/_mixins.scss";
+
 .studyContainer {
     margin: 0 auto;
     width: fit-content;
@@ -6,8 +8,14 @@
     flex-direction: column;
     align-items: center;
     width: 100vw;
-    height: 80vh;
+    height: calc(100vh - 2rem);
+    padding-bottom: 8rem;
     position: relative;
+    .studyTitle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
     .newCardLight {
         position: absolute;
         width: 80vw;
@@ -23,18 +31,48 @@
         pointer-events: none;
         mix-blend-mode: overlay;
     }
+    @mixin dragIcon($col) {
+        position: absolute;
+        display: flex;
+        z-index: 200;
+        top: 50%;
+        // border: 3px solid $col;
+        background-color: rgba($col, 0.5);
+        backdrop-filter: blur(4px);
+        border-radius: 100%;
+        width: 5rem;
+        height: 5rem;
+
+        svg {
+            width: 4rem;
+            height: 4rem;
+            padding: 0.5rem;
+            margin: 0 auto;
+            place-self: center;
+            stroke-width: 1.5;
+            stroke: $col;
+        }
+    }
+    .dragCorrectIcon {
+        @include dragIcon($col-green);
+        right: calc(0.25rem + 5vw);
+    }
+    .dragIncorrectIcon {
+        @include dragIcon($col-red);
+        left: calc(0.25rem + 5vw);
+    }
 
     .flashCardContainer {
         position: relative;
-        padding-bottom: 2rem;
         width: 100vw;
         flex: 1;
         z-index: 10;
 
         .flashCardItemDrag {
             position: absolute;
-            inset: 0;
-            margin: auto;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: fit-content;
             height: fit-content;
 
@@ -56,11 +94,13 @@
                     .flashCard {
                         transform-style: preserve-3d;
                         aspect-ratio: 2/3;
-                        width: clamp(320px, calc(300px + 5vw), 400px);
-                        border: 2px solid $col-grey;
+                        width: clamp(260px, calc(200px + 5vw), 400px);
+                        // border: 2px solid $col-grey;
                         border-radius: 1rem;
                         position: relative;
                         user-select: none;
+                        z-index: 20;
+                        cursor: pointer;
                         .flashFront,
                         .flashBack {
                             border-radius: 1rem;
@@ -70,16 +110,71 @@
                             justify-content: center;
                             align-items: center;
                             transform-style: preserve-3d;
+                            z-index: 10;
+                        }
+                        .backgroundone {
+                            position: absolute;
+                            display: flex;
+                            width: calc(100% - 1rem);
+                            height: calc(100% - 1rem);
+                            border-radius: 1rem;
+                            inset: 0;
+                            margin: auto;
+                            z-index: 1;
+                        }
+                        .flashFront .backgroundone {
+                            background-color: $col-red;
+                        }
+                        .flashBack .backgroundone {
+                            background-color: $col-blue;
+                        }
+                        // .backgroundHatch {
+                        //     position: absolute;
+                        //     display: flex;
+                        //     width: calc(100% - 1rem);
+                        //     height: calc(100% - 1rem);
+                        //     border-radius: 1rem;
+                        //     background-image: url("../../../../public/diagonalHatch.png");
+                        //     mix-blend-mode: multiply;
+                        //     opacity: 0.3;
+                        //     background-size: 6rem;
+                        //     background-repeat: repeat;
+                        //     inset: 0;
+                        //     margin: auto;
+                        //     z-index: 2;
+                        // }
+                        .backgroundtwo {
+                            position: absolute;
+                            display: flex;
+                            width: calc(100% - 2rem);
+                            height: calc(100% - 4rem);
+                            margin-top: 1rem;
+                            border-radius: 1rem;
+                            background-color: $col-white;
+                            bottom: 1rem;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            border-top-left-radius: 0.25rem;
+                            border-top-right-radius: 0.25rem;
+                            margin: auto;
+                            z-index: 3;
+                        }
+                        .cardFaceLabel {
+                            position: absolute;
+                            top: 0.25rem;
+                            left: 1rem;
+                            color: $col-white;
+                            z-index: 10;
+                            font-weight: 600;
+                            font-size: 2rem;
                         }
                         .flashFront {
                             position: absolute;
-                            background-color: $col-red;
-                            border: 2px solid $col-red;
+                            background-color: $col-white;
                         }
                         .flashBack {
                             position: absolute;
-                            background-color: $col-blue;
-                            border: 2px solid $col-blue;
+                            background-color: $col-white;
                             transform: rotateY(180deg);
                             backface-visibility: hidden;
                         }
@@ -87,10 +182,51 @@
                             width: fit-content;
                             font-size: 2rem;
                             font-weight: 500;
+                            padding: 0 2rem;
+                            z-index: 10;
+                        }
+                        .cardContent {
+                            z-index: 10;
+                            position: relative;
                         }
                     }
                 }
             }
+        }
+    }
+    .cardCaption {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 1rem;
+        p:first-child {
+            font-weight: 700;
+        }
+        p:last-child {
+            font-size: 0.8rem;
+            line-height: 0.8rem;
+        }
+    }
+    .setLabelContainer {
+        margin-top: 0.5rem;
+        display: flex;
+        gap: 0.25rem;
+        & > div {
+            @include labelItem;
+            background-color: $col-white;
+            box-shadow: $box-shadow-sm;
+            // border: 0.5px solid $col-grey;
+            cursor: unset;
+        }
+    }
+    .interationButtonsContainer {
+        position: fixed;
+        bottom: 0;
+        z-index: 20;
+        width: 100vw;
+        & > div {
+            width: 100%;
+            position: relative;
         }
     }
 }

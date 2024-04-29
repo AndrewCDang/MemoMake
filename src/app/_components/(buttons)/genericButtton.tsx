@@ -7,10 +7,10 @@ function GenericButton({
     type,
     children,
 }: {
-    type: ButtonType;
+    type?: ButtonType;
     children: ReactNode;
 }) {
-    if (type === "hyperlink") {
+    if (type && type === "hyperlink") {
         return <button className={style.hyperlinkButton}>{children}</button>;
     }
     return <button className={style.genericButton}>{children}</button>;

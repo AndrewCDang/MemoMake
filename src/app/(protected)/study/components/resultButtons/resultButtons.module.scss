@@ -1,0 +1,79 @@
+@import "../../../../styles/colours.scss";
+
+.resultButtonsContainer {
+    display: flex;
+    // width: clamp(360px, calc(300px + 35vw), 880px);
+    width: fit-content;
+    margin: 0 auto;
+    gap: 0.25rem;
+    justify-content: space-between;
+    // border: 1px solid $col-grey;
+    box-shadow: $box-shadow-sm;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    padding-left: 2rem;
+    align-items: center;
+    position: relative;
+    margin-bottom: 3rem;
+    background-color: $col-white;
+}
+
+.resultGraphContainer {
+    position: absolute;
+    left: 1.75rem;
+    top: 50%;
+    transform: translateY(-50%) translateX(-100%);
+    height: fit-content;
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: 0.25rem;
+    height: 4rem;
+}
+
+.resultButton {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    height: 100%;
+    align-items: center;
+    border: 0.5px solid $col-grey;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    svg {
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        border-color: $col-black;
+        background-color: rgba($col-grey, 0.1);
+    }
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 0.25rem;
+    height: 100%;
+    align-items: center;
+    // border: 1px solid $col-black;
+    // padding: 0.25rem;
+    border-radius: 0.5rem;
+    .incorrectLabel {
+        color: $col-red;
+        font-size: 0.8rem;
+        margin: 0 auto;
+        width: fit-content;
+        display: flex;
+    }
+}
+
+.resultButtonBlack {
+    background-color: $col-black;
+    color: $col-white;
+    &:hover {
+        background-color: rgba($col-black, 0.8);
+    }
+}

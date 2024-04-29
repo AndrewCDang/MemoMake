@@ -1,22 +1,21 @@
 "use client";
-import React, { MouseEventHandler, RefObject, useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import useRevisionFlashItems from "@/app/_hooks/useRevisionFlashItems";
 import InteractButtons from "./components/interactButtons/interactButtons";
 import style from "./study.module.scss";
 import { useState } from "react";
-import { motion, useAnimation } from "framer-motion";
-import { Flashcard_item } from "@/app/_types/types";
-import {
-    useMotionValue,
-    useTransform,
-    useSpring,
-    useMotionTemplate,
-} from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useMotionValue } from "framer-motion";
 import FlashResults from "./flashResults/flashResults";
 import ResultButtons from "./components/resultButtons/resultButtons";
+import InteractiveCard from "./interactiveCard";
+import { shuffleArray } from "@/app/_functions/shuffleArray";
+
+const diffOptions = ["NA", "EASY", "MEDIUM", "HARD"];
 
 type FlashCardItemsTest<T> = T & {
     correct: boolean | null;
+    copy: boolean;
 };
 
 type TempType = {
@@ -30,17 +29,8 @@ type TempType = {
 export type CombinedType = FlashCardItemsTest<TempType>;
 
 function page() {
-    const {
-        questions,
-        setQuestions,
-        incorrectQuestions,
-        setIncorrectQuestions,
-    } = useRevisionFlashItems();
+    const { questions } = useRevisionFlashItems();
 
-    const controls = useAnimation();
-    const controlsSecondary = useAnimation();
-
-    const diffOptions = ["NA", "EASY", "MEDIUM", "HARD"];
     const tags = [
         "maths",
         "english",
@@ -155,66 +145,27 @@ function page() {
               ];
 
     const initialTestCards = testCards.map((item) => {
-        return { ...item, correct: null };
+        return { ...item, correct: null, copy: false };
     }) as CombinedType[];
 
+    // States for flashcard position and content
+    const [testIncorrect, setTestIncorrect] = useState<boolean>(false);
+    const [incorrectQuestions, setIncorrectQuestions] =
+        useState<CombinedType[]>();
+
     const [currentCard, setCurrentCard] = useState<number>(0);
-    const [questionCorrect, setQuestionCorrect] = useState<number>(1);
     const [flashCardItemsTest, setFlashCardItemsTest] = useState<
         CombinedType[]
     >([...initialTestCards]);
+
+    useEffect(() => {
+        setFlashCardItemsTest(shuffleArray<CombinedType>(initialTestCards));
+    }, []);
+
+    // States for FlashCard transformations
     const [isFlipped, setIsFlipped] = useState<boolean>(false);
-
-    //Rotating Cards relative to mouse
-
-    const cardRef = useRef<Array<RefObject<HTMLDivElement>>>([]);
-
+    const [topLighting, setTopLighting] = useState<boolean>(false);
     const xSet = useMotionValue(0);
-    const ySet = useMotionValue(isFlipped ? 180 : 0);
-    const xSpring = useSpring(xSet, { damping: 20, stiffness: 100 });
-    const ySpring = useSpring(ySet);
-
-    const transform = useMotionTemplate`rotateY(${xSpring}deg) rotateX(${ySpring}deg)`;
-
-    const ROTATE_VALUE = 25;
-    const [isAnimating, setIsAnimating] = useState<boolean>(false);
-    const [isSelectable, setIsSelectable] = useState<boolean>(true);
-
-    const cardMoveHandler = (
-        e: React.MouseEvent<HTMLDivElement>,
-        index: number
-    ) => {
-        if (!cardRef.current[index].current) return;
-        if (isAnimating) return;
-
-        const xFlip = isFlipped ? 180 : 0;
-        const xCard = e.currentTarget.getBoundingClientRect().left;
-        const yCard = e.currentTarget.getBoundingClientRect().top;
-        const xClient = e.clientX;
-        const yClient = e.clientY;
-        const xWidth =
-            cardRef.current[index].current.getBoundingClientRect().width;
-        const yHeight = cardRef.current[index].current.offsetHeight;
-
-        const xCenter = xWidth / 2;
-        const yCenter = yHeight / 2;
-
-        const xPos = (xClient - xCard - xCenter) * (ROTATE_VALUE / xCenter);
-        const yPos =
-            (yClient - yCard - yCenter) *
-            (ROTATE_VALUE / yCenter) *
-            (isFlipped ? 1 : -1);
-
-        xSet.set(xFlip + xPos);
-        ySet.set(yPos);
-    };
-
-    const cardLeaveHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-        const xFlip = isFlipped ? 180 : 0;
-
-        xSet.set(xFlip);
-        ySet.set(0);
-    };
 
     const flipCard = () => {
         setIsFlipped((prevState) => {
@@ -227,26 +178,26 @@ function page() {
         });
     };
 
-    // swipe feature to designate card as correct/inccorect
-    const isDragging = useRef<boolean>(false);
-    const initialX = useRef<number>(0);
-
-    const xDrag = useSpring(useMotionValue(0));
-    const [currentDraged, setCurrentDragged] = useState<string | null>(null);
-    const [topLighting, setTopLighting] = useState<boolean>(false);
-
     const answerHandler = ({ correct }: { correct: boolean }) => {
-        console.log(correct);
-        setQuestionCorrect(correct ? 1 : -1);
-
-        setFlashCardItemsTest((prevState) => {
-            return prevState.map((item, index) => {
-                if (index === currentCard) {
-                    return { ...item, correct: correct };
-                }
-                return item;
+        if (testIncorrect && incorrectQuestions !== undefined) {
+            setIncorrectQuestions((prevState) => {
+                return (prevState as CombinedType[]).map((item, index) => {
+                    if (index === currentCard) {
+                        return { ...item, correct: correct };
+                    }
+                    return item;
+                });
             });
-        });
+        } else if (!testIncorrect) {
+            setFlashCardItemsTest((prevState) => {
+                return prevState.map((item, index) => {
+                    if (index === currentCard) {
+                        return { ...item, correct: correct };
+                    }
+                    return item;
+                });
+            });
+        }
 
         setTimeout(() => {
             if (isFlipped) {
@@ -263,197 +214,113 @@ function page() {
         }, 0);
     };
 
-    const holdFlashCard = (e: React.MouseEvent, id: string) => {
-        isDragging.current = true;
-        initialX.current = e.clientX;
-        console.log(e.clientX);
-        console.log(id);
+    // Prepared Questions
 
-        setCurrentDragged(id);
-    };
-
-    const draggingFlashCard = (e: React.MouseEvent) => {
-        if (isDragging.current && initialX.current) {
-            const transformValue = e.clientX - initialX.current;
-            xDrag.set(transformValue);
-        }
-    };
-
-    const releaseFlashCard = (e: React.MouseEvent) => {
-        if (isDragging.current === false) return;
-
-        isDragging.current = false;
-        const xDiff = e.clientX - initialX.current;
-        const screenWidth = document.documentElement.clientWidth;
-        const movedPercentage = xDiff / screenWidth;
-        xSet.set(0);
-        ySet.set(0);
-
-        if (movedPercentage > 0.2) {
-            setIsAnimating(true);
-            setIsSelectable(false);
-            answerHandler({ correct: true });
-        } else if (movedPercentage < -0.2) {
-            setIsAnimating(true);
-            setIsSelectable(false);
-            answerHandler({ correct: false });
-        } else if (movedPercentage < 0.05 && movedPercentage > -0.05) {
-            flipCard();
-        }
-
-        controls
-            .start({
-                x: 0,
-                y: 0,
-                rotateX: 0,
-                rotateY: 0,
-                transition: { type: "spring", stiffness: 500, damping: 30 },
-            })
-            .then(() => {
-                setCurrentDragged(null);
-            });
-    };
+    const chosenQuestions =
+        testIncorrect && incorrectQuestions
+            ? incorrectQuestions
+            : flashCardItemsTest;
 
     useEffect(() => {
-        setTimeout(() => {
-            setIsAnimating(false);
-        }, 200);
-        setTimeout(() => {
-            setIsSelectable(true);
-        }, 800);
-
-        if (currentCard < flashCardItemsTest.length) {
-            console.log(initialTestCards);
-        }
-    }, [currentCard]);
+        console.log(chosenQuestions);
+    }, [chosenQuestions]);
 
     return (
         <section className={style.studyContainer}>
-            {currentCard < flashCardItemsTest.length ? (
-                <div className={style.flashCardContainer}>
-                    {flashCardItemsTest.map((item, index) => {
-                        return (
-                            // Controls drag move in x direction / swiping card left and right
-                            <motion.div
-                                onMouseDown={(e) => holdFlashCard(e, item.id)}
-                                onMouseUp={releaseFlashCard}
-                                onMouseMove={(e) => (
-                                    cardMoveHandler(e, index),
-                                    draggingFlashCard(e)
-                                )}
-                                onMouseLeave={(e) => (
-                                    cardLeaveHandler(e), releaseFlashCard(e)
-                                )}
-                                style={{
-                                    x: currentDraged === item.id ? xDrag : 0,
-                                    zIndex:
-                                        currentCard === index
-                                            ? 10000 - index
-                                            : index,
-                                    padding:
-                                        currentDraged === item.id ? "30rem" : 0,
-                                    pointerEvents: isSelectable
-                                        ? "auto"
-                                        : "none",
-                                }}
-                                animate={controls}
-                                className={style.flashCardItemDrag}
-                            >
-                                {/* Controls order of card being displayed into viewport based on current card state */}
-                                <motion.div
-                                    className={style.flashCardListItem}
-                                    initial={{ y: "-100vh", x: "0" }}
-                                    animate={{
-                                        y:
-                                            isAnimating === false &&
-                                            currentCard >= index
-                                                ? "0"
-                                                : "-100vh",
-                                        x:
-                                            currentCard > index
-                                                ? `${
-                                                      (item.correct ? 1 : -1) *
-                                                      100
-                                                  }vw`
-                                                : "0",
-                                        rotate:
-                                            currentCard > index
-                                                ? (isFlipped ? -1 : 1) * 180
-                                                : 0,
-                                    }}
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 120,
-                                        damping: 15,
-                                    }}
-                                >
-                                    {/* Controls card rotation about mouse cursor */}
-                                    <motion.div
-                                        ref={(el) =>
-                                            (cardRef.current[index] = {
-                                                current: el,
-                                            })
-                                        }
-                                        style={{
-                                            transform:
-                                                currentCard === index
-                                                    ? transform
-                                                    : "none",
-                                        }}
-                                        className={style.flashCardWrapper}
-                                        key={item.id}
-                                    >
-                                        <div className={style.flashCard}>
-                                            <div className={style.flashFront}>
-                                                <div
-                                                    className={
-                                                        style.flashCardQuestion
-                                                    }
-                                                >
-                                                    "{item.item_question}"
-                                                </div>
-                                            </div>
-                                            <div className={style.flashBack}>
-                                                <div
-                                                    className={
-                                                        style.flashCardQuestion
-                                                    }
-                                                >
-                                                    "{item.item_answer}"
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                </motion.div>
-                            </motion.div>
-                        );
-                    })}
+            <section className={style.studyTitle}>
+                {currentCard < chosenQuestions.length ? (
+                    <h6>Study Cards</h6>
+                ) : (
+                    <h6>Study Results</h6>
+                )}
+                <div className={style.setLabelContainer}>
+                    <div>set1</div>
+                    <div>set2</div>
+                    <div>set3</div>
                 </div>
-            ) : (
-                // Displays Results when all questions have been answered
-                <FlashResults flashCardItemsTest={flashCardItemsTest} />
-            )}
-            {/* Lighting Effect when new card added */}
-            <motion.div
-                animate={{
-                    opacity: topLighting ? 0.5 : 0,
-                    top: topLighting ? "5%" : "-5%",
-                }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-                className={style.newCardLight}
-                onAnimationComplete={() => setTopLighting(false)}
-            ></motion.div>
-
+            </section>
+            <AnimatePresence>
+                {currentCard < chosenQuestions.length ? (
+                    <InteractiveCard
+                        flashCardItemsTest={chosenQuestions}
+                        currentCard={currentCard}
+                        xSet={xSet}
+                        isFlipped={isFlipped}
+                        answerHandler={answerHandler}
+                        flipCard={flipCard}
+                        topLighting={topLighting}
+                        setTopLighting={setTopLighting}
+                    />
+                ) : (
+                    // Displays Results when all questions have been answered
+                    <FlashResults
+                        flashCardItemsTest={chosenQuestions}
+                        testIncorrect={testIncorrect}
+                        setTestIncorrect={setTestIncorrect}
+                        setIncorrectQuestions={setIncorrectQuestions}
+                    />
+                )}
+            </AnimatePresence>
             {/* Interactive Buttons at bottom */}
-            {currentCard < flashCardItemsTest.length ? (
-                <InteractButtons
-                    setIsFlipped={setIsFlipped}
-                    flipCard={flipCard}
-                    answerHandler={answerHandler}
-                />
-            ) : (
-                <ResultButtons />
-            )}
+            <section className={style.interationButtonsContainer}>
+                <div>
+                    <AnimatePresence>
+                        {currentCard < chosenQuestions.length ? (
+                            <motion.div
+                                layout="position"
+                                key="test"
+                                initial={{ opacity: 0, y: 200 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 200 }}
+                                transition={{
+                                    type: "spring",
+                                    damping: 15,
+                                }}
+                            >
+                                {/* Card Label - Stating current card out of all cards in test */}
+                                {currentCard < chosenQuestions.length && (
+                                    <motion.section
+                                        className={style.cardCaption}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                    >
+                                        <p>Card {currentCard + 1}</p>
+                                        <p>out of {chosenQuestions.length}</p>
+                                    </motion.section>
+                                )}
+                                <InteractButtons
+                                    setIsFlipped={setIsFlipped}
+                                    flipCard={flipCard}
+                                    answerHandler={answerHandler}
+                                />
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                layout="position"
+                                key="result"
+                                initial={{ opacity: 0, y: 200 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 200 }}
+                                transition={{
+                                    type: "spring",
+                                    damping: 15,
+                                }}
+                            >
+                                <ResultButtons
+                                    flashCardItems={chosenQuestions}
+                                    setCurrentCard={setCurrentCard}
+                                    testIncorrect={testIncorrect}
+                                    setTestIncorrect={setTestIncorrect}
+                                    setIncorrectQuestions={
+                                        setIncorrectQuestions
+                                    }
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </section>
         </section>
     );
 }

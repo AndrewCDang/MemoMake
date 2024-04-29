@@ -1,11 +1,17 @@
 @import "../../../styles/colours.scss";
 @import "../../../styles/_mixins.scss";
 
+@include customScrollbar(".resultsContainer");
 .resultsContainer {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     padding: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    overflow-y: auto;
+    flex: 1;
+
     .resultContainer {
         max-width: 560px;
         position: relative;
@@ -37,26 +43,62 @@
             display: flex;
             flex-direction: column;
             padding: 1rem 1rem;
-            border: 0.5px solid $col-grey;
+            background-color: $col-white;
+            box-shadow: $box-shadow-sm;
+            // border: 1.5px solid $col-grey;
             border-radius: 0.25rem;
             overflow: hidden;
             position: relative;
             margin-left: 2.5rem;
-
             cursor: pointer;
 
             .resultsCompact {
                 display: flex;
+                // grid-template-columns: 6rem 1fr;
                 gap: 1rem;
                 align-items: center;
                 & > div {
+                    grid-row: 1;
                     display: flex;
                     width: 100%;
                     flex-wrap: wrap;
                     gap: 0.5rem;
+                    grid-column: span 7;
+                    align-items: center;
+                    .arrow svg {
+                        stroke-width: 2;
+                        color: $col-black;
+                    }
+
                     section {
                         flex: 1;
-                        min-width: 172px;
+                        min-width: 160px;
+                    }
+                }
+                .resultInfo {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 0.5rem;
+                    grid-row: 1;
+                    grid-column: span 1;
+                    svg {
+                        stroke-width: 1.5;
+                        width: 1.5rem;
+                        height: 1.5rem;
+                    }
+                    .correctSVG svg {
+                        stroke: $col-green;
+                    }
+                    .incorrectSVG svg {
+                        stroke: $col-red;
+                    }
+                    & > aside {
+                        flex: 1;
+                        display: flex;
+                        justify-content: center;
+                        & > div {
+                            width: fit-content;
+                        }
                     }
                 }
 
@@ -72,7 +114,7 @@
                     .resultQuestion,
                     .resultAnswer {
                         width: 100%;
-                        border: 0.5px solid $col-grey;
+                        border: 1.5px solid $col-grey;
                         padding: 0.5rem;
                         border-radius: 0.25rem;
                         text-overflow: ellipsis;
@@ -91,7 +133,7 @@
                 font-size: 0.75rem;
             }
             .toggledContainer {
-                border-top: 0.5px solid $col-grey;
+                border-top: 1.5px solid $col-grey;
                 padding-top: 1rem;
                 margin-top: 1rem;
                 display: flex;
