@@ -23,8 +23,13 @@ function LabelInput({
     const categoryRef = useRef<HTMLInputElement>(null);
 
     const appendCategory = () => {
-        if (categoryRef.current) {
-            const categoryValue = categoryRef.current.value.trim();
+        if (
+            categoryRef.current &&
+            categoryRef.current.value.trim().length > 1
+        ) {
+            const categoryValue =
+                categoryRef.current.value.trim()[0].toUpperCase() +
+                categoryRef.current.value.trim().slice(1);
             const included = categories.includes(categoryValue);
             if (!included) {
                 setCategories([...categories, categoryValue]);

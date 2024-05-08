@@ -33,10 +33,25 @@ export const signUp = async (values: z.infer<typeof AuthSignUp>) => {
         return { message: "User Name already in use", validated: false };
     }
 
-    await db`
-        INSERT INTO users (user_name, email, password)
-        VALUES (${userName}, ${email}, ${hashedPassword})
-    `;
+    try {
+        const insertUser = await db`
+            INSERT INTO users (user_name, email, password)
+            VALUES (${userName}, ${email}, ${hashedPassword})
+            RETURNING id
+        `;
+
+        if (!insertUser[0].id)
+            return { validated: false, message: "Failed to insert account" };
+
+        const userId = insertUser[0].id;
+
+        await db`
+            INSERT INTO account (user_id)
+            VALUES (${userId})
+        `;
+    } catch (error) {
+        return { validated: false, message: error };
+    }
 
     const verification = await generateVerificationToken(email);
     if (verification) {

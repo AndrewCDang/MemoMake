@@ -5,6 +5,9 @@ import CreateCard from "./createCard";
 import ReviseCard from "./reviseCard";
 import { HiMiniStop } from "react-icons/hi2";
 import LinkText from "@/app/_components/linkText/linkText";
+import SliderToggle from "@/app/_components/sliderToggle/sliderToggle";
+import { toggleSetPublicAccess } from "@/app/_actions/toggleSetPublicAccess";
+import PublicAccessBtn from "./(components)/publicAccessBtn";
 
 async function page({ searchParams }: any) {
     console.log(searchParams);
@@ -26,6 +29,8 @@ async function page({ searchParams }: any) {
 
     return (
         <section className={style.setContainer}>
+            {existingSet && <PublicAccessBtn flashcard_set={existingSet} />}
+
             <h3>{existingSet.set_name}</h3>
             {existingCards.length > 0 ? (
                 <div className={style.cardsContainer}>

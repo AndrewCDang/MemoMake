@@ -9,6 +9,9 @@ import { auth } from "@/auth";
 import { fetchTagsInCollection } from "@/app/_actions/fetchTagsInCollection";
 import { FetchCollectionSetCount } from "@/app/_actions/fetchCollectionSetCount";
 import { fetchItemsFromSets } from "@/app/_actions/fetchItemsFromSets";
+import SliderToggle from "@/app/_components/sliderToggle/sliderToggle";
+import { toggleSetPublicAccess } from "@/app/_actions/toggleSetPublicAccess";
+import PublicAccessBtn from "../(components)/publicAccessBtn";
 
 async function page({ searchParams }: { searchParams: { id: string } }) {
     const setId = searchParams.id;
@@ -42,6 +45,7 @@ async function page({ searchParams }: { searchParams: { id: string } }) {
 
     return (
         <section>
+            {initialSet && <PublicAccessBtn flashcard_set={initialSet} />}
             <div className={style.overflowWrapper}>
                 {cardCollection && (
                     <CardsTable

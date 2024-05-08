@@ -1,0 +1,51 @@
+@import "../../../../styles/colours.scss";
+@import "../../../../styles/mixins";
+
+.collectionContainer {
+    position: relative;
+
+    .setCollection {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
+        gap: 2rem;
+        .setCard {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.5rem;
+            background-color: rgba($col-grey, 0.3);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            height: fit-content;
+
+            .setTitle {
+                font-weight: 600;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+            .setPacks {
+                display: flex;
+                flex-direction: column;
+                .setName {
+                    background-color: $col-yellow;
+                    border-radius: 0.25rem;
+                    width: 105%;
+                    transform: translateX(-10%);
+                    padding: 0.5rem;
+                    text-wrap: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    transition: margin-bottom 0.2s ease-in-out;
+                }
+                .setName:not(:last-child) {
+                    margin-bottom: 0.5rem;
+                }
+            }
+            .btnContainer {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+        }
+    }
+}

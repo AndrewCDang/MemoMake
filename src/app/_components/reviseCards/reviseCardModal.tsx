@@ -371,6 +371,7 @@ function ReviseCardModal({
                     setChecked={setAllTags}
                     checked={allTags}
                     handler={sliderTagsHandler}
+                    variant="coloured"
                 />
                 <ExpandHeightToggler isOn={!allTags}>
                     <section className={style.tagLabelsContainer}>
@@ -455,6 +456,7 @@ function ReviseCardModal({
                     setChecked={setReviseAll}
                     checked={reviseAll}
                     handler={sliderDifficultyHandler}
+                    variant="coloured"
                 />
                 <ExpandHeightToggler isOn={!allDiff}>
                     <section className={style.tagLabelsContainer}>

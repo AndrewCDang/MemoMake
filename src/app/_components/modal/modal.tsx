@@ -6,11 +6,18 @@ import { motion, AnimatePresence } from "framer-motion";
 type ModalTypes = {
     children: ReactNode;
     modalOn: boolean;
-    setModal: Dispatch<SetStateAction<boolean>>;
+    setModal?: Dispatch<SetStateAction<boolean>>;
+    closeHandler?: () => void;
     modalTitle: string;
 };
 
-function Modal({ children, modalOn, setModal, modalTitle }: ModalTypes) {
+function Modal({
+    children,
+    modalOn,
+    setModal,
+    closeHandler,
+    modalTitle,
+}: ModalTypes) {
     const containerRef = useRef<HTMLElement>(null);
     const modalRef = useRef<HTMLElement>(null);
 
@@ -18,7 +25,7 @@ function Modal({ children, modalOn, setModal, modalTitle }: ModalTypes) {
     const containerHandler = (e: MouseEvent) => {
         if (modalRef.current) {
             if (!modalRef.current.contains(e.target as Node)) {
-                setModal(false);
+                closeHandler ? closeHandler() : setModal && setModal(false);
             }
         }
     };
@@ -60,7 +67,13 @@ function Modal({ children, modalOn, setModal, modalTitle }: ModalTypes) {
                         ref={modalRef}
                         className={style.cardModal}
                     >
-                        <CornerClose handler={() => setModal(false)} />
+                        <CornerClose
+                            handler={() =>
+                                closeHandler
+                                    ? closeHandler()
+                                    : setModal && setModal(false)
+                            }
+                        />
                         <h3>{modalTitle}</h3>
                         <div className={style.overflowY}>{children}</div>
                     </motion.section>

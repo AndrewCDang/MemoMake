@@ -1,0 +1,11 @@
+@import "../../../../styles/colours.scss";
+
+.publicAccessContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    span {
+        color: $col-grey;
+    }
+}

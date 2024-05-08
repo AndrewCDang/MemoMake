@@ -1,5 +1,10 @@
 @import "../../styles/colours.scss";
 
+.sectionTitle {
+    display: flex;
+    justify-content: space-between;
+}
+
 .setGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -13,7 +18,7 @@
     // width: clamp(300px, calc(240px + 2vw), 400px);
     padding: 1rem;
     border-radius: 0.5rem;
-    box-shadow: $box-shadow-default;
+    // box-shadow: $box-shadow-default;
     border: 0.5px solid $col-grey;
     cursor: pointer;
     label {

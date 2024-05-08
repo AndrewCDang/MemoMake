@@ -31,18 +31,25 @@ export type User = {
 
 export type Account = {
     id: string;
-    userId: string;
-    type: string;
-    provider: string;
-    providerAccountId: string;
-    refresh_token?: string;
-    access_token?: string;
-    expires_at?: DateTime;
-    token_type?: string;
-    scope?: string;
-    id_token?: string;
-    session_state?: string;
+    user_id: string;
+    favourites: string[];
+    history: string[];
 };
+
+// export type Account = {
+//     id: string;
+//     userId: string;
+//     type: string;
+//     provider: string;
+//     providerAccountId: string;
+//     refresh_token?: string;
+//     access_token?: string;
+//     expires_at?: DateTime;
+//     token_type?: string;
+//     scope?: string;
+//     id_token?: string;
+//     session_state?: string;
+// };
 
 export type VerificationToken = {
     id: string;
@@ -66,6 +73,17 @@ export type Flashcard_set = {
     description: string;
     image: string;
     last_modified: Date;
+    public_access: boolean;
+    copied_reference: string;
+    original_id: string;
+};
+
+export type Flashcard_collection = {
+    id: string;
+    ids: string[];
+    user_id: string;
+    collection_name: string;
+    original_id: string;
 };
 
 export type Flashcard_set_with_count = Flashcard_set & {

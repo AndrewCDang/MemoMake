@@ -1,0 +1,16 @@
+@import "../../styles/colours.scss";
+
+.favouriteIcon {
+    svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        stroke-width: 2;
+        stroke: $col-black;
+    }
+}
+.favourited svg {
+    fill: $col-black;
+}
+.notFavourited svg {
+    fill: none;
+}

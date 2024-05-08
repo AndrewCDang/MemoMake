@@ -1,13 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import Button from "@/app/_components/(buttons)/styledButton";
-import React, {
-    ChangeEvent,
-    Dispatch,
-    FormEvent,
-    SetStateAction,
-    useEffect,
-} from "react";
+import React, { Dispatch, FormEvent, SetStateAction } from "react";
 import InputField from "@/app/_components/input/inputField";
 import { useState, useRef } from "react";
 import type { CreateSetType } from "@/schema/setSchema";
@@ -34,8 +28,6 @@ function CreateSetModal({ setModal }: CreateSetTypes) {
         handleSubmit,
         reset,
         formState: { errors },
-        setError,
-        getValues,
         setValue,
     } = useForm<CreateSetType>({
         resolver: zodResolver(CreateSetSchema),

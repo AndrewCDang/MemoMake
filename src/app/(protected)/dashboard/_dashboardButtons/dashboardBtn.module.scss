@@ -1,0 +1,12 @@
+.sectionBtnGroup {
+    display: flex;
+    gap: 0.5rem;
+    .sectionBtn {
+        display: flex;
+        align-items: center;
+        svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    }
+}

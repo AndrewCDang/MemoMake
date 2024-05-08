@@ -25,7 +25,7 @@
         top: 0;
         height: 100%;
         aspect-ratio: 1;
-        background-color: $col-grey;
+        background-color: $col-white;
         border-radius: 100%;
         box-shadow: $box-shadow-default;
         transform: translateX(-50%);
@@ -37,4 +37,7 @@
     .sliderInput:checked + .sliderBall {
         left: 75%;
     }
+}
+.colouredVariant {
+    background-color: rgba($col-green, 1);
 }

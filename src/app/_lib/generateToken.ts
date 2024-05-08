@@ -20,7 +20,7 @@ const generateVerificationToken = async (email: string) => {
     }
 
     try {
-        const expires = new Date(new Date().getTime() + 3600 * 1000);
+        const expires = new Date(new Date().getTime() + 3800 * 1000);
         await db`
             INSERT INTO verification_token (email, token, expires)
             VALUES(${email},${verificationToken},${expires})

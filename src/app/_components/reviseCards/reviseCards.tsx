@@ -37,7 +37,6 @@ function ReviseCards({
     return (
         <div>
             <Button handler={modalHandler} text="Revise Set" />
-
             <Modal
                 modalOn={modalOn}
                 setModal={setModalOn}
