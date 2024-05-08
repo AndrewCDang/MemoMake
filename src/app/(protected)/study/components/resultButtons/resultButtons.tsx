@@ -5,6 +5,7 @@ import { HiMiniArrowLeftOnRectangle } from "react-icons/hi2";
 import { HiOutlineXCircle } from "react-icons/hi2";
 import { HiOutlineArrowPath } from "react-icons/hi2";
 import { CombinedType } from "../../page";
+import Link from "next/link";
 
 function ResultButtons({
     flashCardItems,
@@ -71,12 +72,14 @@ function ResultButtons({
                 <ResultsGraph progress={percentCorrect} />
             </div>
             <section className={style.buttonsContainer}>
-                <ResultButton variant="Black">
+                <Link href={"/dashboard"}>
+                <ResultButton variant="Black" >
                     <>
-                        <div>Change Set</div>
+                        <div>Dashboard</div>
                         <HiMiniArrowLeftOnRectangle />
                     </>
                 </ResultButton>
+                </Link>
                 <div className={style.buttonContainer}>
                     {flashCardItems.length - correctItems.length > 0 && (
                         <ResultButton
