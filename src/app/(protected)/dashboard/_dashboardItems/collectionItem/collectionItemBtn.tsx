@@ -5,15 +5,21 @@ import React from "react";
 import { HiArrowSmallRight, HiMiniMagnifyingGlass } from "react-icons/hi2";
 import style from "./collectionItem.module.scss";
 import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
 
 function CollectionItemBtn({
     collectionItem,
 }: {
     collectionItem: Flashcard_collection_set_joined;
 }) {
-    const handler = () => {
-        console.log(collectionItem.set_items);
-        console.log("test...");
+    const handler = async () => {
+        const setIds = collectionItem.set_items.map((item) => {
+            return item.id;
+        });
+        const promise = await fetchSetsWithItems({
+            setIds: setIds,
+        });
+        console.log(promise);
     };
     return (
         <div className={style.btnContainer}>
