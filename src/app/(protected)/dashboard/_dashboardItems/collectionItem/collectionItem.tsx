@@ -49,11 +49,17 @@ function CollectionItem({ collectionWithSets }: CollectionItemTypes) {
                                                     </div>
                                                 );
                                             })}
-                                        <div className={style.setName}>
+                                        <div className={`${style.setName} ${style.moreSetsContainer}`}>
+                                            <div>
                                             +
                                             {collectionItem.set_items.length -
                                                 2}{" "}
                                             more sets
+
+                                            </div>
+                                            <div className={style.moreSetsEffect}></div>
+                                            <div className={style.moreSetsEffect}></div>
+
                                         </div>
                                     </>
                                 )}

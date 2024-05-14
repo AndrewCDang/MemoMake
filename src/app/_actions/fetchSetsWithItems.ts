@@ -13,7 +13,12 @@ export const fetchSetsWithItems = async ({
 }): Promise<Flashcard_set_with_items[] | undefined> => {
     try {
         const setWithItems: Promise<Flashcard_set_with_items[]> = db`
-        SELECT fs.*, array_agg(to_json(fi.*)) AS flashcards FROM flashcard_set fs
+        SELECT 
+            fs.*, 
+            COALESCE(
+                NULLIF(array_agg(to_json(fi.*)) FILTER (WHERE fi.set_id IS NOT NULL), ARRAY[]::json[]),
+                '{}'::json[]
+            ) AS flashcards
         LEFT JOIN flashcard_item fi ON fs.id = fi.set_id
         WHERE fs.id = ANY(${setIds})
         GROUP BY fs.id
