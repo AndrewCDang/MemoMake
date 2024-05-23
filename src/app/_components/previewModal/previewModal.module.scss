@@ -6,9 +6,11 @@
         margin-top: 1rem;
         display: flex;
         flex-direction: column;
+        margin-right: 0.5rem;
         .flashSetTitle {
             display: flex;
             justify-content: space-between;
+
             svg {
                 cursor: pointer;
                 width: 1.5rem;
@@ -18,15 +20,23 @@
         .flashCardSetContainer {
             height: fit-content;
             position: relative;
-            background-color: rgba($col-grey, 0.3);
+            background-color: rgba($col-grey, 0.15);
             border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-bottom: 0.5rem;
+
+
             .flashCardItemHeading {
                 padding: 0.25rem 0.5rem;
                 display: flex;
                 width: 100%;
                 font-weight: 600;
                 text-decoration: underline;
+                
                 & > div {
+                    margin: 0 0.5rem;
                     flex: 1;
                 }
             }
@@ -35,6 +45,9 @@
                 display: flex;
                 gap: 0.5rem;
                 padding: 0.25rem 0.5rem;
+                margin: 0 0.5rem;
+                border-radius: 0.5rem;
+                background-color: rgba($col-grey, 0.15);
                 & > div {
                     flex: 1;
                     width: fit-content;

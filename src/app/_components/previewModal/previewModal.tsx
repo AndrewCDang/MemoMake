@@ -82,9 +82,7 @@ const PreviewModal = () => {
                                                         ? 90
                                                         : 0,
                                                 }}
-                                                onTransitionEnd={() =>
-                                                    console.log("yolo")
-                                                }
+                                  
                                             >
                                                 <MdPlayArrow />
                                             </motion.button>
