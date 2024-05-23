@@ -1,0 +1,47 @@
+@import "../../styles/colours.scss";
+@import "../../styles/mixins";
+
+.setItemsContainer {
+    .flashSetContainer {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        .flashSetTitle {
+            display: flex;
+            justify-content: space-between;
+            svg {
+                cursor: pointer;
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+        }
+        .flashCardSetContainer {
+            height: fit-content;
+            position: relative;
+            background-color: rgba($col-grey, 0.3);
+            border-radius: 0.5rem;
+            .flashCardItemHeading {
+                padding: 0.25rem 0.5rem;
+                display: flex;
+                width: 100%;
+                font-weight: 600;
+                text-decoration: underline;
+                & > div {
+                    flex: 1;
+                }
+            }
+
+            .flashCardItem {
+                display: flex;
+                gap: 0.5rem;
+                padding: 0.25rem 0.5rem;
+                & > div {
+                    flex: 1;
+                    width: fit-content;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+}

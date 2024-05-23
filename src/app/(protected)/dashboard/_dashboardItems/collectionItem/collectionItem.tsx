@@ -3,9 +3,6 @@ import style from "./collectionItem.module.scss";
 import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 
 import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
-import { HiMiniMagnifyingGlass } from "react-icons/hi2";
-
-import { HiArrowSmallRight } from "react-icons/hi2";
 import CollectionItemBtn from "./collectionItemBtn";
 
 type CollectionItemTypes = {
@@ -49,17 +46,21 @@ function CollectionItem({ collectionWithSets }: CollectionItemTypes) {
                                                     </div>
                                                 );
                                             })}
-                                        <div className={`${style.setName} ${style.moreSetsContainer}`}>
+                                        <div
+                                            className={`${style.setName} ${style.moreSetsContainer}`}
+                                        >
                                             <div>
-                                            +
-                                            {collectionItem.set_items.length -
-                                                2}{" "}
-                                            more sets
-
+                                                +
+                                                {collectionItem.set_items
+                                                    .length - 2}{" "}
+                                                more sets
                                             </div>
-                                            <div className={style.moreSetsEffect}></div>
-                                            <div className={style.moreSetsEffect}></div>
-
+                                            <div
+                                                className={style.moreSetsEffect}
+                                            ></div>
+                                            <div
+                                                className={style.moreSetsEffect}
+                                            ></div>
                                         </div>
                                     </>
                                 )}
@@ -71,10 +72,6 @@ function CollectionItem({ collectionWithSets }: CollectionItemTypes) {
                     );
                 })}
             </section>
-            <div className={style.btnContainer}>
-                <DefaultButton>"Preview"</DefaultButton>
-                <DefaultButton>"Study"</DefaultButton>
-            </div>
         </section>
     );
 }

@@ -29,5 +29,8 @@
     max-height: 720px;
     padding: 0rem 0.75rem;
 }
+.footer {
+    margin-top: 1.5rem;
+}
 
 @include customScrollbar(".overflowY");

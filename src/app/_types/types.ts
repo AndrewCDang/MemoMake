@@ -90,6 +90,19 @@ export type Flashcard_set_with_count = Flashcard_set & {
     count: number;
 };
 
+export type Flashcard_set_with_cards = Flashcard_set & {
+    flashcards: Flashcard_item[];
+};
+
+export type Flashcard_collection_preview = {
+    id: string;
+    ids: string[];
+    user_id: string;
+    collection_name: string;
+    original_id: string;
+    sets: Flashcard_set_with_cards[];
+};
+
 enum Difficulty {
     NA = "NA",
     EASY = "EASY",

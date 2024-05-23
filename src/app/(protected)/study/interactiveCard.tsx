@@ -224,7 +224,6 @@ function InteractiveCard({
             </AnimatePresence>
             <motion.div
                 className={style.flashCardContainer}
-                key={"CardContainer"}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -319,7 +318,7 @@ function InteractiveCard({
                                                             style.cardContent
                                                         }
                                                     >
-                                                        "{item.item_question}"
+                                                        {item.item_question}
                                                     </div>
                                                     <CardPattern text="Question" />
                                                 </div>
@@ -327,7 +326,7 @@ function InteractiveCard({
                                             <div className={style.flashBack}>
                                                 <div
                                                     className={
-                                                        style.flashCardQuestion
+                                                        style.flashCardAnswer
                                                     }
                                                 >
                                                     <div
@@ -335,7 +334,7 @@ function InteractiveCard({
                                                             style.cardContent
                                                         }
                                                     >
-                                                        "{item.item_answer}"
+                                                        {item.item_answer}
                                                     </div>
                                                     <CardPattern text="Answer" />
                                                 </div>

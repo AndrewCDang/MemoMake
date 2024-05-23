@@ -9,6 +9,7 @@ type ModalTypes = {
     setModal?: Dispatch<SetStateAction<boolean>>;
     closeHandler?: () => void;
     modalTitle: string;
+    footer?: ReactNode;
 };
 
 function Modal({
@@ -17,6 +18,7 @@ function Modal({
     setModal,
     closeHandler,
     modalTitle,
+    footer,
 }: ModalTypes) {
     const containerRef = useRef<HTMLElement>(null);
     const modalRef = useRef<HTMLElement>(null);
@@ -75,7 +77,12 @@ function Modal({
                             }
                         />
                         <h3>{modalTitle}</h3>
-                        <div className={style.overflowY}>{children}</div>
+                        <section className={style.overflowY}>
+                            {children}
+                        </section>
+                        {footer && (
+                            <section className={style.footer}>{footer}</section>
+                        )}
                     </motion.section>
                 </motion.section>
             )}

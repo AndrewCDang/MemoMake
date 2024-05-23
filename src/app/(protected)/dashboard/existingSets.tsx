@@ -14,8 +14,8 @@ import { fetchCollectionById } from "@/app/_actions/fetchCollectionById";
 import CreateCollectionBtn from "./_dashboardButtons/createCollectionBtn";
 import CreateSetBtn from "./_dashboardButtons/createSetBtn";
 import { fetchCollectionByIdJoinSet } from "@/app/_actions/fetchCollectionByIdJoinSet";
-import CollectionTest from "./_dashboardItems/collectionItem/collectionTest";
 import CollectionItem from "./_dashboardItems/collectionItem/collectionItem";
+import PreviewModal from "@/app/_components/previewModal/previewModal";
 
 // Card Component
 const FlashCardItem = ({
@@ -136,6 +136,7 @@ async function ExistingSets({ session }: { session: Session | null }) {
             {collectionWithSets && (
                 <CollectionItem collectionWithSets={collectionWithSets} />
             )}
+            <PreviewModal />
         </section>
     );
 }
