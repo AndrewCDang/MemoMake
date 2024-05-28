@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import SliderToggle from "../sliderToggle/sliderToggle";
 import style from "./reviseCards.module.scss";
 import CornerClose from "../cornerClose/cornerClose";
@@ -20,7 +20,8 @@ import LoadingSpin from "../svgs";
 import TickValidate from "../tickValidate/tickValidate";
 import { useRouter } from "next/navigation";
 import useRevisionFlashItems from "@/app/_hooks/useRevisionFlashItems";
-import { UseReviseModal } from "./useReviseModal";
+import { useReviseModal } from "./useReviseModal";
+import Modal from "../modal/modal";
 
 // steps
 // 1.Display initial collection/set and list its associated flash card items
@@ -43,7 +44,7 @@ function ReviseCollectionModal({
     // collectionSet,
     // tagsCollection,
 }) {
-    const {initialCollectionItems} = UseReviseModal()
+    const {initialCollectionItems, isReviseModalOn, hideReviseModal} = useReviseModal()
 
     const router = useRouter();
     const [parent] = useAutoAnimate();
@@ -52,9 +53,23 @@ function ReviseCollectionModal({
     const [allDiff, setAllDiff] = useState<boolean>(true);
 
     const [searchSetInput, setSearchSetInput] = useState<string>("");
-    const [selectedSets, setSelectedSets] = useState<Flashcard_set[]>(
-        initialSet?.id ? [initialSet] : []
-    );
+    // const [selectedSets, setSelectedSets] = useState<Flashcard_set[]>(
+    //     initialSet?.id ? [initialSet] : []
+    // );
+    useEffect(()=>{
+        if(initialCollectionItems){
+            const array = initialCollectionItems.flatMap((collection)=>
+                collection.sets.flatMap((set)=>set.flashcards)
+            )
+ 
+            console.log(array)
+
+            const tags = Array.from(new Set(array.flatMap(item => item.item_tags).flat()));
+            console.log(tags)
+
+        }
+    },[initialCollectionItems])
+
     const [addSetModal, setAddSetModal] = useState<boolean>(false);
 
     // Available Tags via filtering through selecteditems
@@ -194,103 +209,111 @@ function ReviseCollectionModal({
         });
     };
 
-    // Set Search function
-    const searchSetHandler = async (
-        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        setSearchSetInput(e.target.value);
-    };
+// Set Search function
+    // const searchSetHandler = async (
+    //     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    // ) => {
+    //     setSearchSetInput(e.target.value);
+    // };
 
-    const filteredList =
-        searchSetInput || selectedSets
-            ? collectionSet
-                  .filter((item) =>
-                      item.set_name
-                          .toLowerCase()
-                          .includes(searchSetInput?.toLowerCase() || "")
-                  )
-                  .filter(
-                      (item) => !selectedSets.some((obj) => obj.id === item.id)
-                  )
-            : collectionSet;
+    // const filteredList =
+    //     searchSetInput || selectedSets
+    //         ? collectionSet
+    //               .filter((item) =>
+    //                   item.set_name
+    //                       .toLowerCase()
+    //                       .includes(searchSetInput?.toLowerCase() || "")
+    //               )
+    //               .filter(
+    //                   (item) => !selectedSets.some((obj) => obj.id === item.id)
+    //               )
+    //         : collectionSet;
 
-    const setListHandler = (item: Flashcard_set) => {
-        if (selectedSets.some((selItem) => item.id === selItem.id)) {
-            // Removing selected tags associated with removed set
-            setSelectedTags((prevTags) => {
-                const tagsToRemove = tagsCollection
-                    .filter((tags) => tags.id === item.id)
-                    .map((item) => item.item_tags)[0];
+    // const setListHandler = (item: Flashcard_set) => {
+    //     if (selectedSets.some((selItem) => item.id === selItem.id)) {
+    //         // Removing selected tags associated with removed set
+    //         setSelectedTags((prevTags) => {
+    //             const tagsToRemove = tagsCollection
+    //                 .filter((tags) => tags.id === item.id)
+    //                 .map((item) => item.item_tags)[0];
 
-                const remainingTags = prevTags.filter(
-                    (prevTag) => !tagsToRemove.includes(prevTag)
-                );
+    //             const remainingTags = prevTags.filter(
+    //                 (prevTag) => !tagsToRemove.includes(prevTag)
+    //             );
 
-                return remainingTags;
-            });
+    //             return remainingTags;
+    //         });
 
-            // Removes set
-            setSelectedSets((prevState) => {
-                const remainingSets = prevState.filter((prevItem) =>
-                    selectedSets.some((selItem) => prevItem.id !== item.id)
-                );
-                return remainingSets;
-            });
-        } else {
-            setSelectedSets((prevState) => {
-                return [...prevState, item];
-            });
-        }
-    };
+    //         // Removes set
+    //         setSelectedSets((prevState) => {
+    //             const remainingSets = prevState.filter((prevItem) =>
+    //                 selectedSets.some((selItem) => prevItem.id !== item.id)
+    //             );
+    //             return remainingSets;
+    //         });
+    //     } else {
+    //         setSelectedSets((prevState) => {
+    //             return [...prevState, item];
+    //         });
+    //     }
+    // };
 
-    const keydownHandler = (
-        e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        if (e.key === "Enter") {
-            setSearchSetInput("");
-            if (filteredList.length > 0 && filteredList[0]) {
-                const suggestedFirstItem = filteredList[0];
-                setListHandler(suggestedFirstItem);
-            }
-        }
-    };
+    // const keydownHandler = (
+    //     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+    // ) => {
+    //     if (e.key === "Enter") {
+    //         setSearchSetInput("");
+    //         if (filteredList.length > 0 && filteredList[0]) {
+    //             const suggestedFirstItem = filteredList[0];
+    //             setListHandler(suggestedFirstItem);
+    //         }
+    //     }
+    // };
 
     // Setting Revision items providing validated conditions
-    const { setQuestions, setIncorrectQuestions, incorrectQuestions } =
-        useRevisionFlashItems();
+    // const { setQuestions, setIncorrectQuestions, incorrectQuestions } =
+    //     useRevisionFlashItems();
 
-    const startRevisionHandler = () => {
-        if (filteredFlashItems.length > 0) {
-            setQuestions(filteredFlashItems);
-            if (incorrectQuestions.length > 0) setIncorrectQuestions([]);
-            router.push("/study");
-        }
-    };
+    // const startRevisionHandler = () => {
+    //     if (filteredFlashItems.length > 0) {
+    //         setQuestions(filteredFlashItems);
+    //         if (incorrectQuestions.length > 0) setIncorrectQuestions([]);
+    //         router.push("/study");
+    //     }
+    // };
 
     return (
+        <Modal
+        modalTitle="Collection Preview"
+        modalOn={isReviseModalOn}
+        closeHandler={hideReviseModal}
+        >
+
         <section className={style.cardModal}>
             <div className={style.setCardSection}>
+                <div>Modal Set Test</div>
                 <h5>Select set(s)</h5>
                 <section className={style.stateCheckValidation}>
-                    <div>Selected set{selectedSets.length > 1 ? "s" : ""}</div>
+                    {/* <div>Selected set{selectedSets.length > 1 ? "s" : ""}</div>
                     <TickValidate
                         condition={selectedSets.length > 0 ? true : false}
-                    />
+                    /> */}
                 </section>
                 <div ref={parent} className={style.setCardContainer}>
-                    {selectedSets.map((item) => {
+                    {/* {selectedSets.map((item) => {
                         return (
                             <div key={item.id} className={style.setCard}>
                                 <CornerClose
                                     cornerSpace="tight"
-                                    handler={() => setListHandler(item)}
+                                    handler={()=>console.log('hi')}
+                                    // handler={() => setListHandler(item)}
                                 />
                                 <div className={style.setCardTitle}>
                                     {item.set_name}
                                 </div>
                             </div>
                         );
-                    })}
+                    })} */}
                     {!addSetModal && (
                         <div
                             onClick={() =>
@@ -303,7 +326,10 @@ function ReviseCollectionModal({
                     )}
                 </div>
             </div>
-            <section
+
+            {/* Add Set Modal | Text input | Selectable Set List */}
+
+            {/* <section
                 style={{
                     display: "grid",
                     gridTemplateRows:
@@ -357,7 +383,9 @@ function ReviseCollectionModal({
                         </div>
                     </section>
                 </section>
-            </section>
+            </section> */}
+
+{/*             
             <div>
                 <h5 className={style.headingSpacing}>Tags</h5>
                 {allTags ? (
@@ -573,8 +601,9 @@ function ReviseCollectionModal({
                         ? false
                         : true
                 }
-            />
+            /> */}
         </section>
+        </Modal>
     );
 }
 

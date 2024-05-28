@@ -11,7 +11,7 @@ type DefaultButtonTypes = {
 const DefaultButton = ({ children, variant, handler }: DefaultButtonTypes) => {
     return (
         <button
-            onClick={() => handler && handler}
+            onClick={() => handler && handler()}
             className={`${style.defaultButton} ${
                 variant === "Black" && style.defaultButtonBlack
             }`}

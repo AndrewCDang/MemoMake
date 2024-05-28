@@ -4,11 +4,11 @@ import CornerClose from "../cornerClose/cornerClose";
 import { motion, AnimatePresence } from "framer-motion";
 
 type ModalTypes = {
+    modalTitle: string;
     children: ReactNode;
     modalOn: boolean;
     setModal?: Dispatch<SetStateAction<boolean>>;
     closeHandler?: () => void;
-    modalTitle: string;
     footer?: ReactNode;
 };
 

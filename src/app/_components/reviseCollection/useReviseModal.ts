@@ -11,7 +11,7 @@ type UseReviseModalTypes = {
     setInitalSet: (item:Flashcard_set_with_cards) => void;
 }
 
-export const UseReviseModal = create<UseReviseModalTypes>()((set)=>({
+export const useReviseModal = create<UseReviseModalTypes>()((set)=>({
     initialCollectionItems:null,
     initialSet:null,
     isReviseModalOn:false,

@@ -16,6 +16,7 @@ import CreateSetBtn from "./_dashboardButtons/createSetBtn";
 import { fetchCollectionByIdJoinSet } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import CollectionItem from "./_dashboardItems/collectionItem/collectionItem";
 import PreviewModal from "@/app/_components/previewModal/previewModal";
+import ReviseCollectionModal from "@/app/_components/reviseCollection/reviseCollectionModal";
 
 // Card Component
 const FlashCardItem = ({
@@ -137,6 +138,7 @@ async function ExistingSets({ session }: { session: Session | null }) {
                 <CollectionItem collectionWithSets={collectionWithSets} />
             )}
             <PreviewModal />
+            <ReviseCollectionModal/>
         </section>
     );
 }

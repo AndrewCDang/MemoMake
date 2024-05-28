@@ -8,10 +8,13 @@ import { MdPlayArrow } from "react-icons/md";
 import ExpandHeightToggler from "../expandHeightToggler/expandHeightToggler";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useReviseModal } from "../reviseCollection/useReviseModal";
 
 const PreviewModal = () => {
     const { isUsePreviewModalOn, previewCollectionItems, hideUsePreviewModal } =
         usePreviewModal();
+
+    const { showReviseModal, setInitialCollectionItems } = useReviseModal();
 
     const defaultToggle = previewCollectionItems
         ? previewCollectionItems.sets.reduce((acc, item) => {
@@ -35,9 +38,18 @@ const PreviewModal = () => {
             );
     }, [previewCollectionItems]);
 
+    const btnHandler = () => {
+        showReviseModal()
+        hideUsePreviewModal()
+        if(previewCollectionItems){
+            setInitialCollectionItems(previewCollectionItems)
+        }
+    }
     const Buttons = () => {
         return (
-            <DefaultButton variant="Black">
+            <DefaultButton variant="Black"
+                handler={btnHandler}
+            >
                 Study
                 <HiArrowSmallRight />
             </DefaultButton>
