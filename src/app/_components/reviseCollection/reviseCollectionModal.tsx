@@ -22,14 +22,14 @@ import { useRouter } from "next/navigation";
 import useRevisionFlashItems from "@/app/_hooks/useRevisionFlashItems";
 import { useReviseModal } from "./useReviseModal";
 import Modal from "../modal/modal";
+import TagsModalSection from "./components/tagsModalSection";
 
 // steps
 // 1.Display initial collection/set and list its associated flash card items
 // 2.Display all its possible tags from the intial collection/set
 // 3.Create toggle - false = does not allow user to add new items. True = allows user to add new items, which updates the array of flashcard items
 // 4.Redirects to test page which includes url params of settings and collection/set ids, flashcards already loaded into client, ready to start.
-    // if user is accessing this page from link, flashcard items missing from client, will be fetched via information provided by url params.
-
+// if user is accessing this page from link, flashcard items missing from client, will be fetched via information provided by url params.
 
 type ReviseCollectionModalTypes = {
     initialSet?: Flashcard_set;
@@ -38,13 +38,47 @@ type ReviseCollectionModalTypes = {
     tagsCollection: tagsCollectionTypes[];
 };
 
-function ReviseCollectionModal({
-    // initialSet,
-    // initialItems,
-    // collectionSet,
-    // tagsCollection,
-}) {
-    const {initialCollectionItems, isReviseModalOn, hideReviseModal} = useReviseModal()
+function ReviseCollectionModal(
+    {
+        // initialSet,
+        // initialItems,
+        // collectionSet,
+        // tagsCollection,
+    }
+) {
+    const { initialCollectionItems, isReviseModalOn, hideReviseModal } =
+        useReviseModal();
+
+    const getCollectionItems = (fetch: "flashcards" | "tags") => {
+        if (initialCollectionItems) {
+            const array = initialCollectionItems.flatMap((collection) =>
+                collection.sets.flatMap((set) => set.flashcards)
+            );
+
+            const tags = Array.from(
+                new Set(
+                    array
+                        .filter((item) => {
+                            if (item) {
+                                return item;
+                            }
+                        })
+                        .flatMap((item) => item.item_tags)
+                        .flat()
+                )
+            );
+
+            switch (fetch) {
+                case "flashcards":
+                    return array;
+                case "tags":
+                    return tags;
+                default:
+                    break;
+            }
+        }
+        return undefined;
+    };
 
     const router = useRouter();
     const [parent] = useAutoAnimate();
@@ -56,61 +90,49 @@ function ReviseCollectionModal({
     // const [selectedSets, setSelectedSets] = useState<Flashcard_set[]>(
     //     initialSet?.id ? [initialSet] : []
     // );
-    useEffect(()=>{
-        if(initialCollectionItems){
-            const array = initialCollectionItems.flatMap((collection)=>
-                collection.sets.flatMap((set)=>set.flashcards)
-            )
- 
-            console.log(array)
 
-            const tags = Array.from(new Set(array.flatMap(item => item.item_tags).flat()));
-            console.log(tags)
-
-        }
-    },[initialCollectionItems])
+    useEffect(() => {}, [initialCollectionItems]);
 
     const [addSetModal, setAddSetModal] = useState<boolean>(false);
 
     // Available Tags via filtering through selecteditems
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-    // const availableTags = tagsCollection
-    //     .filter((tagSet) =>
-    //         selectedSets.some(
-    //             (selSet) =>
-    //                 selSet.id === tagSet.id && tagSet.item_tags.length > 0
-    //         )
-    //     )
-    //     .map((item) => item.item_tags)
-    //     .flat()
-    //     .filter((item) => !selectedTags.includes(item))
-    //     .sort((a: string, b: string) => {
-    //         let lowerA = a.toLowerCase();
-    //         let lowerB = b.toLowerCase();
+    const [tagsCollection, setTagsCollection] = useState<string[] | undefined>(
+        getCollectionItems("tags") as string[] | undefined
+    );
 
-    //         if (lowerA < lowerB) {
-    //             return -1;
-    //         }
-    //         if (lowerA > lowerB) {
-    //             return 1;
-    //         }
-    //         // When equal
-    //         return 0;
-    //     });
+    const availableTags =
+        tagsCollection &&
+        tagsCollection
 
-    // const selectedTagListHandler = (tag: string) => {
-    //     if (selectedTags.includes(tag)) {
-    //         setSelectedTags((prevState) => {
-    //             const previousArray = prevState.filter((prev) => prev !== tag);
-    //             return previousArray;
-    //         });
-    //     } else {
-    //         setSelectedTags((prevState) => {
-    //             return [...prevState, tag];
-    //         });
-    //     }
-    // };
+            .filter((item) => !selectedTags.includes(item))
+            .sort((a: string, b: string) => {
+                let lowerA = a.toLowerCase();
+                let lowerB = b.toLowerCase();
+
+                if (lowerA < lowerB) {
+                    return -1;
+                }
+                if (lowerA > lowerB) {
+                    return 1;
+                }
+                // When equal
+                return 0;
+            });
+
+    const selectedTagListHandler = (tag: string) => {
+        if (selectedTags.includes(tag)) {
+            setSelectedTags((prevState) => {
+                const previousArray = prevState.filter((prev) => prev !== tag);
+                return previousArray;
+            });
+        } else {
+            setSelectedTags((prevState) => {
+                return [...prevState, tag];
+            });
+        }
+    };
 
     // Available Difficulty Options
     type diffOptions = "NA" | "EASY" | "MEDIUM" | "HARD";
@@ -173,8 +195,6 @@ function ReviseCollectionModal({
     //     setFetchLoading(false);
     // };
 
-
-
     // Filtering Fetched items By Tags and difficulties if applicable
 
     // const filterByTags = allTags
@@ -209,7 +229,7 @@ function ReviseCollectionModal({
         });
     };
 
-// Set Search function
+    // Set Search function
     // const searchSetHandler = async (
     //     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     // ) => {
@@ -284,23 +304,42 @@ function ReviseCollectionModal({
 
     return (
         <Modal
-        modalTitle="Collection Preview"
-        modalOn={isReviseModalOn}
-        closeHandler={hideReviseModal}
+            modalTitle="Collection Preview"
+            modalOn={isReviseModalOn}
+            closeHandler={hideReviseModal}
         >
-
-        <section className={style.cardModal}>
-            <div className={style.setCardSection}>
-                <div>Modal Set Test</div>
-                <h5>Select set(s)</h5>
-                <section className={style.stateCheckValidation}>
-                    {/* <div>Selected set{selectedSets.length > 1 ? "s" : ""}</div>
+            <section className={style.cardModal}>
+                <div className={style.setCardSection}>
+                    <div>Modal Set Test</div>
+                    <h5>Select set(s)</h5>
+                    <section className={style.stateCheckValidation}>
+                        {/* <div>Selected set{selectedSets.length > 1 ? "s" : ""}</div>
                     <TickValidate
                         condition={selectedSets.length > 0 ? true : false}
                     /> */}
-                </section>
-                <div ref={parent} className={style.setCardContainer}>
-                    {/* {selectedSets.map((item) => {
+                    </section>
+                    <div ref={parent} className={style.setCardContainer}>
+                        {/* Collection */}
+                        {initialCollectionItems &&
+                            initialCollectionItems.map((item) => {
+                                return (
+                                    <div
+                                        key={item.id}
+                                        className={style.setCard}
+                                    >
+                                        <CornerClose
+                                            cornerSpace="tight"
+                                            handler={() => console.log("hi")}
+                                            // handler={() => setListHandler(item)}
+                                        />
+                                        <div className={style.setCardTitle}>
+                                            {item.collection_name}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        {/* Sets */}
+                        {/* {selectedSets.map((item) => {
                         return (
                             <div key={item.id} className={style.setCard}>
                                 <CornerClose
@@ -314,22 +353,22 @@ function ReviseCollectionModal({
                             </div>
                         );
                     })} */}
-                    {!addSetModal && (
-                        <div
-                            onClick={() =>
-                                setAddSetModal((prevState) => !prevState)
-                            }
-                            className={style.addCardSet}
-                        >
-                            <div>+ Set</div>
-                        </div>
-                    )}
+                        {!addSetModal && (
+                            <div
+                                onClick={() =>
+                                    setAddSetModal((prevState) => !prevState)
+                                }
+                                className={style.addCardSet}
+                            >
+                                <div>+ Set</div>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            {/* Add Set Modal | Text input | Selectable Set List */}
+                {/* Add Set Modal | Text input | Selectable Set List */}
 
-            {/* <section
+                {/* <section
                 style={{
                     display: "grid",
                     gridTemplateRows:
@@ -384,94 +423,16 @@ function ReviseCollectionModal({
                     </section>
                 </section>
             </section> */}
-
-{/*             
-            <div>
-                <h5 className={style.headingSpacing}>Tags</h5>
-                {allTags ? (
-                    <div className={style.defaultHeadingOption}>
-                        <div>
-                            Revise <span className={style.underline}>all</span>{" "}
-                            Tags
-                        </div>
-                        <TickValidate condition={true} />
-                    </div>
-                ) : (
-                    <section className={style.stateCheckValidation}>
-                        <div>
-                            Revise
-                            <span className={style.underline}>Selected</span>
-                            Tags
-                        </div>
-                        <TickValidate
-                            condition={selectedTags.length > 0 ? true : false}
-                        />
-                    </section>
-                )}
-                <SliderToggle
-                    name="allTags"
-                    setChecked={setAllTags}
-                    checked={allTags}
-                    handler={sliderTagsHandler}
-                    variant="coloured"
+                <TagsModalSection
+                    allTags={allTags}
+                    selectedTags={selectedTags}
+                    setAllTags={setAllTags}
+                    sliderTagsHandler={sliderTagsHandler}
+                    selectedTagListHandler={selectedTagListHandler}
+                    availableTags={availableTags}
                 />
-                <ExpandHeightToggler isOn={!allTags}>
-                    <section className={style.tagLabelsContainer}>
-                        <div className={style.selectedTagsLabelContainer}>
-                            <div className={style.selectedTagsHeader}>
-                                <span className={style.labelSubTitle}>
-                                    Selected Tags
-                                </span>
-                                {selectedTags.length < 1 && <label>None</label>}
-                            </div>
-                            <div
-                                className={`${style.selectedLabelConatiner} ${style.labelContainer}`}
-                            >
-                                {selectedTags &&
-                                    selectedTags.map((tag) => {
-                                        return (
-                                            <div
-                                                onClick={() =>
-                                                    selectedTagListHandler(tag)
-                                                }
-                                                className={style.label}
-                                                key={tag}
-                                            >
-                                                {tag}
-                                                <CornerClose
-                                                    handler={() => ""}
-                                                    type="circleCorner"
-                                                />
-                                            </div>
-                                        );
-                                    })}
-                            </div>
-                        </div>
-                        <div className={style.tagsLabelContainer}>
-                            <span className={style.labelSubTitle}>
-                                Tags Available
-                            </span>
-                            <div className={style.labelContainer}>
-                                {availableTags &&
-                                    availableTags.map((tag) => {
-                                        return (
-                                            <div
-                                                onClick={() =>
-                                                    selectedTagListHandler(tag)
-                                                }
-                                                className={style.label}
-                                                key={tag}
-                                            >
-                                                {tag}
-                                            </div>
-                                        );
-                                    })}
-                            </div>
-                        </div>
-                    </section>
-                </ExpandHeightToggler>
-            </div>
-            <div>
+
+                {/* <div>
                 <h5 className={style.headingSpacing}>Difficulties</h5>
                 {allDiff ? (
                     <div className={style.defaultHeadingOption}>
@@ -592,17 +553,18 @@ function ReviseCollectionModal({
                         </span>
                     </>
                 )}
-            </div>
-            <Button
-                text="Start"
-                handler={startRevisionHandler}
-                disabled={
-                    selectedSets.length > 0 && filteredFlashItems.length > 0
-                        ? false
-                        : true
-                }
-            /> */}
-        </section>
+            </div> */}
+
+                {/* <Button
+                    text="Start"
+                    // handler={startRevisionHandler}
+                    disabled={
+                        selectedSets.length > 0 && filteredFlashItems.length > 0
+                            ? false
+                            : true
+                    }
+                /> */}
+            </section>
         </Modal>
     );
 }
