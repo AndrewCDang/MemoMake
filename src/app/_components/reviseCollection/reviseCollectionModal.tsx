@@ -35,25 +35,33 @@ import AvailableQuestionSection from "./components/availableQuestionsSection";
 // if user is accessing this page from link, flashcard items missing from client, will be fetched via information provided by url params.
 
 type ReviseCollectionModalTypes = {
-    initialSet?: Flashcard_set;
-    initialItems: Flashcard_item[];
+    // initialSet?: Flashcard_set;
+    // initialItems: Flashcard_item[];
     collectionSet?: Flashcard_set_with_count[];
-    tagsCollection: tagsCollectionTypes[];
+    // tagsCollection: tagsCollectionTypes[];
 };
 
 export type diffOptions = "NA" | "EASY" | "MEDIUM" | "HARD";
 
+function ReviseCollectionModal({
+    // initialSet,
+    // initialItems,
+    collectionSet = [],
+}: // tagsCollection,
+ReviseCollectionModalTypes) {
+    const {
+        initialCollectionItems,
+        isReviseModalOn,
+        hideReviseModal,
+        initialSet,
+    } = useReviseModal();
 
-function ReviseCollectionModal(
-    {
-        // initialSet,
-        // initialItems,
-        collectionSet=[],
-        // tagsCollection,
-    }:ReviseCollectionModalTypes
-) {
-    const { initialCollectionItems, isReviseModalOn, hideReviseModal, initialSet } =
-        useReviseModal();
+    const router = useRouter();
+    const [parent] = useAutoAnimate();
+    const [reviseAll, setReviseAll] = useState<boolean>(true);
+    const [allTags, setAllTags] = useState<boolean>(true);
+    const [allDiff, setAllDiff] = useState<boolean>(true);
+    const [searchSetInput, setSearchSetInput] = useState<string>("");
 
     const getCollectionItems = (fetch: "flashcards" | "tags") => {
         if (initialCollectionItems) {
@@ -86,17 +94,9 @@ function ReviseCollectionModal(
         return undefined;
     };
 
-    const router = useRouter();
-    const [parent] = useAutoAnimate();
-    const [reviseAll, setReviseAll] = useState<boolean>(true);
-    const [allTags, setAllTags] = useState<boolean>(true);
-    const [allDiff, setAllDiff] = useState<boolean>(true);
-
-    const [searchSetInput, setSearchSetInput] = useState<string>("");
-
-    const [selectedSets, setSelectedSets] = useState<Flashcard_set_with_cards[]>(
-        initialSet.length>0 ? initialSet : []
-    );
+    const [selectedSets, setSelectedSets] = useState<
+        Flashcard_set_with_cards[]
+    >(initialSet.length > 0 ? initialSet : []);
 
     useEffect(() => {}, [initialCollectionItems]);
 
@@ -128,10 +128,6 @@ function ReviseCollectionModal(
                 return 0;
             });
 
-            useEffect(()=>{
-                console.log(availableTags)
-            },[availableTags])
-
     const selectedTagListHandler = (tag: string) => {
         if (selectedTags.includes(tag)) {
             setSelectedTags((prevState) => {
@@ -155,12 +151,14 @@ function ReviseCollectionModal(
         []
     );
 
-    const initalItemsFromCollection = getCollectionItems('flashcards') as Flashcard_item[]
+    const initalItemsFromCollection = getCollectionItems(
+        "flashcards"
+    ) as Flashcard_item[];
 
     const [fetchedItems, setFetchedItems] = useState<Flashcard_item[]>(
-        initalItemsFromCollection && initalItemsFromCollection.length>0 ? [
-        ...initalItemsFromCollection
-    ] : []
+        initalItemsFromCollection && initalItemsFromCollection.length > 0
+            ? [...initalItemsFromCollection]
+            : []
     );
 
     const [fetchLoading, setFetchLoading] = useState<boolean>(false);
@@ -424,10 +422,15 @@ function ReviseCollectionModal(
                     reviseAll={reviseAll}
                     sliderDifficultyHandler={sliderDifficultyHandler}
                 />
-                <AvailableQuestionSection/>
-                
+                <AvailableQuestionSection
+                    selectedSets={selectedSets}
+                    filteredFlashItems={filteredFlashItems}
+                    allDiff={allDiff}
+                    allTags={allTags}
+                    fetchLoading
+                />
 
-                {/* <Button
+                <Button
                     text="Start"
                     // handler={startRevisionHandler}
                     disabled={
@@ -435,7 +438,7 @@ function ReviseCollectionModal(
                             ? false
                             : true
                     }
-                /> */}
+                />
             </section>
         </Modal>
     );
