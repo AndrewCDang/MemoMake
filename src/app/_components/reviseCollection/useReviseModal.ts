@@ -2,8 +2,8 @@ import { Flashcard_collection_preview, Flashcard_item, Flashcard_set_with_cards 
 import { create } from "zustand";
 
 type UseReviseModalTypes = {
-    initialCollectionItems: Flashcard_collection_preview[] | null;
-    initialSet: Flashcard_set_with_cards[] | null;
+    initialCollectionItems: Flashcard_collection_preview[];
+    initialSet: Flashcard_set_with_cards[];
     isReviseModalOn: boolean;
     showReviseModal: () => void;
     hideReviseModal:() => void;
@@ -12,8 +12,8 @@ type UseReviseModalTypes = {
 }
 
 export const useReviseModal = create<UseReviseModalTypes>()((set)=>({
-    initialCollectionItems:null,
-    initialSet:null,
+    initialCollectionItems:[],
+    initialSet:[],
     isReviseModalOn:false,
     showReviseModal:()=>set(()=>({isReviseModalOn:true})),
     hideReviseModal:()=>set(()=>({isReviseModalOn:false})),

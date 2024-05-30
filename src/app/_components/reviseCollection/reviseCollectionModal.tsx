@@ -8,6 +8,7 @@ import Button from "../(buttons)/styledButton";
 import {
     Flashcard_item,
     Flashcard_set,
+    Flashcard_set_with_cards,
     Flashcard_set_with_count,
 } from "@/app/_types/types";
 import TextInput from "../textInput/inputField";
@@ -23,6 +24,8 @@ import useRevisionFlashItems from "@/app/_hooks/useRevisionFlashItems";
 import { useReviseModal } from "./useReviseModal";
 import Modal from "../modal/modal";
 import TagsModalSection from "./components/tagsModalSection";
+import DifficultyModalSection from "./components/difficultyModalSection";
+import AvailableQuestionSection from "./components/availableQuestionsSection";
 
 // steps
 // 1.Display initial collection/set and list its associated flash card items
@@ -34,19 +37,22 @@ import TagsModalSection from "./components/tagsModalSection";
 type ReviseCollectionModalTypes = {
     initialSet?: Flashcard_set;
     initialItems: Flashcard_item[];
-    collectionSet: Flashcard_set_with_count[];
+    collectionSet?: Flashcard_set_with_count[];
     tagsCollection: tagsCollectionTypes[];
 };
+
+export type diffOptions = "NA" | "EASY" | "MEDIUM" | "HARD";
+
 
 function ReviseCollectionModal(
     {
         // initialSet,
         // initialItems,
-        // collectionSet,
+        collectionSet=[],
         // tagsCollection,
-    }
+    }:ReviseCollectionModalTypes
 ) {
-    const { initialCollectionItems, isReviseModalOn, hideReviseModal } =
+    const { initialCollectionItems, isReviseModalOn, hideReviseModal, initialSet } =
         useReviseModal();
 
     const getCollectionItems = (fetch: "flashcards" | "tags") => {
@@ -70,9 +76,9 @@ function ReviseCollectionModal(
 
             switch (fetch) {
                 case "flashcards":
-                    return array;
+                    return array as Flashcard_item[];
                 case "tags":
-                    return tags;
+                    return tags as string[];
                 default:
                     break;
             }
@@ -87,9 +93,10 @@ function ReviseCollectionModal(
     const [allDiff, setAllDiff] = useState<boolean>(true);
 
     const [searchSetInput, setSearchSetInput] = useState<string>("");
-    // const [selectedSets, setSelectedSets] = useState<Flashcard_set[]>(
-    //     initialSet?.id ? [initialSet] : []
-    // );
+
+    const [selectedSets, setSelectedSets] = useState<Flashcard_set_with_cards[]>(
+        initialSet.length>0 ? initialSet : []
+    );
 
     useEffect(() => {}, [initialCollectionItems]);
 
@@ -121,6 +128,10 @@ function ReviseCollectionModal(
                 return 0;
             });
 
+            useEffect(()=>{
+                console.log(availableTags)
+            },[availableTags])
+
     const selectedTagListHandler = (tag: string) => {
         if (selectedTags.includes(tag)) {
             setSelectedTags((prevState) => {
@@ -135,79 +146,51 @@ function ReviseCollectionModal(
     };
 
     // Available Difficulty Options
-    type diffOptions = "NA" | "EASY" | "MEDIUM" | "HARD";
     const [selectedDiff, setSelectedDiff] = useState<diffOptions[]>([]);
-    const diffArray: diffOptions[] = ["NA", "EASY", "MEDIUM", "HARD"];
-
-    const selectableDiffArray = diffArray.filter(
-        (item) => !selectedDiff.includes(item)
-    );
-
-    const labelColour = (diff: string) => {
-        switch (diff) {
-            case "NA":
-                return colours.grey();
-            case "EASY":
-                return colours.green();
-            case "MEDIUM":
-                return colours.yellow();
-            case "HARD":
-                return colours.red();
-            default:
-        }
-    };
-
-    const selectedDifficultyHandler = (item: diffOptions) => {
-        if (selectedDiff.includes(item)) {
-            setSelectedDiff((prevState) => {
-                const previousArray = prevState.filter((prev) => prev !== item);
-                return previousArray;
-            });
-        } else {
-            setSelectedDiff((prevState) => {
-                return [...prevState, item];
-            });
-        }
-    };
 
     // Fetching flashcard items from selected sets
 
-    // const [selHistory, setSelHistory] = useState<string[]>(
-    //     initialSet?.id ? [initialSet.id] : []
-    // );
+    const [selHistory, setSelHistory] = useState<string[]>(
+        // initialSet?.id ? [initialSet.id] : []
+        []
+    );
 
-    // const [fetchedItems, setFetchedItems] = useState<Flashcard_item[]>([
-    //     ...initialItems,
-    // ]);
+    const initalItemsFromCollection = getCollectionItems('flashcards') as Flashcard_item[]
 
-    // const [fetchLoading, setFetchLoading] = useState<boolean>(false);
+    const [fetchedItems, setFetchedItems] = useState<Flashcard_item[]>(
+        initalItemsFromCollection && initalItemsFromCollection.length>0 ? [
+        ...initalItemsFromCollection
+    ] : []
+    );
 
-    // const fetchFlashItems = async (latestId: string) => {
-    //     if (selHistory.includes(latestId)) return;
-    //     const currCollection = [...selHistory, latestId];
-    //     setFetchLoading(true);
-    //     const fetchItems = await fetchItemsFromSets({ setIds: currCollection });
-    //     if (!fetchItems) return;
-    //     setFetchedItems(fetchItems);
-    //     setSelHistory((prevState) => {
-    //         return [...prevState, latestId];
-    //     });
-    //     setFetchLoading(false);
-    // };
+    const [fetchLoading, setFetchLoading] = useState<boolean>(false);
+
+    const fetchFlashItems = async (latestId: string) => {
+        if (selHistory.includes(latestId)) return;
+        const currCollection = [...selHistory, latestId];
+        setFetchLoading(true);
+        const fetchItems = await fetchItemsFromSets({ setIds: currCollection });
+        if (!fetchItems) return;
+        setFetchedItems(fetchItems);
+        setSelHistory((prevState) => {
+            return [...prevState, latestId];
+        });
+        setFetchLoading(false);
+    };
 
     // Filtering Fetched items By Tags and difficulties if applicable
 
-    // const filterByTags = allTags
-    //     ? fetchedItems
-    //     : fetchedItems.filter((item) =>
-    //           item.item_tags.some((tagItem) => selectedTags.includes(tagItem))
-    //       );
+    const filterByTags = allTags
+        ? fetchedItems
+        : fetchedItems.filter((item) =>
+              item.item_tags.some((tagItem) => selectedTags.includes(tagItem))
+          );
 
-    // const filterThenByDifficulties = allDiff
-    //     ? filterByTags
-    //     : filterByTags.filter((item) => selectedDiff.includes(item.difficulty));
+    const filterThenByDifficulties = allDiff
+        ? filterByTags
+        : filterByTags.filter((item) => selectedDiff.includes(item.difficulty));
 
-    // const filteredFlashItems = filterThenByDifficulties;
+    const filteredFlashItems = filterThenByDifficulties;
 
     // Slider State Togglers
 
@@ -236,18 +219,18 @@ function ReviseCollectionModal(
     //     setSearchSetInput(e.target.value);
     // };
 
-    // const filteredList =
-    //     searchSetInput || selectedSets
-    //         ? collectionSet
-    //               .filter((item) =>
-    //                   item.set_name
-    //                       .toLowerCase()
-    //                       .includes(searchSetInput?.toLowerCase() || "")
-    //               )
-    //               .filter(
-    //                   (item) => !selectedSets.some((obj) => obj.id === item.id)
-    //               )
-    //         : collectionSet;
+    const filteredList =
+        searchSetInput || selectedSets
+            ? collectionSet
+                  .filter((item) =>
+                      item.set_name
+                          .toLowerCase()
+                          .includes(searchSetInput?.toLowerCase() || "")
+                  )
+                  .filter(
+                      (item) => !selectedSets.some((obj) => obj.id === item.id)
+                  )
+            : collectionSet;
 
     // const setListHandler = (item: Flashcard_set) => {
     //     if (selectedSets.some((selItem) => item.id === selItem.id)) {
@@ -301,6 +284,8 @@ function ReviseCollectionModal(
     //         router.push("/study");
     //     }
     // };
+
+    // Collection ->> set initial set, mapping sets of all columns. Appending it to set array.
 
     return (
         <Modal
@@ -431,129 +416,16 @@ function ReviseCollectionModal(
                     selectedTagListHandler={selectedTagListHandler}
                     availableTags={availableTags}
                 />
-
-                {/* <div>
-                <h5 className={style.headingSpacing}>Difficulties</h5>
-                {allDiff ? (
-                    <div className={style.defaultHeadingOption}>
-                        <div>
-                            Revise <span className={style.underline}>all</span>{" "}
-                            Difficulties
-                        </div>
-                        <TickValidate condition={true} />
-                    </div>
-                ) : (
-                    <section className={style.stateCheckValidation}>
-                        <div>
-                            Revise
-                            <span className={style.underline}>Selected</span>
-                            Difficulties
-                        </div>
-                        <TickValidate
-                            condition={selectedDiff.length > 0 ? true : false}
-                        />
-                    </section>
-                )}
-                <SliderToggle
-                    name="allDifficulties"
-                    setChecked={setReviseAll}
-                    checked={reviseAll}
-                    handler={sliderDifficultyHandler}
-                    variant="coloured"
+                <DifficultyModalSection
+                    allDiff={allDiff}
+                    selectedDiff={selectedDiff}
+                    setSelectedDiff={setSelectedDiff}
+                    setReviseAll={setReviseAll}
+                    reviseAll={reviseAll}
+                    sliderDifficultyHandler={sliderDifficultyHandler}
                 />
-                <ExpandHeightToggler isOn={!allDiff}>
-                    <section className={style.tagLabelsContainer}>
-                        <div className={style.selectedDiffContainer}>
-                            <div className={style.selectedTagsHeader}>
-                                <span className={style.labelSubTitle}>
-                                    Selected Difficulties
-                                </span>
-                                {selectedDiff.length < 1 && <label>None</label>}
-                            </div>
-                            <div className={style.selectedLabelConatiner}>
-                                {selectedDiff &&
-                                    selectedDiff.map((item) => {
-                                        return (
-                                            <div
-                                                onClick={() =>
-                                                    selectedDifficultyHandler(
-                                                        item
-                                                    )
-                                                }
-                                                style={{
-                                                    backgroundColor:
-                                                        labelColour(item),
-                                                }}
-                                                className={style.label}
-                                                key={item}
-                                            >
-                                                {item}
-                                                <CornerClose
-                                                    handler={() => ""}
-                                                    type="circleCorner"
-                                                />
-                                            </div>
-                                        );
-                                    })}
-                            </div>
-                        </div>
-                        <div className={style.tagsLabelContainer}>
-                            <span className={style.labelSubTitle}>
-                                Difficulties Available
-                            </span>
-                            <div>
-                                {selectableDiffArray &&
-                                    selectableDiffArray.map((item) => {
-                                        return (
-                                            <div
-                                                onClick={() =>
-                                                    selectedDifficultyHandler(
-                                                        item
-                                                    )
-                                                }
-                                                style={{
-                                                    backgroundColor:
-                                                        labelColour(item),
-                                                }}
-                                                className={style.label}
-                                                key={item}
-                                            >
-                                                {item === "NA" ? "None" : item}
-                                            </div>
-                                        );
-                                    })}
-                            </div>
-                        </div>
-                    </section>
-                </ExpandHeightToggler>
-            </div>
-            <div className={style.questionsContainer}>
-                <h5>Questions</h5>
-                {selectedSets.length > 0 && filteredFlashItems.length > 0 ? (
-                    <div className={style.defaultHeadingOption}>
-                        <div>
-                            Revise
-                            {allTags && allDiff ? " all " : " "}
-                            {fetchLoading ? (
-                                <div className={style.loadingSpinQuestion}>
-                                    <LoadingSpin />
-                                </div>
-                            ) : (
-                                filteredFlashItems.length + " "
-                            )}
-                            questions
-                        </div>
-                        <TickValidate condition={true} />
-                    </div>
-                ) : (
-                    <>
-                        <span className={style.stateCheckValidation}>
-                            No questions or set available
-                            <TickValidate condition={false} />
-                        </span>
-                    </>
-                )}
-            </div> */}
+                <AvailableQuestionSection/>
+                
 
                 {/* <Button
                     text="Start"
