@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 import SliderToggle from "../../sliderToggle/sliderToggle";
 import TickValidate from "../../tickValidate/tickValidate";
 import style from "../reviseCards.module.scss";
-import { diffOptions } from "../reviseCollectionModal";
+import { diffOptions } from "../reviseCollectionModalContent";
 import ExpandHeightToggler from "../../expandHeightToggler/expandHeightToggler";
 import { labelColour } from "@/app/(protected)/dashboard/flashcard/collection/tableItems/difficultyTableItem";
 import CornerClose from "../../cornerClose/cornerClose";

@@ -138,7 +138,7 @@ async function ExistingSets({ session }: { session: Session | null }) {
                 <CollectionItem collectionWithSets={collectionWithSets} />
             )}
             <PreviewModal />
-            <ReviseCollectionModal/>
+            <ReviseCollectionModal session={session} />
         </section>
     );
 }

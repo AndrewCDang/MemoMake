@@ -85,6 +85,15 @@ export type Flashcard_collection = {
     collection_name: string;
     original_id: string;
 };
+export type Flashcard_collection_with_count = {
+    id: string;
+    ids: string[];
+    user_id: string;
+    collection_name: string;
+    original_id: string;
+    sets_count:number;
+    items_count:number;
+};
 
 export type Flashcard_set_with_count = Flashcard_set & {
     count: number;

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../(buttons)/styledButton";
 import Modal from "../modal/modal";
-import ReviseCardModal from "./reviseCardModal";
+import ReviseCardModal from "../reviseCards/reviseCardModal";
 import {
     Flashcard_set_with_count,
     Flashcard_set,
