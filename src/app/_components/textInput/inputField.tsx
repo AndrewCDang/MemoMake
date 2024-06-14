@@ -2,6 +2,7 @@ import { ChangeEvent, RefObject } from "react";
 import style from "./inputField.module.scss";
 
 type InputRef = {
+    refObject: RefObject<HTMLInputElement | HTMLTextAreaElement> | undefined;
     error?: boolean;
     id: string;
     placeholder: string;
@@ -16,6 +17,7 @@ type InputRef = {
 };
 
 function TextInput({
+    refObject = undefined,
     error,
     id,
     type,
@@ -29,6 +31,7 @@ function TextInput({
         <fieldset className={style.fieldset}>
             {textarea ? (
                 <textarea
+                    ref={refObject as RefObject<HTMLTextAreaElement>}
                     placeholder=""
                     id={id}
                     className={style.input}
@@ -38,6 +41,7 @@ function TextInput({
                 ></textarea>
             ) : (
                 <input
+                    ref={refObject as RefObject<HTMLInputElement>}
                     placeholder=""
                     id={id}
                     type={type}

@@ -1,5 +1,5 @@
-@import "../../../styles/colours.scss";
-@import "../../../styles/_mixins.scss";
+@import "../../styles/colours.scss";
+@import "../../styles/_mixins.scss";
 
 @include customScrollbar(".resultsContainer");
 .resultsContainer {

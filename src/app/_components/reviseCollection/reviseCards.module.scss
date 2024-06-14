@@ -101,6 +101,10 @@
             font-size: 0.75rem;
             line-height: 1.5rem;
         }
+        .searchItemName {
+            width: min-content;
+            font-size: 1rem;
+        }
     }
     @include customScrollbar(".setSuggestionList");
 

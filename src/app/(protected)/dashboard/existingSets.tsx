@@ -1,73 +1,37 @@
 import React from "react";
 import { Session } from "next-auth";
-import { Account } from "@/app/_types/types";
-import { Flashcard_set } from "@/app/_types/types";
 import style from "./existingSets.module.scss";
-import { HiArrowRightCircle } from "react-icons/hi2";
-import Link from "next/link";
 import GenericButton from "@/app/_components/(buttons)/genericButtton";
-import FavouriteIcon from "@/app/_components/favouriteIcon/favouriteIcon";
 import { fetchAccountFromUserId } from "@/app/_actions/fetchAccountFromUserId";
 import { notFound } from "next/navigation";
 import fetchExistingSetsFromId from "@/app/_actions/fetchExistingSetsFromId";
-import { fetchCollectionById } from "@/app/_actions/fetchCollectionById";
 import CreateCollectionBtn from "./_dashboardButtons/createCollectionBtn";
-import CreateSetBtn from "./_dashboardButtons/createSetBtn";
 import { fetchCollectionByIdJoinSet } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import CollectionItem from "./_dashboardItems/collectionItem/collectionItem";
 import PreviewModal from "@/app/_components/previewModal/previewModal";
 import ReviseCollectionModal from "@/app/_components/reviseCollection/reviseCollectionModal";
+import SetItem, { FlashCardItem } from "./_dashboardItems/setItem/setItem";
+import { fetchRecentTested } from "./_actions/fetchRecentTested";
+import RecentItems from "./_dashboardSections/recentItems";
 
-// Card Component
-const FlashCardItem = ({
-    set,
-    index,
-    account,
-}: {
-    set: Flashcard_set;
-    index: number;
-    account: Account;
-}) => {
-    return (
-        <section key={index} className={style.setContainer}>
-            <div className={style.setContent}>
-                <h4>{set.set_name}</h4>
-                <div className={style.categoryContainer}>
-                    {set.set_categories.map((category, index) => {
-                        return <label key={index}>{category}</label>;
-                    })}
-                </div>
-                {set.description && <p>{set.description}</p>}
-            </div>
-            <div className={style.viewSet}>
-                <p>Study</p>
-                <HiArrowRightCircle />
-            </div>
-            <Link href={`dashboard/flashcard?id=${set.id}`}>
-                <div className={style.viewSet}>
-                    <p>View Set</p>
-                    <HiArrowRightCircle />
-                </div>
-            </Link>
-            <div>
-                <FavouriteIcon
-                    favourited={
-                        account !== undefined
-                            ? account.favourites.includes(set.id)
-                            : false
-                    }
-                    userId={account.user_id}
-                    setId={set.id}
-                />
-            </div>
-        </section>
-    );
+type RecentlyTestedTypes = {
+    type: "set" | "collection";
+    id: string;
 };
 
+// Card Component
 async function ExistingSets({ session }: { session: Session | null }) {
     if (!session) return null;
+
+    // Fetch Sets
     const searchExistingSets = await fetchExistingSetsFromId(session.user.id);
 
+    // Fetch Collection
+    const collectionWithSets = await fetchCollectionByIdJoinSet({
+        id: session.user.id,
+    });
+
+    // Account
     const account = await fetchAccountFromUserId({ id: session.user.id });
     if (!account) return notFound();
 
@@ -76,24 +40,15 @@ async function ExistingSets({ session }: { session: Session | null }) {
         favArray.includes(item.id)
     );
 
-    const existingCollections = await fetchCollectionById({
-        id: session.user.id,
-    });
-
-    type RecentlyTestedTypes = {
-        type: "set" | "collection";
-        id: string;
-    };
-
-    const collectionWithSets = await fetchCollectionByIdJoinSet({
-        id: session.user.id,
-    });
+    // Fetch Recently tested
+    const fetchHistory = await fetchRecentTested({ userId: session.user.id });
 
     return (
         <section>
-            <div></div>
+            {/* Recent sets/collection Selection */}
             <div className={style.sectionTitle}>
                 <h3>Recently Tested</h3>
+                <RecentItems fetch={fetchHistory} />
                 <GenericButton type="hyperlink">View All</GenericButton>
             </div>
             <div className={style.sectionTitle}>
@@ -112,24 +67,12 @@ async function ExistingSets({ session }: { session: Session | null }) {
                         );
                     })}
             </section>
-            <div className={style.sectionTitle}>
-                <h3>Flash Card Sets</h3>
-                <div className={style.sectionBtnGroup}>
-                    <CreateSetBtn />
-                </div>
-            </div>
-            <section className={style.setGrid}>
-                {searchExistingSets &&
-                    searchExistingSets.map((set, index) => {
-                        return (
-                            <FlashCardItem
-                                set={set}
-                                index={index}
-                                account={account}
-                            />
-                        );
-                    })}
-            </section>
+            {/* Sets Selection */}
+            <SetItem
+                searchExistingSets={searchExistingSets}
+                account={account}
+            />
+            {/* Collection Section */}
             <div className={style.sectionTitle}>
                 <h3>Collection</h3>
                 <CreateCollectionBtn />
@@ -137,8 +80,12 @@ async function ExistingSets({ session }: { session: Session | null }) {
             {collectionWithSets && (
                 <CollectionItem collectionWithSets={collectionWithSets} />
             )}
+            {/* Modals | Preview set/collection | Study Settings Modal */}
             <PreviewModal />
-            <ReviseCollectionModal session={session} />
+            <ReviseCollectionModal
+                session={session}
+                contentType={"collection"}
+            />
         </section>
     );
 }

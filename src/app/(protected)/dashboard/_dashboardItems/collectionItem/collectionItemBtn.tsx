@@ -7,7 +7,6 @@ import style from "./collectionItem.module.scss";
 import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
 import { usePreviewModal } from "@/app/_components/previewModal/usePreviewModal";
-import { Flashcard_collection_preview } from "@/app/_types/types";
 
 function CollectionItemBtn({
     collectionItem,
@@ -22,14 +21,13 @@ function CollectionItemBtn({
             return item.id;
         });
         const promise = await fetchSetsWithItems({
-            collectionId: collectionItem.id,
-            setIds: setIds,
+            fetchObject: { id: collectionItem.id, type: "collection" },
         });
-        console.log(promise);
         if (!promise) return;
-        setPreviewCollectionItems(promise);
+        setPreviewCollectionItems({ type: "collection", content: promise });
         showUsePreviewModal();
     };
+
     return (
         <div className={style.btnContainer}>
             <div onClick={handler}>

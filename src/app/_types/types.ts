@@ -28,12 +28,20 @@ export type User = {
     role: UserRole;
     accounts: Account[];
 };
+export type ContentType = "collection" | "set";
+
+export type UserHistory = {
+    ids: string[];
+    tags: string[];
+    difficulty: Difficulty[];
+    content_type: ContentType;
+};
 
 export type Account = {
     id: string;
     user_id: string;
     favourites: string[];
-    history: string[];
+    user_history: UserHistory[];
 };
 
 // export type Account = {
@@ -91,15 +99,20 @@ export type Flashcard_collection_with_count = {
     user_id: string;
     collection_name: string;
     original_id: string;
-    sets_count:number;
-    items_count:number;
+    sets_count: number;
+    item_count: number;
 };
 
 export type Flashcard_set_with_count = Flashcard_set & {
-    count: number;
+    item_count: number;
 };
 
 export type Flashcard_set_with_cards = Flashcard_set & {
+    flashcards: Flashcard_item[];
+};
+
+export type Flashcard_collection_with_cards = Flashcard_collection & {
+    sets: string[];
     flashcards: Flashcard_item[];
 };
 
@@ -112,7 +125,7 @@ export type Flashcard_collection_preview = {
     sets: Flashcard_set_with_cards[];
 };
 
-enum Difficulty {
+export enum Difficulty {
     NA = "NA",
     EASY = "EASY",
     MEDIUM = "MEDIUM",

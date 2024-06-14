@@ -1,152 +1,244 @@
-"use client"
+"use client";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import style from "../reviseCards.module.scss";
 import { getSession } from "next-auth/react";
 import { useReviseModal } from "../useReviseModal";
 import CornerClose from "../../cornerClose/cornerClose";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import {
+    ChangeEvent,
+    Dispatch,
+    SetStateAction,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import TickValidate from "../../tickValidate/tickValidate";
-import { Flashcard_set, Flashcard_set_with_cards } from "@/app/_types/types";
+import {
+    Flashcard_collection_preview,
+    Flashcard_collection_with_count,
+    Flashcard_item,
+    Flashcard_set,
+    Flashcard_set_with_cards,
+    Flashcard_set_with_count,
+} from "@/app/_types/types";
 import { tagsCollectionTypes } from "@/app/_actions/fetchTagsInCollection";
 import TextInput from "../../textInput/inputField";
 import { fetchCollectionByIdWithSetAndItemCount } from "@/app/_actions/fetchCollectionByIdWithSetAndItemCount";
 import { Session } from "next-auth";
+import { fetchItemsFromSets } from "@/app/_actions/fetchItemsFromSets";
+import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
+import CollectionAndSetsSelectedObjects from "./collectionAndSetsSelectedObjects";
 
 type CollectionAndSetsSection = {
-    session:Session
-    addSetModal:boolean;
-    setAddSetModal:Dispatch<SetStateAction<boolean>>;
-    selectedSets:Flashcard_set_with_cards[];
-    setSelectedTags:Dispatch<SetStateAction<string[]>>;
+    session: Session;
+    selectedSets: Flashcard_set_with_cards[];
+    setSelectedTags: Dispatch<SetStateAction<string[]>>;
     tagsCollection: string[];
     setSelectedSets: Dispatch<SetStateAction<Flashcard_set_with_cards[]>>;
-}
+    setFetchLoading: Dispatch<SetStateAction<boolean>>;
+    contentType: "collection" | "set";
+};
 
+function CollectionAndSetsSection({
+    session,
+    selectedSets,
+    setFetchLoading,
+    contentType,
+}: CollectionAndSetsSection) {
+    const [parent] = useAutoAnimate();
+    // Modal States
+    const [addSetModal, setAddSetModal] = useState<boolean>(false);
 
-function CollectionAndSetsSection({session, tagsCollection, addSetModal,setAddSetModal, selectedSets, setSelectedTags, setSelectedSets}:CollectionAndSetsSection) {
+    // Global States
     const {
         initialCollectionItems,
+        setInitialCollectionItems,
         isReviseModalOn,
         hideReviseModal,
-        initialSet,
+        initialSetItems,
+        setInitalSet,
+        reviseModalType,
     } = useReviseModal();
-    
-    const fetchCollectionWithCount = async() => {
+
+    const [searchCollection, setSearchCollection] = useState<
+        Flashcard_collection_with_count[] | Flashcard_set_with_count[]
+    >([]);
+
+    const [selectedSearchCollection, setSelectedSearchCOllection] = useState<
+        Flashcard_collection_with_count[] | Flashcard_set_with_count[]
+    >([]);
+
+    const fetchCollectionWithCount = async () => {
         try {
             const userId = session.user.id;
-            console.log(userId);
-            const fetch = await fetchCollectionByIdWithSetAndItemCount({ userId: userId });
+            const fetch = await fetchCollectionByIdWithSetAndItemCount({
+                type: contentType,
+                userId: userId,
+            });
+            if (fetch) {
+                const getInitialItems = () => {
+                    if (contentType === "collection") {
+                        return (
+                            fetch as Flashcard_collection_with_count[]
+                        ).filter((item) =>
+                            initialCollectionItems
+                                .map((item) => item.id)
+                                .includes(item.id)
+                        );
+                    } else if (contentType === "set") {
+                        return (fetch as Flashcard_set_with_count[]).filter(
+                            (setItem) =>
+                                initialSetItems
+                                    .map((initialitem) => initialitem.id)
+                                    .includes(setItem.id)
+                        );
+                    }
+                };
+
+                setSearchCollection(fetch);
+                const initialItems = getInitialItems();
+                if (!initialItems) return;
+                setSelectedSearchCOllection(initialItems);
+            }
             console.log(fetch);
         } catch (error) {
-            console.error('Error fetching collection with count:', error);
-        }
-    }
-    const [parent] = useAutoAnimate();
-
-
-
-    useEffect(()=>{
-        fetchCollectionWithCount()
-    },[])
-
-        const setListHandler = (item: Flashcard_set_with_cards) => {
-        if (selectedSets.some((selItem) => item.id === selItem.id)) {
-            // Removing selected tags associated with removed set
-            // setSelectedTags((prevTags) => {
-            //     // const tagsToRemove = tagsCollection
-            //     //     .filter((tags) => tags.id === item.id)
-            //     //     .map((item) => item.item_tags)[0];
-
-            //     //     item.
-
-            //     // const remainingTags = prevTags.filter(
-            //     //     (prevTag) => !tagsToRemove.includes(prevTag)
-            //     // );
-
-            //     // return remainingTags;
-            // });
-
-            // Removes set
-            setSelectedSets((prevState) => {
-                const remainingSets = prevState.filter((prevItem) =>
-                    selectedSets.some((selItem) => prevItem.id !== item.id)
-                );
-                return remainingSets;
-            });
-        } else {
-            setSelectedSets((prevState) => {
-                return [...prevState, item];
-            });
+            console.error("Error fetching collection with count:", error);
         }
     };
 
+    useEffect(() => {
+        fetchCollectionWithCount();
+        console.log("hi");
+    }, []);
 
+    // Set Search function
+    const textInputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+    const [searchSetInput, setSearchSetInput] = useState<string>("");
 
-  return (
-    <>
-    <div className={style.setCardSection}>
-    <h5>Select Collections(s)</h5>
-    <section className={style.stateCheckValidation}>
+    const searchSetHandler = async (
+        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        setSearchSetInput(e.target.value);
+    };
 
-        <div>Selected set{selectedSets.length > 1 ? "s" : ""}</div>
-    <TickValidate
-        condition={selectedSets.length > 0 ? true : false}
-    />
-    </section>
-    <div ref={parent} className={style.setCardContainer}>
-        {/* Collection */}
-        {initialCollectionItems &&
-            initialCollectionItems.map((item) => {
-                return (
-                    <div
-                        key={item.id}
-                        className={style.setCard}
-                    >
-                        <CornerClose
-                            cornerSpace="tight"
-                            handler={() => console.log("hi")}
-                            // handler={() => setListHandler(item)}
-                        />
-                        <div className={style.setCardTitle}>
-                            {item.collection_name}
-                        </div>
-                    </div>
-                );
-            })}
-        {/* Sets */}
-        {selectedSets.map((item) => {
-        return (
-            <div key={item.id} className={style.setCard}>
-                <CornerClose
-                    cornerSpace="tight"
-                    handler={() => setListHandler(item)}
-                />
-                <div className={style.setCardTitle}>
-                    {item.set_name}
-                </div>
-            </div>
-        );
-    })}
-        {!addSetModal && (
-            <div
-                onClick={() =>
-                    setAddSetModal((prevState) => !prevState)
+    // Focus the input field after state update
+    useEffect(() => {
+        if (textInputRef.current) {
+            textInputRef.current.focus();
+        }
+    }, [searchSetInput]);
+
+    // Selected objects from selectable list
+    const [selectedObjects, setSelectedObjects] = useState<string[]>(
+        contentType === "collection"
+            ? initialCollectionItems.map((item) => item.id)
+            : contentType === "set"
+            ? initialSetItems.map((item) => item.id)
+            : []
+    );
+
+    // Selectable List of dashboard items
+    const filteredList =
+        searchCollection.length > 0
+            ? searchCollection
+                  .filter((item) =>
+                      contentType == "collection"
+                          ? (
+                                item as Flashcard_collection_with_count
+                            ).collection_name
+                                .toLowerCase()
+                                .includes(searchSetInput?.toLowerCase())
+                          : (item as Flashcard_set_with_count).set_name
+                                .toLowerCase()
+                                .includes(searchSetInput?.toLowerCase())
+                  )
+                  .filter((item) => !selectedObjects.includes(item.id))
+            : searchCollection;
+
+    const keydownHandler = (
+        e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        if (e.key === "Enter") {
+            setSearchSetInput("");
+            if (filteredList.length > 0 && filteredList[0]) {
+                const suggestedFirstItem = filteredList[0];
+                fetchFlashItems(suggestedFirstItem.id);
+            }
+        }
+    };
+
+    const fetchFlashItems = async (latestId: string) => {
+        if (!initialCollectionItems.map((item) => item.id).includes(latestId)) {
+            console.log(`Not currently selected: ${latestId}`);
+            try {
+                const fetchCollection = await fetchSetsWithItems({
+                    fetchObject: { type: contentType, id: latestId },
+                });
+                if (fetchCollection) {
+                    if (contentType === "collection") {
+                        setInitialCollectionItems({
+                            existingItems: initialCollectionItems,
+                            item: fetchCollection as Flashcard_collection_preview,
+                        });
+                        setSelectedObjects((prevState) => {
+                            if (
+                                !prevState.includes(
+                                    (
+                                        fetchCollection as Flashcard_collection_preview
+                                    ).id
+                                )
+                            ) {
+                                return [
+                                    ...prevState,
+                                    (
+                                        fetchCollection as Flashcard_collection_preview
+                                    ).id,
+                                ];
+                            }
+                            return prevState;
+                        });
+                    }
+                    if (contentType === "set") {
+                        setInitalSet({
+                            existingItems: initialSetItems,
+                            item: fetchCollection as Flashcard_set_with_cards[],
+                        });
+                        setSelectedObjects((prevState) => {
+                            const unselectedSets = (
+                                fetchCollection as Flashcard_set_with_cards[]
+                            ).filter((item) => !prevState.includes(item.id));
+                            if (unselectedSets.length > 0) {
+                                const unselectedIds = unselectedSets.map(
+                                    (item) => item.id
+                                );
+                                return [...prevState, ...unselectedIds];
+                            }
+                            return prevState;
+                        });
+                    }
                 }
-                className={style.addCardSet}
-            >
-                <div>+ Set</div>
-            </div>
-        )}
-    </div>
-</div>
-    {/* Add Set Modal | Text input | Selectable Set List */}
+                console.log(fetchCollection);
+            } catch (error: unknown) {}
+        } else {
+            console.log(`Currently selected: ${latestId}`);
+        }
+        setFetchLoading(false);
+    };
 
-                {/* <section
+    const ListPickerComponent = ({
+        searchList,
+    }: {
+        searchList:
+            | Flashcard_collection_with_count[]
+            | Flashcard_set_with_count[];
+    }) => {
+        // searchList = collectionSet;
+        return (
+            <section
                 style={{
                     display: "grid",
                     gridTemplateRows:
-                        addSetModal &&
-                        collectionSet.length > selectedSets.length
+                        addSetModal && searchList.length > selectedSets.length
                             ? "1fr"
                             : "0fr",
                     transition: "0.2s ease-in-out",
@@ -161,6 +253,7 @@ function CollectionAndSetsSection({session, tagsCollection, addSetModal,setAddSe
                         className={style.insertSetContainer}
                     >
                         <TextInput
+                            refObject={textInputRef}
                             type="text"
                             id={"otherSets"}
                             placeholder="Search for set"
@@ -172,22 +265,46 @@ function CollectionAndSetsSection({session, tagsCollection, addSetModal,setAddSe
                             <input
                                 className={style.insertSetCheckbox}
                                 type="checkbox"
-                                checked={searchSetInput ? true : false}
+                                defaultChecked={searchSetInput ? true : false}
                             ></input>
                             {filteredList.length > 0 &&
                                 filteredList.map((item) => {
                                     return (
                                         <div
-                                            onClick={() => (
-                                                fetchFlashItems(item.id),
-                                                setListHandler(item)
-                                            )}
+                                            onClick={
+                                                () => fetchFlashItems(item.id)
+                                                // setListHandler(item)
+                                            }
                                             key={item.id}
                                         >
-                                            {item.set_name}
+                                            <span
+                                                className={style.searchItemName}
+                                            >
+                                                {contentType === "collection"
+                                                    ? `${
+                                                          (
+                                                              item as Flashcard_collection_with_count
+                                                          ).collection_name +
+                                                          " "
+                                                      }`
+                                                    : (
+                                                          item as Flashcard_set_with_count
+                                                      ).set_name}
+                                            </span>
                                             <span className={style.itemCount}>
-                                                {item.count} card
-                                                {item.count > 1 ? "s" : ""}
+                                                {contentType === "collection"
+                                                    ? (
+                                                          item as Flashcard_collection_with_count
+                                                      ).item_count
+                                                    : (
+                                                          item as Flashcard_set_with_count
+                                                      ).item_count}
+                                                card
+                                                {(
+                                                    item as Flashcard_collection_with_count
+                                                ).item_count > 1
+                                                    ? "s"
+                                                    : ""}
                                             </span>
                                         </div>
                                     );
@@ -195,9 +312,46 @@ function CollectionAndSetsSection({session, tagsCollection, addSetModal,setAddSe
                         </div>
                     </section>
                 </section>
-            </section> */}
-            </>
-  )
+            </section>
+        );
+    };
+
+    return (
+        <>
+            <div className={style.setCardSection}>
+                <section className={style.stateCheckValidation}>
+                    <div>
+                        Selected{" "}
+                        {contentType === "collection"
+                            ? "collection"
+                            : contentType === "set"
+                            ? "set"
+                            : ""}
+                        {selectedObjects.length > 1 ? "s" : ""}
+                    </div>
+                    <TickValidate
+                        condition={selectedObjects.length > 0 ? true : false}
+                    />
+                </section>
+                <div ref={parent} className={style.setCardContainer}>
+                    {/* Selected collections/sets */}
+                    <CollectionAndSetsSelectedObjects />
+                    {!addSetModal && (
+                        <div
+                            onClick={() =>
+                                setAddSetModal((prevState) => !prevState)
+                            }
+                            className={style.addCardSet}
+                        >
+                            <div>+ Set</div>
+                        </div>
+                    )}
+                </div>
+            </div>
+            {/* Add Set Modal | Text input | Selectable Set List */}
+            <ListPickerComponent searchList={searchCollection} />
+        </>
+    );
 }
 
-export default CollectionAndSetsSection
+export default CollectionAndSetsSection;
