@@ -1,13 +1,29 @@
 "use server";
+import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import { db } from "@/app/_lib/db";
-import { UserHistory } from "@/app/_types/types";
-import { FetchEventResult } from "next/dist/server/web/types";
+import {
+    Flashcard_collection,
+    Flashcard_collection_with_type,
+    Flashcard_set,
+    Flashcard_set_with_type,
+    UserHistory,
+} from "@/app/_types/types";
+import { ContentType } from "@/app/_types/types";
 
 type FetchRecentTestedTypes = {
     userId: string;
 };
+export type RecentItemsTypes = (
+    | {
+          content_type: ContentType;
+          content: Flashcard_collection_set_joined[];
+      }
+    | { content_type: ContentType; content: Flashcard_set[] }
+)[];
 
-export const fetchRecentTested = async ({ userId }: FetchRecentTestedTypes) => {
+export const fetchRecentTested = async ({
+    userId,
+}: FetchRecentTestedTypes): Promise<RecentItemsTypes | undefined> => {
     try {
         const fetchHistory = await db`
     SELECT to_json(user_history) as user_history 
@@ -16,48 +32,88 @@ export const fetchRecentTested = async ({ userId }: FetchRecentTestedTypes) => {
 `;
 
         const historyItems = fetchHistory[0].user_history as UserHistory[];
-        if (!historyItems) return { status: 200, message: "no recent items" };
+        if (!historyItems) {
+            console.log({ status: 200, message: "no recent items" });
+            return undefined;
+        }
 
-        const historyItemsQuery = historyItems
-            .map((item, index) => {
-                if (item.content_type === "collection") {
-                    const mappedIds = item.ids[0]
-                        .split(",")
-                        .map((id) => `'${id}'`)
-                        .join(",");
-                    return `
-            SELECT fc.*, ${index} AS order_number, ${`'${item.content_type}'`} AS content_type
-            FROM flashcard_collection fc 
-            WHERE fc.id = ANY(ARRAY[${mappedIds}]::uuid[])
-        `;
-                } else if (item.content_type === "set") {
-                    const mappedIds = item.ids[0]
-                        .split(",")
-                        .map((id) => `'${id}'`)
-                        .join(",");
-                    return `
-            SELECT fs.*, ${index} AS order_number, ${`'${item.content_type}'`} AS content_type
-            FROM flashcard_set fs 
-            WHERE fs.id = ANY(ARRAY[${mappedIds}]::uuid[])
-        `;
-                }
-            })
-            .join(" UNION ALL ");
+        // Ids
+        const fetchPromises = historyItems.map(async (item) => {
+            const flattenedIds = item.ids.flat();
+            if (item.content_type === "collection") {
+                const results = (await db`
+                    SELECT fc.*, array_agg(to_json(fs)) AS set_items
+                    FROM flashcard_collection fc
+                    LEFT JOIN flashcard_set fs ON fs.id = ANY(fc.ids)
+                    WHERE fc.id = ANY(${db.array(flattenedIds)}::uuid[])
+                    GROUP BY fc.id
+                `) as Flashcard_collection_set_joined[];
+                return {
+                    content_type: "collection",
+                    content: results,
+                } as {
+                    content_type: ContentType;
+                    content: Flashcard_collection_set_joined[];
+                };
+            } else if (item.content_type === "set") {
+                const results = (await db`
+                    SELECT *, 'set' AS content_type
+                    FROM flashcard_set
+                    WHERE id = ANY(${db.array(flattenedIds)}::uuid[])
+                `) as Flashcard_set[];
+                return { content_type: "set", content: results } as {
+                    content_type: ContentType;
+                    content: Flashcard_set[];
+                };
+            }
+            return undefined;
+        });
 
-        const fetchQuery = `
-    ${historyItemsQuery} 
-    ORDER BY order_number
-`;
+        const flashcards = await Promise.all(fetchPromises);
+        const filteredFlashcards = flashcards.filter(
+            (item) => item !== undefined
+        );
 
-        const finalQuery = await db.unsafe(fetchQuery);
-
-        return finalQuery;
+        return filteredFlashcards;
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.log(error.message);
         }
     }
 };
+
+// Legacy Code
+
+// // Query flashcard_set
+// const flashcardSets = (await db`
+//     SELECT *, 'set' AS content_type
+//     FROM flashcard_set
+//     WHERE id = ANY(ARRAY[${db.array(idsArray)}]::uuid[])
+// `) as Flashcard_set[];
+
+// // Query flashcard_collection
+// const flashcardCollections = (await db`
+//     SELECT *, 'collection' AS content_type
+//     FROM flashcard_collection
+//     WHERE id = ANY(ARRAY[${db.array(idsArray)}]::uuid[])
+// `) as Flashcard_collection[];
+
+// // Adding order number to each item
+// const flashcardSetsOrdered = flashcardSets.map((item) => {
+//     return { item, order_number: idsArray.indexOf(item.id) };
+// });
+// const flashcardCollectionsOrdered = flashcardSets.map((item) => {
+//     return { item, order_number: idsArray.indexOf(item.id) };
+// });
+
+// // Combine results (keeping their structure)
+// const combinedResults = [
+//     ...flashcardSetsOrdered,
+//     ...flashcardCollectionsOrdered,
+// ].sort((a, b) => a.order_number - b.order_number);
+
+// console.log(combinedResults);
+// return combinedResults;
 
 // SELECT 1 AS order_column, 'set' AS source_table, *
 // FROM flashcard_set

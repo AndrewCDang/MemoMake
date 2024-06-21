@@ -13,15 +13,25 @@
 
 .setContainer {
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: space-between;
     // width: clamp(300px, calc(240px + 2vw), 400px);
     padding: 1rem;
     border-radius: 0.5rem;
-    // box-shadow: $box-shadow-default;
-    border: 0.5px solid $col-grey;
+    box-shadow: $box-shadow-sm;
+    // border: 0.5px solid $col-grey;
+    background-color: rgba($col-white, 0.6);
     cursor: pointer;
-    label {
+    .setContent {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        .title {
+            padding-right: 1.5rem;
+        }
+    }
+    li {
         border: 0.5px solid $col-grey;
         width: fit-content;
         padding: 0.2rem 0.5rem;
@@ -31,12 +41,15 @@
     p {
         color: $col-grey;
     }
-}
-
-.setContent {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    .buttonContainer {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .favouriteContainer {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+    }
 }
 
 .categoryContainer {

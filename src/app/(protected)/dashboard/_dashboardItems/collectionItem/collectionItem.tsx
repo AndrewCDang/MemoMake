@@ -7,16 +7,20 @@ import CollectionItemBtn from "./collectionItemBtn";
 
 type CollectionItemTypes = {
     collectionWithSets: Flashcard_collection_set_joined[];
+    copy?: boolean;
 };
 
-function CollectionItem({ collectionWithSets }: CollectionItemTypes) {
+function CollectionItem({
+    collectionWithSets,
+    copy = false,
+}: CollectionItemTypes) {
     return (
         <section className={style.collectionContainer}>
             <section className={style.setCollection}>
                 {collectionWithSets.map((collectionItem, index) => {
                     return (
                         <section
-                            key={collectionItem.id}
+                            key={`${collectionItem.id}-${copy && "copy"}`}
                             className={style.setCard}
                         >
                             <p className={style.setTitle}>

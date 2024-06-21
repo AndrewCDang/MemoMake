@@ -1,0 +1,25 @@
+@import "../../../../styles/colours.scss";
+
+.bannerBtnsContainer {
+    display: flex;
+    gap: 0.5rem;
+    .bannerIcon {
+        display: flex;
+        aspect-ratio: 1;
+        width: fit-content;
+        padding: 0.25rem;
+        border-radius: 0.5rem;
+        background-color: rgba($col-white, 0.2);
+        box-shadow: $box-shadow-sm;
+        cursor: pointer;
+        &:hover svg {
+            fill: $col-black !important;
+        }
+        & svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            aspect-ratio: 1;
+            stroke: unset;
+        }
+    }
+}

@@ -26,13 +26,20 @@ export const updateUserHistory = async ({
         const matchingPreviousIndex = previousIds.indexOf(item.ids.join(","));
 
         if (previousHistoryIds !== item.ids.join(",")) {
-            // If new hisotry item and latest history item does not match, add new item to array.
-            const newIdsArray = item.ids.map((id) => id);
-            const diffArray = item.difficulty.map((diff) => diff);
-            const tagArray = item.tags.map((tag) => tag);
+            // If new history item and latest history item does not match, add new item to array.
+            const newIdsArray = item.ids;
+            const diffArray = item.difficulty;
+            const tagArray = item.tags;
 
-            // Adding item to history list
-            // Maximum 5 history items
+            // Construct removeArrayElement based on matchingPreviousIndex
+            const removeArrayElement =
+                matchingPreviousIndex !== -1
+                    ? `array_remove(user_history, user_history[${
+                          matchingPreviousIndex + 1
+                      }])`
+                    : `array_remove(user_history, user_history[array_length(user_history, 1)])`;
+
+            // Construct the SQL query
             const update = await db`
                 UPDATE account
                 SET user_history = CASE
@@ -47,23 +54,19 @@ export const updateUserHistory = async ({
                             },
                             ${
                                 item.difficulty.length > 0
-                                    ? db`ARRAY[${db.array(diffArray)}]`
+                                    ? db`ARRAY[${db.array(
+                                          diffArray
+                                      )}]::difficulty[]`
                                     : db`ARRAY[]::difficulty[]`
                             },
-                            ${item.content_type}::content_type
+                             ${db`${item.content_type}::content_type`}
                         )::user_history,
-                        ${
-                            matchingPreviousIndex !== -1
-                                ? db`array_remove(user_history, user_history[${
-                                      matchingPreviousIndex + 1
-                                  }])`
-                                : db`array_remove(user_history, user_history[array_length(user_history, 1)])`
-                        }
+                        ${db.unsafe(removeArrayElement)}
                     )
                 ELSE
                     ARRAY_PREPEND(
                         ROW(
-                            ARRAY[${newIdsArray}]::text[], 
+                            ARRAY[${db.array(newIdsArray)}]::text[], 
                             ${
                                 item.tags.length > 0
                                     ? db`ARRAY[${db.array(tagArray)}]::text[]`
@@ -71,22 +74,18 @@ export const updateUserHistory = async ({
                             },
                             ${
                                 item.difficulty.length > 0
-                                    ? db`ARRAY[${db.array(diffArray)}]`
+                                    ? db`ARRAY[${db.array(
+                                          diffArray
+                                      )}]::difficulty[]`
                                     : db`ARRAY[]::difficulty[]`
                             },
-                            ${item.content_type}::content_type
+                             ${db`${item.content_type}::content_type`}
                         )::user_history,
-                        ${
-                            matchingPreviousIndex !== -1
-                                ? db`array_remove(user_history, user_history[${
-                                      matchingPreviousIndex + 1
-                                  }])`
-                                : db``
-                        }
+                        user_history
                     )
                 END
                 WHERE user_id = ${userId}
-        `;
+            `;
 
             return { status: 200, message: "updated history" };
         }
@@ -101,6 +100,7 @@ export const updateUserHistory = async ({
         }
     }
 };
+
 // SQL TYPES
 // CREATE TYPE user_history AS (
 //   ids text[],

@@ -5,5 +5,7 @@ export const colours = {
     green: (alpha = 1) => `rgba(131, 230, 74, ${alpha})`,
     white: (alpha = 1) => `rgba(256, 256, 256, ${alpha})`,
     grey: (alpha = 1) => `rgba(169, 169, 169, ${alpha})`,
+    lightGrey: (alpha = 1) => `rgba(210, 210, 210, ${alpha})`,
     black: (alpha = 1) => `rgba(0, 0, 0, ${alpha})`,
+    purple: (alpha = 1) => `rgb(207, 159, 255, ${alpha})`,
 };

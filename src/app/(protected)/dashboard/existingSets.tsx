@@ -6,23 +6,23 @@ import { fetchAccountFromUserId } from "@/app/_actions/fetchAccountFromUserId";
 import { notFound } from "next/navigation";
 import fetchExistingSetsFromId from "@/app/_actions/fetchExistingSetsFromId";
 import CreateCollectionBtn from "./_dashboardButtons/createCollectionBtn";
-import { fetchCollectionByIdJoinSet } from "@/app/_actions/fetchCollectionByIdJoinSet";
-import CollectionItem from "./_dashboardItems/collectionItem/collectionItem";
+import {
+    fetchCollectionByIdJoinSet,
+    Flashcard_collection_set_joined,
+} from "@/app/_actions/fetchCollectionByIdJoinSet";
 import PreviewModal from "@/app/_components/previewModal/previewModal";
 import ReviseCollectionModal from "@/app/_components/reviseCollection/reviseCollectionModal";
-import SetItem, { FlashCardItem } from "./_dashboardItems/setItem/setItem";
 import { fetchRecentTested } from "./_actions/fetchRecentTested";
 import RecentItems from "./_dashboardSections/recentItems";
+import SetAndCollectionCard from "@/app/_components/setAndCollectionCard/setAndCollectionCard";
+import CreateSetBtn from "./_dashboardButtons/createSetBtn";
+import { Flashcard_set } from "@/app/_types/types";
 
-type RecentlyTestedTypes = {
-    type: "set" | "collection";
-    id: string;
-};
-
-// Card Component
+// Dashboard Page containing sections of card content
 async function ExistingSets({ session }: { session: Session | null }) {
     if (!session) return null;
 
+    // Data Fetching
     // Fetch Sets
     const searchExistingSets = await fetchExistingSetsFromId(session.user.id);
 
@@ -39,47 +39,88 @@ async function ExistingSets({ session }: { session: Session | null }) {
     const favouriteSets = searchExistingSets.filter((item) =>
         favArray.includes(item.id)
     );
+    const favouriteCollections = collectionWithSets
+        ? collectionWithSets.filter((item) => favArray.includes(item.id))
+        : [];
 
     // Fetch Recently tested
     const fetchHistory = await fetchRecentTested({ userId: session.user.id });
+
+    // Section Template
+    type SectionTemplateTypes = {
+        CreateBtn?: React.JSX.Element;
+        title: string;
+        itemsArray: {
+            contentType: "collection" | "set";
+            array: Flashcard_set[] | Flashcard_collection_set_joined[];
+        }[];
+    };
+
+    // Template dividing each section of dashboard, displaying groups of sets/collection/pinned items
+    const SectionTemplate = ({
+        CreateBtn,
+        title,
+        itemsArray,
+    }: SectionTemplateTypes) => {
+        return (
+            <section>
+                <div className={style.sectionTitle}>
+                    <h3>{title}</h3>
+                    {CreateBtn && (
+                        <div className={style.sectionBtnGroup}>{CreateBtn}</div>
+                    )}
+                </div>
+                <section className={style.setGrid}>
+                    {itemsArray &&
+                        itemsArray.map((sets) => {
+                            return sets.array.map((set) => {
+                                return (
+                                    <SetAndCollectionCard
+                                        set={set}
+                                        account={account}
+                                        contentType={sets.contentType}
+                                    />
+                                );
+                            });
+                        })}
+                </section>
+            </section>
+        );
+    };
 
     return (
         <section>
             {/* Recent sets/collection Selection */}
             <div className={style.sectionTitle}>
                 <h3>Recently Tested</h3>
-                <RecentItems fetch={fetchHistory} />
+                <RecentItems recentItems={fetchHistory} account={account} />
                 <GenericButton type="hyperlink">View All</GenericButton>
             </div>
-            <div className={style.sectionTitle}>
-                <h3>Favourites</h3>
-                <GenericButton type="hyperlink">View All</GenericButton>
-            </div>
-            <section className={style.setGrid}>
-                {favouriteSets &&
-                    favouriteSets.map((set, index) => {
-                        return (
-                            <FlashCardItem
-                                set={set}
-                                index={index}
-                                account={account}
-                            />
-                        );
-                    })}
-            </section>
+            {/* Favourites section */}
+            <SectionTemplate
+                title="Pinned Items"
+                itemsArray={[
+                    { contentType: "set", array: favouriteSets },
+                    { contentType: "collection", array: favouriteCollections },
+                ]}
+            />
             {/* Sets Selection */}
-            <SetItem
-                searchExistingSets={searchExistingSets}
-                account={account}
+            <SectionTemplate
+                title="Flash Card Sets"
+                CreateBtn={<CreateSetBtn />}
+                itemsArray={[{ contentType: "set", array: searchExistingSets }]}
             />
             {/* Collection Section */}
-            <div className={style.sectionTitle}>
-                <h3>Collection</h3>
-                <CreateCollectionBtn />
-            </div>
-            {collectionWithSets && (
-                <CollectionItem collectionWithSets={collectionWithSets} />
-            )}
+            <SectionTemplate
+                title="Flash Card Collection"
+                CreateBtn={<CreateCollectionBtn />}
+                itemsArray={[
+                    {
+                        contentType: "collection",
+                        array: collectionWithSets || [],
+                    },
+                ]}
+            />
             {/* Modals | Preview set/collection | Study Settings Modal */}
             <PreviewModal />
             <ReviseCollectionModal

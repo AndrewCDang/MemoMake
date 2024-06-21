@@ -12,20 +12,24 @@ function DashboardBtnTemplate({
     viewAllHandler,
 }: {
     btnText: string;
-    btnHandler: () => void;
-    viewAllHandler: () => void;
+    btnHandler?: () => void;
+    viewAllHandler?: () => void;
 }) {
     return (
         <div className={style.sectionBtnGroup}>
-            <DefaultButton>
-                <div onClick={btnHandler} className={style.sectionBtn}>
-                    <div>{btnText}</div>
-                    <HiMiniPlusSmall />
-                </div>
-            </DefaultButton>
-            <GenericButton handler={viewAllHandler} type="hyperlink">
-                View All
-            </GenericButton>
+            {btnHandler && (
+                <DefaultButton>
+                    <div onClick={btnHandler} className={style.sectionBtn}>
+                        <div>{btnText}</div>
+                        <HiMiniPlusSmall />
+                    </div>
+                </DefaultButton>
+            )}
+            {viewAllHandler && (
+                <GenericButton handler={viewAllHandler} type="hyperlink">
+                    View All
+                </GenericButton>
+            )}
         </div>
     );
 }

@@ -1,0 +1,74 @@
+@import "../../../../styles/colours.scss";
+.bannerContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1rem;
+    border-top-right-radius: 0.5rem;
+    border-top-left-radius: 0.5rem;
+
+    .bannerInternal {
+        position: relative;
+        display: flex;
+        gap: 0.5rem;
+        height: 100%;
+        width: 100%;
+    }
+    .iconContainer {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.25rem;
+        top: 0rem;
+        left: 0rem;
+
+        .bannerIcon {
+            display: flex;
+            width: 2.25rem;
+            height: 2.25rem;
+            justify-content: center;
+            border-radius: 1rem;
+            svg {
+                place-self: center;
+                width: 50%;
+            }
+        }
+    }
+}
+
+.foregroundContainer {
+    position: absolute;
+    top: 3.5rem;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 3.5rem);
+    background-color: white;
+    z-index: -1;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.backgroundContainer {
+    position: absolute;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    box-shadow: $box-shadow-sm;
+}
+.bannerIconBackground {
+    position: absolute;
+    background-color: $col-white;
+    z-index: -3;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-top-left-radius: 1rem;
+}

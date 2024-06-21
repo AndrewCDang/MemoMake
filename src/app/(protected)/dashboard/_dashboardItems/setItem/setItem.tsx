@@ -7,11 +7,11 @@ import {
     Flashcard_set,
     Flashcard_set_with_cards,
 } from "@/app/_types/types";
-import { HiArrowRightCircle } from "react-icons/hi2";
-import Link from "next/link";
+import { HiArrowSmallRight, HiMiniMagnifyingGlass } from "react-icons/hi2";
 import FavouriteIcon from "@/app/_components/favouriteIcon/favouriteIcon";
 import { usePreviewModal } from "@/app/_components/previewModal/usePreviewModal";
 import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
+import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 
 export const FlashCardItem = ({
     set,
@@ -39,31 +39,27 @@ export const FlashCardItem = ({
     };
 
     return (
-        <section key={set.id} className={style.setContainer}>
+        <article key={set.id} className={style.setContainer}>
             <div className={style.setContent}>
-                <h4>{set.set_name}</h4>
-                <div className={style.categoryContainer}>
+                <h4 className={style.title}>{set.set_name}</h4>
+                <ul className={style.categoryContainer}>
                     {set.set_categories.map((category, index) => {
-                        return <label key={index}>{category}</label>;
+                        return <li key={index}>{category}</li>;
                     })}
-                </div>
+                </ul>
                 {set.description && <p>{set.description}</p>}
             </div>
-            <button onClick={() => handler(set.id)} className={style.viewSet}>
-                <p>Preview</p>
-                <HiArrowRightCircle />
-            </button>
-            <div className={style.viewSet}>
-                <p>Study</p>
-                <HiArrowRightCircle />
+            <div className={style.buttonContainer}>
+                <DefaultButton handler={() => handler(set.id)}>
+                    <span>Preview</span>
+                    <HiMiniMagnifyingGlass />
+                </DefaultButton>
+                <DefaultButton variant="Black">
+                    <span>Study</span>
+                    <HiArrowSmallRight />
+                </DefaultButton>
             </div>
-            <Link href={`dashboard/flashcard?id=${set.id}`}>
-                <div className={style.viewSet}>
-                    <p>Edit Set</p>
-                    <HiArrowRightCircle />
-                </div>
-            </Link>
-            <div>
+            <div className={style.favouriteContainer}>
                 <FavouriteIcon
                     favourited={
                         account !== undefined
@@ -74,7 +70,7 @@ export const FlashCardItem = ({
                     setId={set.id}
                 />
             </div>
-        </section>
+        </article>
     );
 };
 

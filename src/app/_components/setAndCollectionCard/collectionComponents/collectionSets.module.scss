@@ -1,0 +1,58 @@
+@import "../../../styles/colours.scss";
+@import "../../../styles/mixins";
+
+@mixin packsMixin {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba($col-grey, 0.2);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    .setName {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: rgba($col-white, 0.5);
+        border-radius: 0.25rem;
+        width: fit-content;
+        padding: 0.5rem;
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        transition: margin-bottom 0.2s ease-in-out;
+        svg {
+            height: 1.25rem;
+            aspect-ratio: 1;
+        }
+    }
+    .setName:not(:last-child) {
+        margin-bottom: 0.5rem;
+    }
+    .moreSetsContainer {
+        border: 0.5px solid $col-grey;
+        .moreSetsBtn {
+            display: flex;
+            align-items: center;
+            svg {
+                margin-left: 0.5rem;
+                height: 1.5rem;
+                width: 1.5rem;
+            }
+        }
+    }
+}
+
+.setPacks {
+    @include packsMixin();
+}
+.setPacksPopover {
+    @include packsMixin();
+    border-radius: unset;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+@include customScrollbar(".setPacksPopover");
+
+.morePacks {
+    cursor: pointer;
+    position: relative;
+}

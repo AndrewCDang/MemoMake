@@ -2,13 +2,16 @@
 
 import { Account } from "../_types/types";
 import { db } from "../_lib/db";
+import { revalidatePath } from "next/cache";
 
 export const addRemoveFavourites = async ({
     id,
     setId,
+    revalidate = false,
 }: {
     id: string;
     setId: string;
+    revalidate?: boolean;
 }) => {
     try {
         const account: Account[] = await db`
@@ -39,6 +42,9 @@ export const addRemoveFavourites = async ({
                 SET favourites = ${updatedFavourites}
                 WHERE user_id = ${id}
             `;
+        }
+        if (revalidate) {
+            revalidatePath("dashboard");
         }
         return { status: 200, message: "Item Updated" };
     } catch (error: unknown) {

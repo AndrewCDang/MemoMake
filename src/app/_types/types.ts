@@ -31,7 +31,7 @@ export type User = {
 export type ContentType = "collection" | "set";
 
 export type UserHistory = {
-    ids: string[];
+    ids: string[][];
     tags: string[];
     difficulty: Difficulty[];
     content_type: ContentType;
@@ -73,6 +73,8 @@ export type PasswordResetToken = {
     expires: Date;
 };
 
+export type ThemeColour = "red" | "blue" | "yellow" | "green" | "purple" | null;
+
 export type Flashcard_set = {
     id: string;
     user_id: string;
@@ -84,6 +86,7 @@ export type Flashcard_set = {
     public_access: boolean;
     copied_reference: string;
     original_id: string;
+    theme_colour: ThemeColour;
 };
 
 export type Flashcard_collection = {
@@ -92,7 +95,13 @@ export type Flashcard_collection = {
     user_id: string;
     collection_name: string;
     original_id: string;
+    set_categories: string[];
+    description: string;
+    image: string;
+    publicAccess: boolean;
+    theme_colour: ThemeColour;
 };
+
 export type Flashcard_collection_with_count = {
     id: string;
     ids: string[];
@@ -103,8 +112,15 @@ export type Flashcard_collection_with_count = {
     item_count: number;
 };
 
+export type Flashcard_collection_with_type = Flashcard_collection & {
+    content_type: "collection";
+};
+
 export type Flashcard_set_with_count = Flashcard_set & {
     item_count: number;
+};
+export type Flashcard_set_with_type = Flashcard_set & {
+    content_type: "set";
 };
 
 export type Flashcard_set_with_cards = Flashcard_set & {

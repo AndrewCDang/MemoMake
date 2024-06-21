@@ -238,11 +238,15 @@ function Study({
     const userHistory = async () => {
         if (userId) {
             const newItem: UserHistory = {
-                ids: collectionIds.length > 0 ? collectionIds : setIds,
+                ids:
+                    collectionIds.length > 0
+                        ? (collectionIds as any)
+                        : (setIds as any),
                 tags: collectionTags,
                 difficulty: collectionDifficulties,
                 content_type: collectionIds.length > 0 ? "collection" : "set",
             };
+
             console.log(newItem);
 
             const fetch = await updateUserHistory({

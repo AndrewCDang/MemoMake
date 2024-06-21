@@ -1,0 +1,108 @@
+@import "../../styles/colours.scss";
+
+.setContainer {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    padding-top: 2.5rem;
+    border-radius: 0.5rem;
+
+    .bannerBtns {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        opacity: 0;
+        transition: all 0.1s ease-in-out;
+        transform: translateY(-0.5rem);
+        pointer-events: none;
+    }
+    &:hover .bannerBtns {
+        opacity: 1;
+        pointer-events: unset;
+
+        transform: translateY(0rem);
+    }
+
+    .setContent {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        .setImage {
+            background-color: $col-grey;
+            height: 3.5rem;
+            aspect-ratio: 1;
+            border-radius: 3.5rem;
+            object-fit: cover;
+        }
+        .titleContainer {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            width: 100%;
+            .titleImageContainer {
+                max-width: calc(100% - 1rem);
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+                width: 100%;
+            }
+            .title {
+                padding-right: 1.5rem;
+                overflow-x: scroll;
+                overflow-y: hidden;
+            }
+            .favouriteContainer {
+                right: 1rem;
+                top: 1rem;
+            }
+        }
+    }
+    li {
+        border: 0.5px solid $col-grey;
+        width: fit-content;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.5rem;
+        color: $col-black;
+    }
+    p {
+        color: $col-grey;
+    }
+    .buttonContainer {
+        display: flex;
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        padding: 1rem;
+        gap: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+        background-color: $col-white;
+    }
+    .buttonContainerHeight {
+        height: 3rem;
+    }
+}
+
+.categoryContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.viewSet {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-end;
+    svg {
+        width: 2.5rem;
+        height: 2.5rem;
+        transition: transform 0.1s ease-in-out;
+    }
+}
+
+.setContainer:hover .viewSet svg {
+    transform: translateX(0.5rem);
+}
