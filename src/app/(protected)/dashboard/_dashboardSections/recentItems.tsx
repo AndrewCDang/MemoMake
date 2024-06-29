@@ -1,19 +1,16 @@
 "use client";
 import React, { useEffect } from "react";
-import { FlashCardItem } from "../_dashboardItems/setItem/setItem";
-import CollectionItem from "../_dashboardItems/collectionItem/collectionItem";
+import style from "./recentItems.module.scss";
 
-import {
-    Account,
-    Flashcard_collection_with_type,
-    Flashcard_set,
-    Flashcard_set_with_type,
-} from "@/app/_types/types";
+import { Account, Flashcard_set } from "@/app/_types/types";
 import { RecentItemsTypes } from "../_actions/fetchRecentTested";
 import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import RecentItemsCard from "./recentComponents/recentItemsCard";
 
 type RecentTypes = {
-    recentItems: RecentItemsTypes | undefined;
+    recentItems:
+        | RecentItemsTypes<Flashcard_collection_set_joined[] | Flashcard_set[]>
+        | undefined;
     account: Account;
 };
 
@@ -21,50 +18,18 @@ function RecentItems({ recentItems, account }: RecentTypes) {
     useEffect(() => {
         console.log(recentItems);
     }, [recentItems]);
+
     return (
-        <section>
+        <section className={style.setGrid}>
             {recentItems &&
-                // Mapping all recent items
-                recentItems.map((item, index) => {
-                    // Returns 'Collection' Items
-                    if (item.content_type === "collection") {
-                        // Returns single collection
-                        if (item.content.length < 1) return null;
-                        if (item.content.length === 1) {
-                            return (
-                                <CollectionItem
-                                    key={index}
-                                    copy={true}
-                                    collectionWithSets={
-                                        item.content as Flashcard_collection_set_joined[]
-                                    }
-                                />
-                            );
-                            // Returns multiple collections
-                        } else {
-                            return (
-                                <div key={index}>Collection of Collection</div>
-                            );
-                        }
-                    }
-                    // Returns 'Set' Items
-                    else if (item.content_type === "set") {
-                        if (item.content.length < 1) return null;
-                        // Returns set collection
-                        if (item.content.length === 1) {
-                            const set = (item.content as Flashcard_set[])[0];
-                            return (
-                                <FlashCardItem
-                                    key={index}
-                                    set={set}
-                                    index={index}
-                                    account={account}
-                                />
-                            );
-                        } else {
-                            return <div key={index}>Collection of Sets</div>;
-                        }
-                    }
+                // Mapping all recent items into RecentItemsCard
+                recentItems.map((historyItem, index) => {
+                    return (
+                        <RecentItemsCard
+                            key={index}
+                            historyItem={historyItem}
+                        />
+                    );
                 })}
         </section>
     );

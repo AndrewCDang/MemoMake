@@ -1,9 +1,7 @@
 "use client";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import style from "../reviseCards.module.scss";
-import { getSession } from "next-auth/react";
 import { useReviseModal } from "../useReviseModal";
-import CornerClose from "../../cornerClose/cornerClose";
 import {
     ChangeEvent,
     Dispatch,
@@ -16,18 +14,15 @@ import TickValidate from "../../tickValidate/tickValidate";
 import {
     Flashcard_collection_preview,
     Flashcard_collection_with_count,
-    Flashcard_item,
-    Flashcard_set,
     Flashcard_set_with_cards,
     Flashcard_set_with_count,
 } from "@/app/_types/types";
-import { tagsCollectionTypes } from "@/app/_actions/fetchTagsInCollection";
 import TextInput from "../../textInput/inputField";
 import { fetchCollectionByIdWithSetAndItemCount } from "@/app/_actions/fetchCollectionByIdWithSetAndItemCount";
 import { Session } from "next-auth";
-import { fetchItemsFromSets } from "@/app/_actions/fetchItemsFromSets";
 import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
 import CollectionAndSetsSelectedObjects from "./collectionAndSetsSelectedObjects";
+import CollectionItem from "@/app/(protected)/dashboard/_dashboardItems/collectionItem/collectionItem";
 
 type CollectionAndSetsSection = {
     session: Session;
@@ -138,29 +133,39 @@ function CollectionAndSetsSection({
     );
 
     // Selectable List of dashboard items
-    const filteredList =
-        searchCollection.length > 0
-            ? searchCollection
-                  .filter((item) =>
-                      contentType == "collection"
-                          ? (
-                                item as Flashcard_collection_with_count
-                            ).collection_name
-                                .toLowerCase()
-                                .includes(searchSetInput?.toLowerCase())
-                          : (item as Flashcard_set_with_count).set_name
-                                .toLowerCase()
-                                .includes(searchSetInput?.toLowerCase())
-                  )
-                  .filter((item) => !selectedObjects.includes(item.id))
-            : searchCollection;
+    const getFilteredLlist = () => {
+        if (contentType === "collection" && searchCollection.length > 0) {
+            if (initialCollectionItems.length > 0) {
+                const selectedIds = initialCollectionItems.flatMap(
+                    (item) => item.id
+                );
+
+                const filteredList = (
+                    searchCollection as Flashcard_collection_with_count[]
+                ).filter((item) => !selectedIds.includes(item.id));
+
+                return filteredList as Flashcard_collection_with_count[];
+            }
+            return initialCollectionItems;
+        } else if (contentType === "set") {
+            if (initialSetItems.length > 0 && searchCollection.length > 0) {
+                const selectedIds = initialSetItems.flatMap((item) => item.id);
+                const filteredList = (
+                    searchCollection as Flashcard_set_with_count[]
+                ).filter((item) => !selectedIds.includes(item.id));
+                return filteredList;
+            }
+            return searchCollection as Flashcard_set_with_count[];
+        }
+    };
+    const filteredList = getFilteredLlist();
 
     const keydownHandler = (
         e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         if (e.key === "Enter") {
             setSearchSetInput("");
-            if (filteredList.length > 0 && filteredList[0]) {
+            if (filteredList && filteredList.length > 0 && filteredList[0]) {
                 const suggestedFirstItem = filteredList[0];
                 fetchFlashItems(suggestedFirstItem.id);
             }
@@ -267,7 +272,8 @@ function CollectionAndSetsSection({
                                 type="checkbox"
                                 defaultChecked={searchSetInput ? true : false}
                             ></input>
-                            {filteredList.length > 0 &&
+                            {filteredList &&
+                                filteredList.length > 0 &&
                                 filteredList.map((item) => {
                                     return (
                                         <div
@@ -336,6 +342,7 @@ function CollectionAndSetsSection({
                 <div ref={parent} className={style.setCardContainer}>
                     {/* Selected collections/sets */}
                     <CollectionAndSetsSelectedObjects />
+                    {/* Button which shows selectable sets to add */}
                     {!addSetModal && (
                         <div
                             onClick={() =>

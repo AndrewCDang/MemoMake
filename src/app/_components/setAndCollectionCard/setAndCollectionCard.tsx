@@ -1,32 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import style from "./setAndColelctionCard.module.scss";
-import {
-    Account,
-    Flashcard_collection_preview,
-    Flashcard_set,
-    Flashcard_set_with_cards,
-} from "@/app/_types/types";
-import DefaultButton from "../(buttons)/defaultButton";
-import { HiArrowSmallRight, HiMiniMagnifyingGlass } from "react-icons/hi2";
-import FavouriteIcon from "../favouriteIcon/favouriteIcon";
-import { AiFillPushpin } from "react-icons/ai";
-import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
-import { usePreviewModal } from "../previewModal/usePreviewModal";
+import childStyle from "./generalComponents/bannerStrip/bannerStrip.module.scss";
+import { Account, Flashcard_set } from "@/app/_types/types";
 import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
-import { useReviseModal } from "../reviseCollection/useReviseModal";
-import CollectionSets from "./collectionComponents/collectionSets";
+import CollectionSets from "./collectionComponents/collectionSetsV2";
 import BannerStrip from "./generalComponents/bannerStrip/bannerStrip";
-import PinIcon from "../_generalUi/pinIcon/pinIcon";
-import {
-    motion,
-    useMotionTemplate,
-    useMotionValue,
-    useSpring,
-} from "framer-motion";
-import { BiBorderRadius } from "react-icons/bi";
+import { motion } from "framer-motion";
 import { colours } from "@/app/styles/colours";
 import BannerBtns from "./generalComponents/bannerBtns/bannerBtns";
+import PreviewEditStudyBtns from "./generalComponents/previewEditStudyBtns/previewEditStudyBtns";
 
 type SetAndCollectionCardTypes = {
     set: Flashcard_set | Flashcard_collection_set_joined;
@@ -56,43 +39,6 @@ function SetAndCollectionCard({
     const cardCategories = set.set_categories || [];
     const cardDescription = set.description || null;
 
-    // Preview Handler | Modal
-    const { setPreviewCollectionItems, showUsePreviewModal } =
-        usePreviewModal();
-
-    const previewHandler = async (id: string) => {
-        const promise = await fetchSetsWithItems({
-            fetchObject: { id: id, type: contentType },
-        });
-        if (!promise) return;
-        setPreviewCollectionItems({
-            type: contentType,
-            content: promise,
-        });
-        showUsePreviewModal();
-    };
-
-    // Study Handler | Modal
-    const { setInitialCollectionItems, setInitalSet, showReviseModal } =
-        useReviseModal();
-
-    const studyHandler = async (id: string) => {
-        const promise = await fetchSetsWithItems({
-            fetchObject: { id: id, type: contentType },
-        });
-
-        if (!promise) return;
-        if (contentType === "set") {
-            setInitalSet({ item: promise as Flashcard_set_with_cards[] });
-        } else if (contentType === "collection") {
-            setInitialCollectionItems({
-                item: promise as Flashcard_collection_preview,
-            });
-        }
-
-        showReviseModal();
-    };
-
     // Favourite state
     const [isFavourited, setIsFavourited] = useState<boolean>(
         account !== undefined ? account.favourites.includes(set.id) : false
@@ -114,6 +60,7 @@ function SetAndCollectionCard({
             />
             <section className={style.bannerBtns}>
                 <BannerBtns
+                    contentType={contentType}
                     setIsFavourited={setIsFavourited}
                     isFavourited={isFavourited}
                     account={account}
@@ -123,7 +70,7 @@ function SetAndCollectionCard({
             <div className={style.setContent}>
                 <div className={style.titleContainer}>
                     <div className={style.titleImageContainer}>
-                        {!set.image && (
+                        {set.image && (
                             <img
                                 className={style.setImage}
                                 src={set.image || "/defaultImg.jpg"}
@@ -133,34 +80,29 @@ function SetAndCollectionCard({
                         <h5 className={style.title}>{cardTitle}</h5>
                     </div>
                 </div>
-                <ul className={style.categoryContainer}>
-                    {cardCategories.map((category, index) => {
-                        return <li key={index}>{category}</li>;
-                    })}
-                </ul>
                 {cardDescription && <p>{cardDescription}</p>}
             </div>
+            {/* Displaying Set items in collection card */}
             {contentType === "collection" && (
                 <CollectionSets
                     collectionItem={set as Flashcard_collection_set_joined}
                 />
             )}
             <div className={style.buttonContainerHeight}></div>
-            <div className={style.buttonContainer}>
-                <DefaultButton handler={() => previewHandler(set.id)}>
-                    <span>Preview</span>
-                    <HiMiniMagnifyingGlass />
-                </DefaultButton>
-                <DefaultButton
-                    variant="Black"
-                    handler={() => studyHandler(set.id)}
-                >
-                    <span>Study</span>
-                    <HiArrowSmallRight />
-                </DefaultButton>
-            </div>
+            <PreviewEditStudyBtns contentType={contentType} set={set} />
         </motion.article>
     );
 }
 
 export default SetAndCollectionCard;
+
+{
+    /* Cateogories list */
+}
+{
+    /* <ul className={style.categoryContainer}>
+                    {cardCategories.map((category, index) => {
+                        return <li key={index}>{category}</li>;
+                    })}
+                </ul> */
+}

@@ -8,7 +8,7 @@ import { useState } from "react";
 import { HiOutlineX } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiArrowUturnLeft } from "react-icons/hi2";
-import { labelColour } from "./tableItems/difficultyTableItem";
+import { labelColour } from "@/app/_components/_generalUi/difficultyColours/difficultyColours";
 import { diffArray } from "./tableItems/difficultyTableItem";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 

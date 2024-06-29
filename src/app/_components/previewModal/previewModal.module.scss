@@ -10,23 +10,33 @@
         .flashSetTitle {
             display: flex;
             justify-content: space-between;
-
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            min-height: 2.5rem;
+            cursor: pointer;
+            .flashSetTitleLogo {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
             svg {
                 cursor: pointer;
                 width: 1.5rem;
                 height: 1.5rem;
+            }
+            button {
+                display: flex;
             }
         }
         .flashCardSetContainer {
             height: fit-content;
             position: relative;
             background-color: rgba($col-grey, 0.15);
-            border-radius: 0.5rem;
+            border-radius: 0rem 0rem 0.5rem 0.5rem;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
             padding-bottom: 0.5rem;
-
 
             .flashCardItemHeading {
                 padding: 0.25rem 0.5rem;
@@ -34,7 +44,7 @@
                 width: 100%;
                 font-weight: 600;
                 text-decoration: underline;
-                
+
                 & > div {
                     margin: 0 0.5rem;
                     flex: 1;
@@ -57,4 +67,30 @@
             }
         }
     }
+}
+
+.collectionGroup {
+    position: relative;
+    padding: 0.5rem;
+    padding-top: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: $box-shadow-sm;
+    .collectionGroupTitle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        svg {
+            width: 2rem;
+            height: 2rem;
+        }
+    }
+}
+
+.collectionGroup:not(.collectionGroup:last-child) {
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+
+.collectionGroup:last-child {
+    margin-bottom: 0.5rem;
 }

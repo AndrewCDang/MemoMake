@@ -1,74 +1,133 @@
 @import "../../styles/colours.scss";
 
-.sectionTitle {
-    display: flex;
-    justify-content: space-between;
-}
-
-.setGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1rem;
-}
-
-.setContainer {
-    display: flex;
+.sectionContainer {
     position: relative;
-    flex-direction: column;
-    justify-content: space-between;
-    // width: clamp(300px, calc(240px + 2vw), 400px);
     padding: 1rem;
-    border-radius: 0.5rem;
+    margin-top: 2rem;
+    border-radius: 1rem;
     box-shadow: $box-shadow-sm;
-    // border: 0.5px solid $col-grey;
-    background-color: rgba($col-white, 0.6);
-    cursor: pointer;
-    .setContent {
+    .sectionTitle {
         display: flex;
-        flex-direction: column;
+        position: relative;
+        align-items: center;
+        padding-top: 0;
+        justify-content: space-between;
+        flex-wrap: wrap;
         gap: 0.5rem;
-        .title {
-            padding-right: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    // .sectionTitle::after {
+    //     content: "";
+    //     position: absolute;
+    //     z-index: -15;
+    //     display: flex;
+    //     bottom: 0;
+    //     left: -1rem;
+    //     width: calc(100% + 2rem);
+    //     height: calc(100% + 1rem);
+    //     background: linear-gradient(
+    //         to right,
+    //         rgba($col-grey, 0.4),
+    //         rgba($col-grey, 0.1)
+    //     );
+    //     border-top-left-radius: 1rem;
+    //     border-top-right-radius: 1rem;
+    // }
+
+    .setGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+        padding-top: 0.5rem;
+    }
+    .setGrid::after {
+        content: "";
+        position: absolute;
+        border-radius: 1rem;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -20;
+        background-color: rgba($col-white, 0.5);
+    }
+
+    .setContainer {
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        justify-content: space-between;
+        // width: clamp(300px, calc(240px + 2vw), 400px);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: $box-shadow-sm;
+        // border: 0.5px solid $col-grey;
+        background-color: rgba($col-white, 0.6);
+        cursor: pointer;
+        .setContent {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            .title {
+                padding-right: 1.5rem;
+            }
+        }
+        li {
+            border: 0.5px solid $col-grey;
+            width: fit-content;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
+            color: $col-black;
+        }
+        p {
+            color: $col-grey;
+        }
+        .buttonContainer {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .favouriteContainer {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
         }
     }
-    li {
-        border: 0.5px solid $col-grey;
-        width: fit-content;
-        padding: 0.2rem 0.5rem;
-        border-radius: 0.5rem;
-        color: $col-black;
-    }
-    p {
-        color: $col-grey;
-    }
-    .buttonContainer {
+
+    .categoryContainer {
         display: flex;
+        flex-wrap: wrap;
         gap: 0.5rem;
     }
-    .favouriteContainer {
-        position: absolute;
-        right: 1rem;
-        top: 1rem;
+    .viewSet {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: flex-end;
+        svg {
+            width: 2.5rem;
+            height: 2.5rem;
+            transition: transform 0.1s ease-in-out;
+        }
+    }
+
+    .setContainer:hover .viewSet svg {
+        transform: translateX(0.5rem);
     }
 }
 
-.categoryContainer {
+.iconAndTitle {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-.viewSet {
-    display: flex;
-    gap: 0.5rem;
     align-items: center;
-    justify-content: flex-end;
-    svg {
-        width: 2.5rem;
-        height: 2.5rem;
-        transition: transform 0.1s ease-in-out;
+    width: fit-content;
+    gap: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid rgba($col-black, 0.8);
+    h3 {
+        text-wrap: nowrap;
     }
-}
-
-.setContainer:hover .viewSet svg {
-    transform: translateX(0.5rem);
+    svg {
+        flex-shrink: 0;
+        width: 2rem;
+        height: 2rem;
+    }
 }

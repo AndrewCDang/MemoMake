@@ -1,7 +1,7 @@
 "use server";
 import { db } from "../_lib/db";
 import { revalidatePath } from "next/cache";
-import { ColumnName } from "../(protected)/dashboard/flashcard/collection/cardTableTypes";
+import { ColumnName } from "../(protected)/dashboard/edit/[id]/cardTableTypes";
 
 export type UpdateCardTypes = {
     id: string;

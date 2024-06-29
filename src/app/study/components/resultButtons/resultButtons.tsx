@@ -4,7 +4,7 @@ import ResultsGraph from "./components/resultsGraph";
 import { HiMiniArrowLeftOnRectangle } from "react-icons/hi2";
 import { HiOutlineXCircle } from "react-icons/hi2";
 import { HiOutlineArrowPath } from "react-icons/hi2";
-import { CombinedType } from "../../page";
+import { CombinedType } from "../../study";
 import Link from "next/link";
 
 function ResultButtons({
@@ -73,12 +73,12 @@ function ResultButtons({
             </div>
             <section className={style.buttonsContainer}>
                 <Link href={"/dashboard"}>
-                <ResultButton variant="Black" >
-                    <>
-                        <div>Dashboard</div>
-                        <HiMiniArrowLeftOnRectangle />
-                    </>
-                </ResultButton>
+                    <ResultButton variant="Black">
+                        <>
+                            <div>Dashboard</div>
+                            <HiMiniArrowLeftOnRectangle />
+                        </>
+                    </ResultButton>
                 </Link>
                 <div className={style.buttonContainer}>
                     {flashCardItems.length - correctItems.length > 0 && (

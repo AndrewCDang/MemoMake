@@ -1,0 +1,32 @@
+@import "../../../../../styles/colours.scss";
+
+.delConfirmationContainer {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: $col-white;
+    padding: 0.5rem;
+    z-index: 100;
+    align-items: center;
+    border-radius: 0.5rem;
+    box-shadow: $box-shadow-default;
+    left: 50%;
+    top: calc(50% - 1rem);
+    transform: translate(-50%, -50%);
+    .delText {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        svg {
+            width: 2rem !important;
+            height: 2rem !important;
+            fill: rgba($col-black, 0.8);
+        }
+    }
+    .delBtns {
+        display: flex;
+        gap: 1rem;
+    }
+}

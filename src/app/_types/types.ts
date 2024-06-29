@@ -32,9 +32,10 @@ export type ContentType = "collection" | "set";
 
 export type UserHistory = {
     ids: string[][];
-    tags: string[];
-    difficulty: Difficulty[];
+    tags: string[][];
+    difficulties: Difficulty[][];
     content_type: ContentType;
+    score: number;
 };
 
 export type Account = {
@@ -102,12 +103,7 @@ export type Flashcard_collection = {
     theme_colour: ThemeColour;
 };
 
-export type Flashcard_collection_with_count = {
-    id: string;
-    ids: string[];
-    user_id: string;
-    collection_name: string;
-    original_id: string;
+export type Flashcard_collection_with_count = Flashcard_collection & {
     sets_count: number;
     item_count: number;
 };
@@ -132,12 +128,7 @@ export type Flashcard_collection_with_cards = Flashcard_collection & {
     flashcards: Flashcard_item[];
 };
 
-export type Flashcard_collection_preview = {
-    id: string;
-    ids: string[];
-    user_id: string;
-    collection_name: string;
-    original_id: string;
+export type Flashcard_collection_preview = Flashcard_collection & {
     sets: Flashcard_set_with_cards[];
 };
 

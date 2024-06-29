@@ -3,7 +3,7 @@ import CardsTable from "./cardsTable";
 import CreateCard from "../createCard";
 import { filterCollection } from "@/app/_actions/filterColection";
 import style from "./cardsTable.module.scss";
-import ReviseCards from "@/app/_components/reviseCards/reviseCards";
+import ReviseCards from "@/app/_components/reviseCollection/reviseCards";
 import { fetchSet } from "@/app/_actions/fetchSet";
 import { auth } from "@/auth";
 import { fetchTagsInCollection } from "@/app/_actions/fetchTagsInCollection";
@@ -13,8 +13,8 @@ import SliderToggle from "@/app/_components/sliderToggle/sliderToggle";
 import { toggleSetPublicAccess } from "@/app/_actions/toggleSetPublicAccess";
 import PublicAccessBtn from "../(components)/publicAccessBtn";
 
-async function page({ searchParams }: { searchParams: { id: string } }) {
-    const setId = searchParams.id;
+async function page({ params }: { params: { id: string } }) {
+    const setId = params.id;
     const cardCollection = await fetchExistingCards(setId);
     const initialSet = await fetchSet(setId);
     const session = await auth();
@@ -35,7 +35,7 @@ async function page({ searchParams }: { searchParams: { id: string } }) {
         );
     }
 
-    const tags = await filterCollection(searchParams.id);
+    const tags = await filterCollection(setId);
     let tagArray = [];
     if (tags) {
         tagArray = tags.map((tag) => {
@@ -54,13 +54,14 @@ async function page({ searchParams }: { searchParams: { id: string } }) {
                     />
                 )}
             </div>
-            <CreateCard setId={searchParams.id} />
+            <CreateCard setId={setId} />
             {fetchTags && fetchCollectionCount && initialItems && (
                 <ReviseCards
                     initialSet={initialSet}
                     initialItems={initialItems}
                     collectionSet={fetchCollectionCount}
                     tagsCollection={fetchTags}
+                    session={session}
                 />
             )}
         </section>

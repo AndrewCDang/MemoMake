@@ -2,14 +2,32 @@ import {
     Flashcard_collection_preview,
     Flashcard_set_with_cards,
 } from "@/app/_types/types";
-import { usePreviewModal } from "../usePreviewModal";
+import { PreviewItemType, usePreviewModal } from "../usePreviewModal";
 import { useReviseModal } from "../../reviseCollection/useReviseModal";
 
-export const setRevisionModal = () => {
-    const { previewCollectionItems } = usePreviewModal();
+type SetRevisionModalTypes = {
+    previewCollectionItems: PreviewItemType;
+    setInitialCollectionItems: ({
+        item,
+        existingItems,
+    }: {
+        item: Flashcard_collection_preview | Flashcard_collection_preview[];
+        existingItems?: Flashcard_collection_preview[];
+    }) => void;
+    setInitalSet: ({
+        item,
+        existingItems,
+    }: {
+        item: Flashcard_set_with_cards[];
+        existingItems?: Flashcard_set_with_cards[];
+    }) => void;
+};
 
-    const { setInitialCollectionItems, setInitalSet } = useReviseModal();
-
+export const setRevisionModal = ({
+    previewCollectionItems,
+    setInitialCollectionItems,
+    setInitalSet,
+}: SetRevisionModalTypes) => {
     if (previewCollectionItems) {
         if (
             previewCollectionItems.type === "collection" &&

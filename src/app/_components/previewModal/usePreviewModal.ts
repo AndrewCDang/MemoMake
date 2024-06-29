@@ -5,11 +5,14 @@ import {
 } from "@/app/_types/types";
 import { create } from "zustand";
 
-type Collection = Flashcard_collection_preview | Flashcard_set_with_cards[];
+type Collection =
+    | Flashcard_collection_preview
+    | Flashcard_collection_preview[]
+    | Flashcard_set_with_cards[];
 
-type PreviewItemType = {
+export type PreviewItemType = {
     type: "collection" | "set" | null;
-    content: Collection | null;
+    content: Collection | null | undefined;
 };
 
 type UsePreviewModalTypes = {

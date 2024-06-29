@@ -1,15 +1,2 @@
 @import "../../../styles/colours.scss";
 @import "../../../styles/mixins";
-
-.popOverContainer {
-    position: absolute;
-    width: 100%;
-    background-color: $col-white;
-    top: 0;
-    left: 0;
-    border-radius: 0.5rem;
-    max-height: calc(100% - 4rem);
-    overflow-y: scroll;
-}
-
-@include customScrollbar(".popOverContainer");

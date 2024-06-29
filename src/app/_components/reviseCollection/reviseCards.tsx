@@ -3,19 +3,21 @@
 import React, { useEffect, useState } from "react";
 import Button from "../(buttons)/styledButton";
 import Modal from "../modal/modal";
-import ReviseCardModal from "../reviseCards/reviseCardModal";
+import ReviseCollectionModalContent from "./reviseModalContent";
 import {
     Flashcard_set_with_count,
     Flashcard_set,
     Flashcard_item,
 } from "@/app/_types/types";
 import { tagsCollectionTypes } from "@/app/_actions/fetchTagsInCollection";
+import { Session } from "next-auth";
 
 type ReviseCardsTypes = {
     initialSet: Flashcard_set | undefined;
     initialItems: Flashcard_item[];
     collectionSet: Flashcard_set_with_count[];
     tagsCollection: tagsCollectionTypes[];
+    session: Session;
 };
 
 function ReviseCards({
@@ -23,6 +25,7 @@ function ReviseCards({
     initialItems,
     collectionSet,
     tagsCollection,
+    session,
 }: ReviseCardsTypes) {
     const [modalOn, setModalOn] = useState(false);
 
@@ -42,11 +45,10 @@ function ReviseCards({
                 setModal={setModalOn}
                 modalTitle={"Revise"}
             >
-                <ReviseCardModal
-                    initialSet={initialSet}
-                    initialItems={initialItems}
+                <ReviseCollectionModalContent
                     collectionSet={collectionSet}
-                    tagsCollection={tagsCollection}
+                    contentType="set"
+                    session={session}
                 />
             </Modal>
         </div>

@@ -1,3 +1,14 @@
+export type coloursType =
+    | "red"
+    | "blue"
+    | "yellow"
+    | "green"
+    | "white"
+    | "grey"
+    | "lightGrey"
+    | "black"
+    | "purple";
+
 export const colours = {
     red: (alpha = 1) => `rgba(255, 86, 120, ${alpha})`,
     blue: (alpha = 1) => `rgba(5, 203, 214, ${alpha})`,

@@ -1,34 +1,38 @@
 "use server";
 import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import { db } from "@/app/_lib/db";
-import {
-    Flashcard_collection,
-    Flashcard_collection_with_type,
-    Flashcard_set,
-    Flashcard_set_with_type,
-    UserHistory,
-} from "@/app/_types/types";
-import { ContentType } from "@/app/_types/types";
+import { Flashcard_set, UserHistory } from "@/app/_types/types";
+import { ContentType, Difficulty } from "@/app/_types/types";
 
 type FetchRecentTestedTypes = {
     userId: string;
 };
-export type RecentItemsTypes = (
-    | {
-          content_type: ContentType;
-          content: Flashcard_collection_set_joined[];
-      }
-    | { content_type: ContentType; content: Flashcard_set[] }
-)[];
+
+type FetchHistory = {
+    user_history: UserHistory[];
+};
+
+export type RecentItemsTypes<T> = {
+    content_type: ContentType;
+    difficulties: Difficulty[];
+    tags: string[];
+    score: number;
+    content: T;
+}[];
 
 export const fetchRecentTested = async ({
     userId,
-}: FetchRecentTestedTypes): Promise<RecentItemsTypes | undefined> => {
+}: FetchRecentTestedTypes): Promise<
+    | RecentItemsTypes<Flashcard_set[] | Flashcard_collection_set_joined[]>
+    | undefined
+> => {
+    console.log(userId);
     try {
-        const fetchHistory = await db`
+        const fetchHistory: FetchHistory[] = await db`
     SELECT to_json(user_history) as user_history 
     FROM account 
     WHERE user_id = ${userId}
+    
 `;
 
         const historyItems = fetchHistory[0].user_history as UserHistory[];
@@ -49,11 +53,11 @@ export const fetchRecentTested = async ({
                     GROUP BY fc.id
                 `) as Flashcard_collection_set_joined[];
                 return {
-                    content_type: "collection",
+                    content_type: "collection" as ContentType,
+                    difficulties: item.difficulties[0],
+                    tags: item.tags[0],
+                    score: item.score,
                     content: results,
-                } as {
-                    content_type: ContentType;
-                    content: Flashcard_collection_set_joined[];
                 };
             } else if (item.content_type === "set") {
                 const results = (await db`
@@ -61,9 +65,12 @@ export const fetchRecentTested = async ({
                     FROM flashcard_set
                     WHERE id = ANY(${db.array(flattenedIds)}::uuid[])
                 `) as Flashcard_set[];
-                return { content_type: "set", content: results } as {
-                    content_type: ContentType;
-                    content: Flashcard_set[];
+                return {
+                    content_type: "set" as ContentType,
+                    content: results,
+                    difficulties: item.difficulties[0],
+                    score: item.score,
+                    tags: item.tags[0],
                 };
             }
             return undefined;

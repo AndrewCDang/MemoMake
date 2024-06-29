@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import style from "./resultsGraph.module.scss";
 import { colours } from "@/app/styles/colours";
 
-function ResultsGraph({ progress }: { progress: number }) {
+function ResultsGraph({
+    progress,
+    showScore = true,
+    customWidth = null,
+}: {
+    progress: number;
+    showScore?: boolean;
+    customWidth?: number | null;
+}) {
     // Base values
     const strokeWidth = 10; // Stroke width
     const minGraph = 40;
@@ -35,15 +43,17 @@ function ResultsGraph({ progress }: { progress: number }) {
     // Update graphSize when the window resizes
     useEffect(() => {
         setPercent(progress);
-
         function handleResize() {
             setGraphSize(getGraphSize());
         }
-
-        window.addEventListener("resize", handleResize);
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
+        if (customWidth) {
+            setGraphSize(customWidth);
+        } else {
+            window.addEventListener("resize", handleResize);
+            return () => {
+                window.removeEventListener("resize", handleResize);
+            };
+        }
     }, []);
 
     // Adjust the radius to be within the SVG viewbox
@@ -60,8 +70,8 @@ function ResultsGraph({ progress }: { progress: number }) {
         <section className={style.graphContainer}>
             <svg
                 className={style.svgContainer}
-                width={`${graphSize}px`} // Explicitly set the width of the SVG
-                height={`${graphSize}px`} // Explicitly set the height of the SVG
+                width={`${graphSize}px`}
+                height={`${graphSize}px`}
                 style={{ overflow: "visible" }}
             >
                 <circle
@@ -78,8 +88,8 @@ function ResultsGraph({ progress }: { progress: number }) {
                     cy={`${graphSize / 2}px`}
                     r={`${radius}px`}
                     fill="transparent"
-                    stroke="green"
-                    strokeWidth={`${strokeWidth}px`}
+                    stroke={colours.green()}
+                    strokeWidth={`${strokeWidth + 0.5}px`}
                     strokeDasharray={`${strokeDasharray}px`}
                     strokeDashoffset={`${strokeDashoffset}px`}
                     strokeLinecap="round"
@@ -91,9 +101,11 @@ function ResultsGraph({ progress }: { progress: number }) {
                     }}
                 />
             </svg>
-            <p className={style.percentText}>
-                {percent && Math.floor(percentText) + "%"}
-            </p>
+            {showScore && (
+                <p className={style.percentText}>
+                    {percent && Math.floor(percentText) + "%"}
+                </p>
+            )}
         </section>
     );
 }

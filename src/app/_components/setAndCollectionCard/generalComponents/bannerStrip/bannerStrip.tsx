@@ -13,11 +13,10 @@ import { Account, ThemeColour } from "@/app/_types/types";
 import { Flashcard_set } from "@/app/_types/types";
 import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import { spring } from "@/app/_components/framerMotion/springTransition";
+import { colours } from "@/app/styles/colours";
 
 function BannerStrip({
     contentType,
-    account,
-    set,
     isFavourited,
     themeColour,
 }: {
@@ -55,7 +54,25 @@ function BannerStrip({
     }, [isFavourited]);
 
     // Box Shadow - icons
-    const iconBoxShadows = `1px 2px 1px rgba(0,0,0,0.4)`;
+    const iconBoxShadows = `0px 2px 4px rgba(0,0,0,0.2)`;
+
+    const ForegroundContainer = () => {
+        if (contentType === "set") {
+            return <div className={style.foregroundContainer}></div>;
+        } else if (contentType === "collection") {
+            return (
+                <motion.div
+                    style={{
+                        clipPath: newPathD,
+                        backgroundColor: colours.white(),
+                        // boxShadow: `6px 6px 0px rgba(0,0,0,0.4), 6px 6px 0px ${themeColour}`,
+                    }}
+                    className={style.backgroundCollectionContainer}
+                ></motion.div>
+            );
+        }
+        return null;
+    };
 
     return (
         <>
@@ -64,7 +81,7 @@ function BannerStrip({
                     <section className={style.iconContainer}>
                         {contentType && (
                             <div
-                                className={style.bannerIcon}
+                                className={`${style.bannerIcon} foregroundContainer2`}
                                 style={{
                                     backgroundColor: themeColour,
                                     boxShadow: iconBoxShadows,
@@ -80,7 +97,7 @@ function BannerStrip({
                         <AnimatePresence initial={false}>
                             {isFavourited && (
                                 <motion.div
-                                    className={style.bannerIcon}
+                                    className={`${style.bannerIcon} foregroundContainer2`}
                                     style={{
                                         backgroundColor: themeColour,
                                         boxShadow: iconBoxShadows,
@@ -97,15 +114,19 @@ function BannerStrip({
                     </section>
                 </div>
             </div>
-            <div className={style.foregroundContainer}></div>
-            <motion.div
-                style={{
-                    clipPath: newPathD,
-                    backgroundColor: themeColour,
-                    boxShadow: `6px 6px 0px rgba(0,0,0,0.4), 6px 6px 0px ${themeColour}`,
-                }}
-                className={style.backgroundContainer}
-            ></motion.div>
+            <ForegroundContainer />
+            <div
+                className={`${style.backgroundContainerWrap} foregroundContainer`}
+            >
+                <motion.div
+                    style={{
+                        clipPath: newPathD,
+                        backgroundColor: themeColour,
+                        // boxShadow: `6px 6px 0px rgba(0,0,0,0.4), 6px 6px 0px ${themeColour}`,
+                    }}
+                    className={style.backgroundContainer}
+                ></motion.div>
+            </div>
         </>
     );
 }

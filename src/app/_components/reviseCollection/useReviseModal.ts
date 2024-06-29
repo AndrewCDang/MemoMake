@@ -16,7 +16,7 @@ type UseReviseModalTypes = {
         item,
         existingItems,
     }: {
-        item: Flashcard_collection_preview;
+        item: Flashcard_collection_preview | Flashcard_collection_preview[];
         existingItems?: Flashcard_collection_preview[];
     }) => void;
     setInitalSet: ({
@@ -25,6 +25,20 @@ type UseReviseModalTypes = {
     }: {
         item: Flashcard_set_with_cards[];
         existingItems?: Flashcard_set_with_cards[];
+    }) => void;
+    removeFromCollection: ({
+        id,
+        existingItems,
+    }: {
+        id: string;
+        existingItems: Flashcard_collection_preview[];
+    }) => void;
+    removeFromSet: ({
+        id,
+        existingItems,
+    }: {
+        id: string;
+        existingItems: Flashcard_set_with_cards[];
     }) => void;
 };
 
@@ -39,41 +53,52 @@ export const useReviseModal = create<UseReviseModalTypes>()((set) => ({
         item,
         existingItems = [],
     }: {
-        item: Flashcard_collection_preview;
+        item: Flashcard_collection_preview | Flashcard_collection_preview[];
         existingItems?: Flashcard_collection_preview[];
     }) =>
         set(() => {
-            if (existingItems.length === 0) {
+            // Adding group of 'collection items'
+            if (Array.isArray(item)) {
+                return {
+                    initialCollectionItems: item,
+                    reviseModalType: "collection",
+                };
+            } else {
+                // Adding item into new modal (no existing items)
+                if (existingItems.length === 0) {
+                    return {
+                        initialCollectionItems: [item],
+                        reviseModalType: "collection",
+                    };
+                }
+                // Filtering repeat collection
+                if (
+                    existingItems &&
+                    existingItems
+                        .map((collection) => collection.id)
+                        .includes(item.id)
+                ) {
+                    const collectionWithoutItem = existingItems.filter(
+                        (collection) => collection.id !== item.id
+                    );
+                    return {
+                        initialCollectionItems: collectionWithoutItem,
+                        reviseModalType: "collection",
+                    };
+                    // If no repeats, append collection at end of array
+                } else if (existingItems) {
+                    {
+                        return {
+                            initialCollectionItems: [...existingItems, item],
+                            reviseModalType: "collection",
+                        };
+                    }
+                }
                 return {
                     initialCollectionItems: [item],
                     reviseModalType: "collection",
                 };
             }
-            if (
-                existingItems &&
-                existingItems
-                    .map((collection) => collection.id)
-                    .includes(item.id)
-            ) {
-                const collectionWithoutItem = existingItems.filter(
-                    (collection) => collection.id !== item.id
-                );
-                return {
-                    initialCollectionItems: collectionWithoutItem,
-                    reviseModalType: "collection",
-                };
-            } else if (existingItems) {
-                {
-                    return {
-                        initialCollectionItems: [...existingItems, item],
-                        reviseModalType: "collection",
-                    };
-                }
-            }
-            return {
-                initialCollectionItems: [item],
-                reviseModalType: "collection",
-            };
         }),
     setInitalSet: ({
         item,
@@ -107,5 +132,33 @@ export const useReviseModal = create<UseReviseModalTypes>()((set) => ({
                 };
             }
             return { initialSetItems: [], reviseModalType: "set" };
+        }),
+    removeFromCollection: ({
+        id,
+        existingItems,
+    }: {
+        id: string;
+        existingItems: Flashcard_collection_preview[];
+    }) =>
+        set(() => {
+            const filteredCollection = existingItems.filter(
+                (item) => item.id !== id
+            );
+
+            return { initialCollectionItems: filteredCollection };
+        }),
+    removeFromSet: ({
+        id,
+        existingItems,
+    }: {
+        id: string;
+        existingItems: Flashcard_set_with_cards[];
+    }) =>
+        set(() => {
+            const filteredCollection = existingItems.filter(
+                (item) => item.id !== id
+            );
+
+            return { initialSetItems: filteredCollection };
         }),
 }));

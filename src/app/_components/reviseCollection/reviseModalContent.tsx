@@ -238,7 +238,7 @@ ReviseCollectionModalContentTypes) {
                     : "";
             const set =
                 initialSetItems.length > 0
-                    ? `set=${initialSetItems.map((item) => item.id).join("_")}`
+                    ? `&set=${initialSetItems.map((item) => item.id).join("_")}`
                     : "";
             const tags =
                 selectedTags.length > 0

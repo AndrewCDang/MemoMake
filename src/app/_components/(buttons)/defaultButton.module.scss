@@ -16,9 +16,9 @@
         height: 1.5rem;
         width: 1.5rem;
     }
-    transition: all 0.2s ease-in-out;
+    transition: all 0.12s ease-in-out;
     &:hover {
-        background-color: rgba($col-white, 0.3);
+        background-color: rgba($col-grey, 0.1);
     }
 }
 
@@ -27,5 +27,13 @@
     color: $col-white;
     &:hover {
         background-color: rgba($col-black, 0.8);
+    }
+}
+
+.defaultButtonRed {
+    color: $col-red;
+    border: 1px solid $col-red;
+    &:hover {
+        background-color: rgba($col-red, 0.1);
     }
 }

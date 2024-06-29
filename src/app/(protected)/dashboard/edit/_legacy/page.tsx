@@ -1,13 +1,13 @@
 import { db } from "@/app/_lib/db";
 import style from "./set.module.scss";
 import { Flashcard_item, Flashcard_set } from "@/app/_types/types";
-import CreateCard from "./createCard";
-import ReviseCard from "./reviseCard";
+import CreateCard from "../createCard";
+import ReviseCard from "../reviseCard";
 import { HiMiniStop } from "react-icons/hi2";
 import LinkText from "@/app/_components/linkText/linkText";
 import SliderToggle from "@/app/_components/sliderToggle/sliderToggle";
 import { toggleSetPublicAccess } from "@/app/_actions/toggleSetPublicAccess";
-import PublicAccessBtn from "./(components)/publicAccessBtn";
+import PublicAccessBtn from "../(components)/publicAccessBtn";
 
 async function page({ searchParams }: any) {
     console.log(searchParams);

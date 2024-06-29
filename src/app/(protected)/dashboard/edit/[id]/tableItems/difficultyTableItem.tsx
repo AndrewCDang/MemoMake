@@ -6,6 +6,7 @@ import PopToggler from "./popToggler";
 import { colours } from "@/app/styles/colours";
 import { HiOutlineX } from "react-icons/hi";
 import { motion } from "framer-motion";
+import { labelColour } from "@/app/_components/_generalUi/difficultyColours/difficultyColours";
 
 type GenericField = {
     item: ColumnName;
@@ -21,20 +22,6 @@ type GenericField = {
 };
 
 export const diffArray = ["EASY", "MEDIUM", "HARD"];
-
-export const labelColour = (diff: string) => {
-    switch (diff) {
-        case "NA":
-            return "";
-        case "EASY":
-            return colours.green();
-        case "MEDIUM":
-            return colours.yellow();
-        case "HARD":
-            return colours.red();
-        default:
-    }
-};
 
 function DifficultyTableItem({
     item,

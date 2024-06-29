@@ -4,7 +4,7 @@ import style from "./defaultButton.module.scss";
 
 type DefaultButtonTypes = {
     children: ReactNode;
-    variant?: "Black" | "White";
+    variant?: "Black" | "White" | "red";
     handler?: () => void;
 };
 
@@ -13,7 +13,11 @@ const DefaultButton = ({ children, variant, handler }: DefaultButtonTypes) => {
         <button
             onClick={() => handler && handler()}
             className={`${style.defaultButton} ${
-                variant === "Black" && style.defaultButtonBlack
+                variant === "Black"
+                    ? style.defaultButtonBlack
+                    : variant === "red"
+                    ? style.defaultButtonRed
+                    : ""
             }`}
         >
             {children}

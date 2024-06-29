@@ -37,6 +37,7 @@ $primary-glow-3: conic-gradient(
 
 $box-shadow-default: 0px 8px 16px rgba($col-black, 0.3);
 $box-shadow-sm: 0px 2px 4px rgba($col-black, 0.2);
+$box-shadow-sm-2: 2px 2px 4px rgba($col-black, 0.2);
 
 @mixin colouredDropShadow($property) {
     box-shadow: 0px 0px 12px rgba($property, 0.8);

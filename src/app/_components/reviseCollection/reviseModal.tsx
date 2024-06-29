@@ -2,11 +2,10 @@
 
 import { Session } from "next-auth";
 import Modal from "../modal/modal";
-import ReviseCollectionModalContent from "./reviseCollectionModalContent";
+import ReviseCollectionModalContent from "./reviseModalContent";
 import { useReviseModal } from "./useReviseModal";
-import { useEffect } from "react";
 
-function ReviseCollectionModal({
+function ReviseModal({
     session,
     contentType,
 }: {
@@ -29,4 +28,4 @@ function ReviseCollectionModal({
     );
 }
 
-export default ReviseCollectionModal;
+export default ReviseModal;

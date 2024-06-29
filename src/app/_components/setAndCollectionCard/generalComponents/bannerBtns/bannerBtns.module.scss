@@ -1,10 +1,15 @@
 @import "../../../../styles/colours.scss";
 
 .bannerBtnsContainer {
+    position: relative;
     display: flex;
     gap: 0.5rem;
+    .delBannerContainer {
+        position: relative;
+    }
     .bannerIcon {
         display: flex;
+        position: relative;
         aspect-ratio: 1;
         width: fit-content;
         padding: 0.25rem;
@@ -20,6 +25,25 @@
             height: 1.5rem;
             aspect-ratio: 1;
             stroke: unset;
+        }
+
+        .hoverLabel {
+            position: absolute;
+            top: -0.5rem;
+            transform: translate(-50%, -100%);
+            background-color: rgba($col-black, 0.85);
+            border-radius: 0.25rem;
+            padding: 0rem 0.25rem;
+            color: $col-white;
+            left: 50%;
+            opacity: 0;
+            transition: 0.12s ease-in-out;
+            width: fit-content;
+            text-wrap: nowrap;
+            z-index: 50;
+        }
+        &:hover .hoverLabel {
+            opacity: 1;
         }
     }
 }

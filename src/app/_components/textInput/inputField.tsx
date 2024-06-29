@@ -2,7 +2,7 @@ import { ChangeEvent, RefObject } from "react";
 import style from "./inputField.module.scss";
 
 type InputRef = {
-    refObject: RefObject<HTMLInputElement | HTMLTextAreaElement> | undefined;
+    refObject?: RefObject<HTMLInputElement | HTMLTextAreaElement> | undefined;
     error?: boolean;
     id: string;
     placeholder: string;

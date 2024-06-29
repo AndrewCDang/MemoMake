@@ -12,6 +12,7 @@ import InteractiveCard from "./interactiveCard";
 import { shuffleArray } from "@/app/_functions/shuffleArray";
 import { useSearchParams } from "next/navigation";
 import {
+    ContentType,
     Difficulty,
     Flashcard_collection_with_cards,
     Flashcard_item,
@@ -233,21 +234,33 @@ function Study({
             ? incorrectQuestions
             : flashCardItemsTest;
 
-    // Updates user history (once) after user completes all questions initially
-    const [historyUpdated, setHistoryUpdated] = useState<boolean>(false);
     const userHistory = async () => {
         if (userId) {
-            const newItem: UserHistory = {
+            const correctCount = flashCardItemsTest.reduce((acc, curr) => {
+                if (curr.correct) {
+                    return acc + 1;
+                } else {
+                    return acc;
+                }
+            }, 0);
+
+            const correctPercent = Number(
+                ((correctCount / flashCardItemsTest.length) * 100).toFixed(2)
+            );
+
+            const newItem = {
                 ids:
                     collectionIds.length > 0
                         ? (collectionIds as any)
                         : (setIds as any),
                 tags: collectionTags,
-                difficulty: collectionDifficulties,
-                content_type: collectionIds.length > 0 ? "collection" : "set",
+                difficulties: collectionDifficulties,
+                content_type:
+                    collectionIds.length > 0
+                        ? "collection"
+                        : ("set" as ContentType),
+                correct: Math.round(correctPercent),
             };
-
-            console.log(newItem);
 
             const fetch = await updateUserHistory({
                 item: newItem,
@@ -258,16 +271,8 @@ function Study({
     };
 
     useEffect(() => {
-        if (
-            chosenQuestions.length &&
-            currentCard >= chosenQuestions.length &&
-            !historyUpdated
-        ) {
-            setTimeout(() => {
-                setHistoryUpdated(true);
-            }, 0);
+        if (chosenQuestions.length && currentCard >= chosenQuestions.length) {
             userHistory();
-        } else if (currentCard >= chosenQuestions.length && historyUpdated) {
         }
     }, [currentCard]);
 
