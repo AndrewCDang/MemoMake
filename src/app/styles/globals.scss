@@ -32,8 +32,8 @@ h5 {
 }
 
 h6 {
-    font-size: clamp(0.9rem, 0.6rem + 1vw, 1.25rem);
-    line-height: clamp(1.08rem, 0.72rem + 1vw, 1.5rem); /* Adjusted */
+    font-size: clamp(0.8rem, 0.7rem + 1vw, 1rem);
+    line-height: clamp(1.12rem, 0.96rem + 1vw, 1.4rem); /* Adjusted */
 }
 
 p {
@@ -85,8 +85,10 @@ html {
 
 body {
     margin: 0;
-    & > section {
+    > section,
+    > main {
         min-height: calc(100vh - 3.5rem);
+        padding-top: 1.5rem;
     }
     position: relative;
     overflow-x: hidden;
@@ -131,4 +133,92 @@ input[type="checkbox"]:checked {
     box-shadow: 0px 0px 10px rgba(150, 150, 150, 0.5);
     width: 0.5rem;
     height: 0.5rem;
+}
+
+input[type="text"] {
+    border: 1px solid $col-grey;
+    padding-left: 0.5rem;
+    border-radius: 0.5rem;
+    outline: none;
+}
+input[type="text"]:focus {
+    outline: 1.5px solid $col-blue-select; /* Restores outline with desired style */
+    outline-offset: -1.5px;
+}
+
+input[type="file"] {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    user-select: none;
+    z-index: -1;
+}
+
+input[type="file"] + label {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    box-shadow: $box-shadow-sm;
+    background: linear-gradient($col-white, $col-white),
+        linear-gradient($col-white, $col-white);
+    color: $col-black;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-weight: 500;
+    }
+    &:hover {
+        background: linear-gradient(rgba($col-grey, 0.1), rgba($col-grey, 0.1)),
+            linear-gradient($col-white, $col-white);
+    }
+}
+// input[type="file"]::file-selector-button {
+//     box-shadow: $box-shadow-sm;
+//     padding: 0.5rem 1rem;
+//     border-radius: 0.5rem;
+//     border: 0;
+//     background-color: $col-white;
+// }
+
+// input[type="file"]::label {
+//     padding: 0.5rem 1rem;
+//     box-shadow: $box-shadow-sm;
+//     background-color: $col-white;
+// }
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+// Resetting tables
+thead,
+tbody,
+tfoot,
+tr,
+td,
+th {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    vertical-align: middle;
+}
+
+/* Additional reset for consistency */
+td,
+th {
+    padding: 0; /* Ensure no padding */
+    border: 0; /* Remove default border */
+    vertical-align: top; /* Align content to the top */
 }

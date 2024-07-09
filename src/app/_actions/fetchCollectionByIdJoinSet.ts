@@ -15,11 +15,18 @@ export const fetchCollectionByIdJoinSet = async ({
         const collection: Flashcard_collection_set_joined[] = await db`
 SELECT 
     fc.*,
-    array_agg(to_json(fs)) AS set_items
+    array_agg(to_json(fs)) AS set_items,
+    json_build_object(
+        'id', users.id,
+        'user_name', users.user_name,
+        'image',users.image
+    ) as creator
 FROM 
     flashcard_collection fc
 LEFT JOIN 
     flashcard_set fs ON fs.id = ANY(fc.ids)
+LEFT JOIN
+    users ON users.id = fc.user_id
 WHERE 
     fc.user_id = ${id}
 GROUP BY 

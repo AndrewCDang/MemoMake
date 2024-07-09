@@ -55,7 +55,6 @@
             flex-wrap: nowrap;
             width: 100%;
             .titleImageContainer {
-                padding-top: 1.25rem;
                 max-width: calc(100% - 1rem);
                 display: flex;
                 gap: 0.5rem;
@@ -63,7 +62,6 @@
                 width: 100%;
             }
             .title {
-                padding-right: 1.5rem;
                 overflow-x: scroll;
                 overflow-y: hidden;
             }

@@ -13,7 +13,7 @@ import PreviewEditStudyBtns from "./generalComponents/previewEditStudyBtns/previ
 
 type SetAndCollectionCardTypes = {
     set: Flashcard_set | Flashcard_collection_set_joined;
-    account: Account;
+    account: Account | undefined;
     contentType: "collection" | "set";
     originalId?: string | null;
 };
@@ -24,6 +24,10 @@ function SetAndCollectionCard({
     contentType,
     originalId = null,
 }: SetAndCollectionCardTypes) {
+    // Card not created by user
+    const publicCard =
+        account && account.user_id !== set.user_id ? true : false;
+
     // Card Content
     const getCardtitle = () => {
         switch (contentType) {
@@ -49,27 +53,18 @@ function SetAndCollectionCard({
         ? colours[set.theme_colour]()
         : colours.grey();
 
-    return (
-        <motion.article key={set.id} className={style.setContainer}>
-            <BannerStrip
-                contentType={contentType}
-                set={set}
-                account={account}
-                isFavourited={isFavourited}
-                themeColour={themeColour}
-            />
-            <section className={style.bannerBtns}>
-                <BannerBtns
-                    contentType={contentType}
-                    setIsFavourited={setIsFavourited}
-                    isFavourited={isFavourited}
-                    account={account}
-                    set={set}
-                />
-            </section>
+    //
+    //
+    const TitleAndBody = () => {
+        return (
             <div className={style.setContent}>
                 <div className={style.titleContainer}>
-                    <div className={style.titleImageContainer}>
+                    <div
+                        style={{
+                            paddingTop: publicCard ? "0.5rem" : "1.25rem",
+                        }}
+                        className={style.titleImageContainer}
+                    >
                         {set.image && (
                             <img
                                 className={style.setImage}
@@ -82,14 +77,41 @@ function SetAndCollectionCard({
                 </div>
                 {cardDescription && <p>{cardDescription}</p>}
             </div>
-            {/* Displaying Set items in collection card */}
+        );
+    };
+
+    return (
+        <motion.article key={set.id} className={style.setContainer}>
+            <BannerStrip
+                contentType={contentType}
+                set={set}
+                account={account}
+                isFavourited={isFavourited}
+                themeColour={themeColour}
+            />
+            <section className={style.bannerBtns}>
+                <BannerBtns
+                    publicCard={publicCard}
+                    contentType={contentType}
+                    setIsFavourited={setIsFavourited}
+                    isFavourited={isFavourited}
+                    account={account}
+                    set={set}
+                />
+            </section>
+            <TitleAndBody />
+            {/* Displaying Set items in collection card only */}
             {contentType === "collection" && (
                 <CollectionSets
                     collectionItem={set as Flashcard_collection_set_joined}
                 />
             )}
             <div className={style.buttonContainerHeight}></div>
-            <PreviewEditStudyBtns contentType={contentType} set={set} />
+            <PreviewEditStudyBtns
+                publicCard={publicCard}
+                contentType={contentType}
+                set={set}
+            />
         </motion.article>
     );
 }

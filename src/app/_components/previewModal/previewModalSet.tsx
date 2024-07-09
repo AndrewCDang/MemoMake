@@ -122,6 +122,11 @@ function PreviewModalSet({ previewContent }: PreviewModalSetType) {
                                                         <div>
                                                             {card.item_question}
                                                         </div>
+                                                        <div
+                                                            className={
+                                                                style.flashcardVerticalL
+                                                            }
+                                                        ></div>
                                                         <div>
                                                             {card.item_answer}
                                                         </div>

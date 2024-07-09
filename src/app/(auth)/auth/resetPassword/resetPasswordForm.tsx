@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PasswordSchemaType, PasswordSchema } from "@/schema/authSchema";
-import InputField from "@/app/_components/input/inputField";
+import FormInputField from "@/app/_components/input/formInputField";
 import Button from "@/app/_components/(buttons)/styledButton";
 import { resetPassword } from "@/app/_actions/resetPassword";
 import PasswordRequirements from "../../passwordRequirements";
@@ -51,7 +51,7 @@ function ResetPasswordForm({ token }: { token: string }) {
         >
             {!validated && (
                 <>
-                    <InputField
+                    <FormInputField
                         id="resetPassword"
                         type="password"
                         object="password"

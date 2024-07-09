@@ -1,0 +1,89 @@
+@import "../../../styles/colours.scss";
+.activeSearchBarContainer {
+    position: fixed;
+    top: 3rem;
+    left: 50%;
+    width: clamp(360px, calc(300px + 25vw), 800px);
+    max-width: calc(100% - 2rem);
+    transform: translateX(-50%);
+    background-color: $col-white;
+    border-radius: 1rem;
+    padding: 0.5rem 2rem 2rem 2rem;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    .searchTextInput {
+        flex: 1;
+        border-radius: 0.5rem;
+        border: 1.5px solid $col-grey;
+        padding-left: 0.5rem;
+    }
+
+    .searchBarContainer {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: nowrap;
+        margin-right: 1rem;
+    }
+    .searchBarContainer {
+        min-width: 240px;
+    }
+    .subjectsContainer {
+        display: flex;
+        margin-top: 1rem;
+    }
+    .subjectGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        width: fit-content;
+        height: fit-content;
+        &:first-child {
+            height: fit-content;
+            border-right: 0.5px solid $col-grey;
+            padding-right: 0.5rem;
+            margin-right: 0.5rem;
+        }
+        .subheading {
+            padding-left: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.75em;
+            line-height: 0.75em;
+        }
+    }
+    .searchSettingsConatiner {
+        position: relative;
+        .searchSettingPopover {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 50%;
+            padding: 0.5rem;
+            background-color: $col-white;
+            border-radius: 0.5rem;
+            box-shadow: $box-shadow-default;
+            transform: translateX(-50%);
+            ul {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            li {
+                border-radius: 0.25rem;
+                padding: 0.25rem 0.5rem;
+                cursor: pointer;
+                &:hover {
+                    background-color: rgba($col-grey, 0.2);
+                }
+            }
+        }
+        .settingText {
+            display: flex;
+            flex-direction: column;
+            label {
+                font-size: 0.75em;
+                line-height: 0.75em;
+                font-weight: 300;
+            }
+        }
+    }
+}

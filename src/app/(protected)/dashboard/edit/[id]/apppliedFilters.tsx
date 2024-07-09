@@ -137,7 +137,7 @@ function ApppliedFilters({
     }, [hiddenColumns, filteredTags, filteredDiff]);
 
     return (
-        <section ref={parent} className={style.appliedFiltersContainer}>
+        <div ref={parent} className={style.appliedFiltersContainer}>
             {filterCallack().length > 0 &&
                 filterCallack().map((item) => {
                     return (
@@ -148,7 +148,7 @@ function ApppliedFilters({
                         />
                     );
                 })}
-        </section>
+        </div>
     );
 }
 

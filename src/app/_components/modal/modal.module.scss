@@ -8,7 +8,7 @@
     background-color: rgba($col-black, 0.2);
     top: 0;
     left: 0;
-    z-index: 50;
+    z-index: 10000000;
 }
 
 .cardModal {
@@ -25,10 +25,14 @@
     padding-top: 1.75rem;
 }
 
+.widthWide {
+    width: clamp(300px, calc(100% - 2rem), 800px);
+}
+
 .overflowY {
     overflow-y: auto;
     max-height: 720px;
-    padding: 0rem 0.75rem;
+    padding: 1rem 0.75rem;
 }
 .footer {
     margin-top: 1.5rem;

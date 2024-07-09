@@ -1,60 +1,52 @@
 import React, { RefObject } from "react";
 import style from "./inputField.module.scss";
 
-type InputRef = {
+type InputRef<T extends string> = {
     ref?: RefObject<HTMLInputElement>;
     error?: boolean;
-    id: string;
+    id: T;
     type: string;
-    placeholder: string;
     errorMessage?: string | null;
-    object: string;
     register: any;
     textarea?: boolean;
+    defaultValue?: string;
 };
 
-function InputField({
+function FormInputField<T extends string>({
     error,
     id,
     type,
     errorMessage = "Error",
-    placeholder,
-    object,
     register,
     textarea,
-}: InputRef) {
+    defaultValue = "",
+}: InputRef<T>) {
     return (
         <fieldset className={style.fieldset}>
             {textarea ? (
                 <textarea
                     placeholder=""
+                    defaultValue={defaultValue}
                     id={id}
                     type={type}
                     className={style.input}
-                    {...register(object)}
+                    {...register(id)}
                 ></textarea>
             ) : (
                 <input
                     placeholder=""
+                    defaultValue={defaultValue}
                     id={id}
                     type={type}
                     className={style.input}
-                    {...register(object)}
+                    {...register(id)}
                 ></input>
             )}
-            <label
-                style={{
-                    color:
-                        error == true
-                            ? "rgb(255, 86, 120)"
-                            : "rgb(169, 169, 169)",
-                }}
-                htmlFor={id}
-            >
-                {error ? errorMessage : placeholder}
+            <label className={`${error ? style.error : ""}`} htmlFor={id}>
+                {error ? id : id}
             </label>
         </fieldset>
     );
 }
 
-export default InputField;
+export default FormInputField;

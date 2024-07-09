@@ -4,11 +4,13 @@ import { db } from "../_lib/db";
 import { ContentType } from "../_types/types";
 
 type DelSetOrCollectionType = {
+    userId: string;
     contentType: ContentType;
     id: string;
 };
 
 export const delSetOrCollection = async ({
+    userId,
     contentType,
     id,
 }: DelSetOrCollectionType) => {
@@ -24,14 +26,14 @@ export const delSetOrCollection = async ({
         if (contentType === "collection") {
             const result = await db`
                 DELETE FROM flashcard_collection
-                WHERE id = ${id}
+                WHERE id = ${id} AND user_id = ${userId}
                 RETURNING id;
             `;
             delResult(result);
         } else if (contentType === "set") {
             const result = await db`
                 DELETE FROM flashcard_set
-                WHERE id = ${id}
+                WHERE id = ${id} AND user_id = ${userId}
                 RETURNING id;
             `;
             delResult(result);

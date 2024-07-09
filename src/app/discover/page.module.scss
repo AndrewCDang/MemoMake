@@ -1,0 +1,6 @@
+.setGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    padding-top: 0.5rem;
+}

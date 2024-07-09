@@ -1,6 +1,6 @@
 import fetchExistingCards from "@/app/_actions/fetchExistingCards";
 import CardsTable from "./cardsTable";
-import CreateCard from "../createCard";
+import CreateCard from "./createCard";
 import { filterCollection } from "@/app/_actions/filterColection";
 import style from "./cardsTable.module.scss";
 import ReviseCards from "@/app/_components/reviseCollection/reviseCards";
@@ -12,6 +12,8 @@ import { fetchItemsFromSets } from "@/app/_actions/fetchItemsFromSets";
 import SliderToggle from "@/app/_components/sliderToggle/sliderToggle";
 import { toggleSetPublicAccess } from "@/app/_actions/toggleSetPublicAccess";
 import PublicAccessBtn from "../(components)/publicAccessBtn";
+import TablePageBtns from "../(components)/TablePageBtns/tablePageBtns";
+import EditHeading from "./heading/editHeading";
 
 async function page({ params }: { params: { id: string } }) {
     const setId = params.id;
@@ -19,6 +21,7 @@ async function page({ params }: { params: { id: string } }) {
     const initialSet = await fetchSet(setId);
     const session = await auth();
     if (!session) return;
+
     const fetchTags = await fetchTagsInCollection(session.user.id);
     const fetchCollectionCount = await FetchCollectionSetCount({
         userId: session.user.id,
@@ -43,29 +46,26 @@ async function page({ params }: { params: { id: string } }) {
         });
     }
 
-    return (
-        <section>
-            {initialSet && <PublicAccessBtn flashcard_set={initialSet} />}
-            <div className={style.overflowWrapper}>
-                {cardCollection && (
-                    <CardsTable
-                        cardCollection={cardCollection}
-                        tagArray={tagArray}
-                    />
-                )}
-            </div>
-            <CreateCard setId={setId} />
-            {fetchTags && fetchCollectionCount && initialItems && (
-                <ReviseCards
-                    initialSet={initialSet}
-                    initialItems={initialItems}
+    if (initialSet && fetchCollectionCount)
+        return (
+            <section>
+                <EditHeading set={initialSet} />
+                <div className={style.overflowWrapper}>
+                    {cardCollection && (
+                        <CardsTable
+                            cardCollection={cardCollection}
+                            tagArray={tagArray}
+                        />
+                    )}
+                </div>
+                <TablePageBtns
+                    set={initialSet}
+                    setId={initialSet.id}
                     collectionSet={fetchCollectionCount}
-                    tagsCollection={fetchTags}
                     session={session}
                 />
-            )}
-        </section>
-    );
+            </section>
+        );
 }
 
 export default page;

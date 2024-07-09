@@ -18,16 +18,20 @@ export enum UserRole {
     ADMIN = "ADMIN",
 }
 
-export type User = {
+export type BasicUserDetails = {
     id: string;
-    userName?: string;
+    user_name?: string;
+    image?: string;
+};
+
+export type User = BasicUserDetails & {
     email?: string;
     email_verified?: Date;
-    image?: string;
     password: string;
     role: UserRole;
     accounts: Account[];
 };
+
 export type ContentType = "collection" | "set";
 
 export type UserHistory = {
@@ -88,6 +92,7 @@ export type Flashcard_set = {
     copied_reference: string;
     original_id: string;
     theme_colour: ThemeColour;
+    creator: BasicUserDetails;
 };
 
 export type Flashcard_collection = {
@@ -101,10 +106,11 @@ export type Flashcard_collection = {
     image: string;
     publicAccess: boolean;
     theme_colour: ThemeColour;
+    creator: BasicUserDetails;
 };
 
 export type Flashcard_collection_with_count = Flashcard_collection & {
-    sets_count: number;
+    set_count: number;
     item_count: number;
 };
 

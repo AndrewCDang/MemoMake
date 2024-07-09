@@ -11,9 +11,10 @@ import style from "./cardsTable.module.scss";
 import { AnimatePresence, Reorder, motion } from "framer-motion";
 import { ColumnName, ColsWidthType, Refs } from "./cardTableTypes";
 import TableRowFilter from "./tableRowFilter";
+import ApppliedFilters from "./apppliedFilters";
 
 type TableHeaderTypes = {
-    headingRef: RefObject<HTMLElement>;
+    headingRef: RefObject<HTMLTableSectionElement>;
     columns: ColumnName[];
     setColumns: Dispatch<SetStateAction<ColumnName[]>>;
     colsWidth: ColsWidthType;
@@ -129,26 +130,29 @@ function TableHeader({
     }, [headingRefs, objPopOver]);
 
     return (
-        <section className={style.headingContainer} ref={headingRef}>
+        <thead className={style.headingContainer} ref={headingRef}>
             <Reorder.Group
+                as="tr"
                 className={`${style.tableRow} ${style.rowContainer}`}
                 axis="x"
                 values={columns}
                 onReorder={setColumns}
             >
-                <div className={`${style.selCol}`}></div>
+                <td className={`${style.selCol}`}></td>
                 {columns.map((item, index) => {
                     return (
-                        <div
+                        <td
                             key={item}
                             className={`${style.tableHeadingContainer} ${style.headerRow}`}
                             style={{
                                 width: `${colsWidth[item]}px`,
                                 position: "relative",
+                                zIndex: item === objPopOver ? 1000 : 0,
                             }}
                             ref={(el) => (headingRefs.current[item] = el)}
                         >
                             <Reorder.Item
+                                as="div"
                                 layout="position"
                                 value={item}
                                 className={`${style.tableHeading} ${style.tableItem}`}
@@ -206,11 +210,11 @@ function TableHeader({
                                     </motion.section>
                                 )}
                             </AnimatePresence>
-                        </div>
+                        </td>
                     );
                 })}
             </Reorder.Group>
-        </section>
+        </thead>
     );
 }
 

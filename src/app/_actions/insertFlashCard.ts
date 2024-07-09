@@ -3,7 +3,7 @@ import { AuthItemTypes } from "@/schema/itemSchema";
 import { db } from "../_lib/db";
 import { revalidatePath } from "next/cache";
 
-type InsertFlashCardTypes = {
+export type InsertFlashCardTypes = {
     data: AuthItemTypes;
     setId: string;
 };

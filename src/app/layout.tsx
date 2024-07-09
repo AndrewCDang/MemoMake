@@ -4,6 +4,8 @@ import "./styles/globals.scss";
 import AuthForm from "./(auth)/authForm";
 import Nav from "./(nav)/nav";
 import Toast from "./(toast)/toast";
+import GlobalModals from "./styles/globalModals";
+import { auth } from "@/auth";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -25,6 +27,7 @@ export default function RootLayout({
             <body className={poppins.className}>
                 <Nav />
                 {children}
+                <GlobalModals />
                 <AuthForm />
                 <Toast />
             </body>

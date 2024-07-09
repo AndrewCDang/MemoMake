@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import style from "./authForm.module.scss";
-import InputField from "../_components/input/inputField";
+import FormInputField from "../_components/input/formInputField";
 import { EmailSchema, EmailSchemaType } from "@/schema/authSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,7 +53,7 @@ function ForgotPassword() {
             >
                 {!validated && (
                     <>
-                        <InputField
+                        <FormInputField
                             id="forgot-email"
                             type="email"
                             placeholder="Email"

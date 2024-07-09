@@ -1,0 +1,88 @@
+@import "../../../styles/colours.scss";
+
+.searchNavContainer {
+    position: relative;
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    background-color: $col-white;
+    height: 2rem;
+    padding: 1rem 0.5rem;
+    border-radius: 1rem;
+    box-shadow: $box-shadow-sm;
+    transition: transform 0.12s ease-in-out;
+    cursor: pointer;
+
+    .navSearchIcon {
+        position: relative;
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: $col-yellow;
+        display: grid;
+        place-items: center;
+        border-radius: 0.75rem;
+        box-shadow: $box-shadow-sm;
+        border: 1.5px solid $col-white;
+        .svgContainer {
+            display: flex;
+            position: absolute;
+            width: fit-content;
+            height: fit-content;
+            inset: 0;
+            margin: auto;
+        }
+        svg {
+            stroke-width: 2;
+            width: 1.5rem;
+            stroke: $col-black;
+            opacity: 0.5;
+            height: 1.5rem;
+        }
+        div:last-child svg {
+            stroke: $col-black;
+            transition: clip-path 0.16s ease-in-out;
+            clip-path: circle(50% at -50% 50%);
+            transition-delay: 0.16s;
+        }
+    }
+    .searchBarContainer {
+        position: relative;
+        background-color: $col-white;
+
+        .searchContainer {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0rem 0.5rem;
+            border-radius: 0.5rem;
+            padding-right: 3rem;
+            color: transparent;
+        }
+        .searchContainerHover {
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            clip-path: circle(50% at -50% 50%);
+            color: $col-black;
+            z-index: 1;
+            transition: clip-path 0.15s ease-in-out;
+        }
+        .searchContainerBase {
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: $col-grey;
+            z-index: 0;
+        }
+    }
+    &:hover .searchContainerHover {
+        clip-path: circle(100% at 50% 50%);
+        transition-delay: 0.16s;
+    }
+    &:hover div:last-child svg {
+        clip-path: circle(100% at 0% 50%);
+        transition-delay: 0;
+    }
+}

@@ -10,6 +10,7 @@ type ModalTypes = {
     setModal?: Dispatch<SetStateAction<boolean>>;
     closeHandler?: () => void;
     footer?: ReactNode;
+    widthFit?: "normal" | "wide";
 };
 
 function Modal({
@@ -19,6 +20,7 @@ function Modal({
     closeHandler,
     modalTitle,
     footer,
+    widthFit = "normal",
 }: ModalTypes) {
     const containerRef = useRef<HTMLElement>(null);
     const modalRef = useRef<HTMLElement>(null);
@@ -67,7 +69,9 @@ function Modal({
                             stiffness: 200,
                         }}
                         ref={modalRef}
-                        className={style.cardModal}
+                        className={` ${
+                            widthFit === "wide" && style.widthWide
+                        } ${style.cardModal}`}
                     >
                         <CornerClose
                             handler={() =>

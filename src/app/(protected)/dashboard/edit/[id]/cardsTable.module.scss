@@ -4,67 +4,97 @@
 
 .tableContainerWrapper {
     position: relative;
+    // overflow-x: hidden;
+    border-radius: 1rem;
+    // background-color: $col-white;
+}
+.overflowWrapper {
+    // overflow-x: scroll;
 }
 
 .tableContainer {
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow-x: scroll;
+    max-width: 100%;
     width: fit-content;
+    background-color: $col-white;
+    border-radius: 1rem;
+    box-shadow: $box-shadow-default;
+    // overflow-x: scroll;
+    // overflow-x: hidden;
     overflow-x: scroll;
     overflow-y: scroll;
-    padding-bottom: 3rem;
-    padding-right: 4rem;
-    max-height: 70vh;
-    & > section {
-        padding-left: 3rem;
-    }
+    max-height: calc(100vw - 240px);
+    // padding-right: 4rem;
+    // padding-left: 3rem;
+
     * {
         color: $col-black;
     }
-}
-.overflowWrapper {
-    overflow-x: scroll;
 }
 
 .tableRow {
     display: flex;
     // border-right: 1px solid $col-grey;
+    &:not(:last-child) {
+        border-bottom: 0.5px solid $col-grey;
+    }
+
     width: fit-content;
     position: relative;
     overflow: visible;
-    background-color: $col-white;
-    cursor: pointer;
-
     .headerRow {
         padding: 1rem;
-        border-left: 1px solid $col-grey;
-        border-bottom: 1px solid $col-grey;
+        // border-bottom: 1px solid $col-grey;
+        & {
+            border-left: 0.5px solid $col-grey;
+        }
+        &:nth-child(2) {
+            margin-left: 4rem;
+        }
+        &:last-child {
+            margin-right: 3rem;
+            border-right: 0.5px solid $col-grey;
+        }
     }
 
     & > .tableItem {
         padding: 1rem;
-        border-left: 1px solid $col-grey;
         max-width: 100%;
         position: relative;
     }
+    & > .tableItem {
+        border-left: 0.5px solid $col-grey;
+    }
+    & > .tableItem:nth-child(2) {
+        margin-left: 4rem;
+    }
+    & > .tableItem:last-child {
+        margin-right: 3rem;
+        border-right: 0.5px solid $col-grey;
+    }
 
-    ul {
+    tr {
         display: flex;
         gap: 1rem;
     }
     & > h6 {
         border: 1px solid #ccc; /* Add border */
     }
-}
-
-.tableRow:not(:last-of-type) {
-    & > .tableItem {
-        border-bottom: 1px solid $col-grey;
+    .tableItemRel {
+        position: relative;
+        cursor: pointer;
+        // background-color: $col-white;
+    }
+    &:last-child .tableItem {
+        border-image: linear-gradient(to bottom, $col-grey, rgba(0, 0, 0, 0)) 1
+            100%;
+    }
+    &:hover .selCol {
+        transform: translateX(0rem) !important;
     }
 }
-
 .tableWordBreak {
     word-break: break-all;
 }
@@ -97,27 +127,23 @@
 }
 .headingContainer {
     position: sticky;
-    top: 0;
-    z-index: 20;
     background: linear-gradient(to top, rgba($col-white, 0.8), $col-white 95%);
     backdrop-filter: blur(0.5rem);
+    top: 0;
+    z-index: 20;
 }
 
 .tableHeadingContainer {
     position: relative;
+    z-index: 0;
 }
 .rowContainer {
     padding: 0;
     display: flex;
+    border-bottom: 0.5px solid $col-grey;
     // border-top: 1px solid $col-grey;
 }
-.selCol {
-    width: 4rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: visible;
-}
+
 .itemHandler {
     position: absolute;
     left: -2rem;
@@ -133,69 +159,83 @@
 .tableRow:hover .rowAction {
     opacity: 1;
 }
-
-.rowAction {
+.rowSideBtns {
+    width: 4rem;
     position: absolute;
-    left: 2rem;
-    top: 50%;
-    height: 1rem;
-    width: 1rem;
-    opacity: 0;
-    transition: all 0.12s ease-in-out;
-    cursor: pointer;
-    background-color: unset !important;
-    svg {
-        height: 1rem;
-        width: 1rem;
-        fill: $col-grey;
-    }
-    transform: translateY(-50%);
-    z-index: 10;
+    display: flex;
+    gap: 0.5rem;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
 
-    &:hover {
-        opacity: 1;
-
-        svg {
-            fill: $col-black;
-        }
-    }
-    .rowActionRel {
-        height: 1rem;
-        width: 1rem;
+    .selCol {
+        transform: translateX(-1rem);
+        width: fit-content;
         display: flex;
-        position: relative;
-        background-color: red;
+        justify-content: center;
+        align-items: center;
+        overflow: visible;
+        left: -1rem;
+        top: 50%;
+        margin-right: 0.5rem;
+        transition: transform 0.12s ease-in-out;
+    }
+
+    .rowAction {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 0.5rem;
+        height: 1.5rem;
+        width: 1.5rem;
+        opacity: 0;
+        transition: all 0.12s ease-in-out;
+        cursor: pointer;
+        background-color: unset !important;
+        svg {
+            height: 1.25rem;
+            width: 1.25rem;
+            fill: $col-grey;
+        }
         z-index: 10;
 
-        .rowActionPopOver {
-            border-radius: 0.5rem;
-            position: absolute;
-            width: 2rem;
-            height: 2rem;
-            background-color: $col-white;
-            box-shadow: $box-shadow-default;
-            display: flex;
-            justify-content: center;
-            inset: 0;
-            margin: auto;
-            z-index: 10;
-            left: -0.5rem;
+        &:hover {
+            opacity: 1;
+
             svg {
-                place-self: center;
-                width: fit-content;
+                fill: $col-black;
+            }
+        }
+        .rowActionRel {
+            height: 1.5rem;
+            width: 1.5rem;
+            display: flex;
+            position: relative;
+            z-index: 10;
+
+            .rowActionPopOver {
+                border-radius: 0.75rem;
+                height: 1.5rem;
+                width: 1.5rem;
+                background-color: $col-white;
+                box-shadow: $box-shadow-sm;
+                display: flex;
+                justify-content: center;
+
+                z-index: 10;
+                svg {
+                    place-self: center;
+                    width: fit-content;
+                }
             }
         }
     }
 }
 
-.tableItemRel {
-    position: relative;
-}
 .tableItemLabel {
     position: absolute;
     height: 100%;
     width: 100%;
-    z-index: 10;
 }
 
 .itemInput {
@@ -331,7 +371,7 @@
     height: fit-content;
     left: 50%;
     top: 100%;
-    z-index: 20;
+    z-index: 1000;
 }
 @mixin SVGBtn {
     svg {
@@ -502,9 +542,12 @@
 
 // Applied Filter
 .appliedFiltersContainer {
+    // position: absolute;
+    // top: 0;
+    // left: 0;
     display: flex;
     gap: 1rem;
-    padding: 1rem 0rem;
+    padding: 0.5rem 0rem;
     .appliedBtnContainer {
         position: relative;
         text-wrap: nowrap;

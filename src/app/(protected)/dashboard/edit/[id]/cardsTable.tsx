@@ -9,15 +9,15 @@ import { HiMiniTrash } from "react-icons/hi2";
 import { delCard } from "@/app/_actions/delCard";
 import { updateCard, UpdateCardTypes } from "@/app/_actions/updateCard";
 import { ColumnName, ColsWidthType, Refs, InputValues } from "./cardTableTypes";
-import GenericTableItem from "./tableItems/genericTableItem";
-import TagsTableItem from "./tableItems/tagsTableItem";
-import LastModifiedTableItem from "./tableItems/lastModifiedTableItem";
+import GenericTableItem from "./(components)/tableItems/genericTableItem";
+import TagsTableItem from "./(components)/tableItems/tagsTableItem";
+import LastModifiedTableItem from "./(components)/tableItems/lastModifiedTableItem";
 import DifficultyTableItem, {
     diffArray,
-} from "./tableItems/difficultyTableItem";
+} from "./(components)/tableItems/difficultyTableItem";
 import TableHeader from "./tableHeader";
 import ApppliedFilters from "./apppliedFilters";
-import TableShadow from "./shadowComponent/tableShadow";
+import TableShadow from "./(components)/shadowComponent/tableShadow";
 
 // Type of Card Object
 type CardTableTypes = {
@@ -77,7 +77,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
     /**
      // Resizable columns logic --
      */
-    const headingRef = useRef<HTMLElement>(null);
+    const headingRef = useRef<HTMLTableSectionElement>(null);
 
     const cols: ColumnName[] = [
         "item_question",
@@ -97,36 +97,161 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
 
     const [colsWidth, setColWidths] = useState<ColsWidthType>(defaultWidths);
     const [columns, setColumns] = useState(cols);
+    const [prevColumns, setPrevColumns] = useState(columns); //tracks previous state, so can determine if change in columns is additive/subtactive/reordered
     const isMouseDownRef = useRef<boolean>(false);
     const targetSlideHeading = useRef<ColumnName | null>(null);
     const initialXRef = useRef<number | null>(null);
-    const containerRef = useRef<HTMLElement>(null);
+    const containerRef = useRef<HTMLTableElement>(null);
     const [extraWidth, setExtraWidth] = useState<number>(0);
 
     // On document mount, or hidden columns, measure extra remaining spaces(if any) to be shared between columns
     useEffect(() => {
-        if (containerRef.current) {
-            const containerWidth = containerRef.current.offsetWidth;
+        if (containerRef.current && containerWrapRef.current) {
+            const wrapRef = containerWrapRef.current.offsetWidth - 7 * 16;
+            console.log(wrapRef);
             const windowWidth = window.innerWidth;
-            const sumDefaultWidths = Object.values(defaultWidths).reduce(
-                (prevValue, num) => prevValue + num,
-                0
-            );
             if (windowWidth < 600) return;
 
-            const sharedWidths =
-                (windowWidth - containerWidth) / columns.length;
-            setColWidths((prevColWidths) =>
-                Object.entries(colsWidth).reduce(
-                    (acc, [key, value]) => ({
-                        ...acc,
-                        [key]: value + sharedWidths,
-                    }),
-                    {}
-                )
+            const previousWidthsSum = Object.values(colsWidth).reduce(
+                (acc, curr) => acc + curr,
+                0
             );
+
+            // + Spreading extra column spaces for remaining columns
+            if (columns.length > prevColumns.length) {
+                console.log("added!");
+                const addedColumn = columns.filter(
+                    (item) => !prevColumns.includes(item)
+                )[0];
+
+                const addedColWidth =
+                    defaultWidths[addedColumn as ColumnName] || 0;
+
+                100 - 30 > 90;
+                const columnWidths = (
+                    subtractedWidth: number,
+                    columnObjects: ColsWidthType,
+                    iterationCount: number,
+                    excludedColumns: ColumnName[]
+                ): ColsWidthType => {
+                    let remainderTotal = 0;
+                    let newExcludedColumns: ColumnName[] = [...excludedColumns];
+                    const totalColumns = Object.keys(columnObjects).length;
+                    const visibleColumns =
+                        totalColumns - excludedColumns.length;
+
+                    const columnWidthObjects = Object.entries(columnObjects)
+                        .map(([key, value], index, array) => {
+                            if (excludedColumns.includes(key as ColumnName)) {
+                                return [
+                                    key as ColumnName,
+                                    defaultWidths[key as ColumnName],
+                                ];
+                            } else if (
+                                value - subtractedWidth / visibleColumns <
+                                defaultWidths[key as ColumnName]
+                            ) {
+                                if (
+                                    !hiddenColumns.includes(
+                                        key as ColumnName
+                                    ) &&
+                                    key !== addedColumn
+                                ) {
+                                    const remainder =
+                                        subtractedWidth / visibleColumns -
+                                        (value -
+                                            defaultWidths[key as ColumnName]);
+                                    remainderTotal += remainder;
+                                    newExcludedColumns.push(key as ColumnName);
+                                }
+                                return [
+                                    key as ColumnName,
+                                    defaultWidths[key as ColumnName],
+                                ];
+                            } else {
+                                return [
+                                    key as ColumnName,
+                                    key !== addedColumn
+                                        ? value -
+                                          subtractedWidth / visibleColumns
+                                        : defaultWidths[key as ColumnName],
+                                ];
+                            }
+                        })
+                        .reduce(
+                            (acc, [key, value]) => ({
+                                ...acc,
+                                [key]: value,
+                            }),
+                            {}
+                        ) as ColsWidthType;
+
+                    if (remainderTotal > 0 && iterationCount < 1) {
+                        return columnWidths(
+                            remainderTotal,
+                            columnWidthObjects,
+                            iterationCount + 1,
+                            newExcludedColumns
+                        );
+                    } else {
+                        return columnWidthObjects;
+                    }
+                };
+
+                setColWidths(
+                    columnWidths(addedColWidth, colsWidth, 0, [addedColumn])
+                );
+                // setColWidths(getNewWidths(dividedColWidth));
+            }
+
+            // - Subtracting existing column space, to make room for added column
+            if (columns.length < prevColumns.length) {
+                const currentRemainingWidths = Object.entries(colsWidth)
+                    .filter(
+                        ([key, value]) =>
+                            !hiddenColumns.includes(key as ColumnName)
+                    )
+                    .reduce((acc, [key, value]) => acc + value, 0);
+
+                if (currentRemainingWidths < wrapRef) {
+                    const extraWidths =
+                        (wrapRef - currentRemainingWidths) / columns.length;
+                    console.log(extraWidth);
+                    setColWidths(
+                        (prev) =>
+                            Object.entries(colsWidth).reduce(
+                                (acc, [key, value]) => ({
+                                    ...acc,
+                                    [key]: !hiddenColumns.includes(
+                                        key as ColumnName
+                                    )
+                                        ? value + extraWidths
+                                        : defaultWidths[key as ColumnName],
+                                }),
+                                {}
+                            ) as ColsWidthType
+                    );
+                }
+            }
+            // No change in column widths, just shifting order of column
+            if (columns.length === prevColumns.length) {
+                console.log("shift!");
+                const sharedWidths =
+                    (wrapRef - previousWidthsSum) / columns.length;
+                setColWidths(
+                    (prevColWidths) =>
+                        Object.entries(colsWidth).reduce(
+                            (acc, [key, value]) => ({
+                                ...acc,
+                                [key]: value + sharedWidths,
+                            }),
+                            {}
+                        ) as ColsWidthType
+                );
+            }
+            setPrevColumns(columns);
         }
-    }, [containerRef, hiddenColumns, columns]);
+    }, [containerRef, columns, hiddenColumns]);
 
     // 1) Tracks initial x position and allows movemouse logic
     const headingDownHandler = (e: MouseEvent) => {
@@ -437,203 +562,243 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
     // Shadow at bottom/top fading in out on scroll y position
     const containerWrapRef = useRef<HTMLElement>(null);
 
-    return (
-        <section className={style.tableContainerWrapper} ref={containerWrapRef}>
-            {/* Displaying current toggled filters */}
-            <ApppliedFilters
-                filteredDiff={filteredDiff}
-                setFilteredDiff={setFilteredDiff}
-                filteredTags={filteredTags}
-                setFilteredTags={setFilteredTags}
-                hiddenColumns={hiddenColumns}
-                setColumns={setColumns}
-                setHiddenColumns={setHiddenColumns}
-                setSelectableTagsArray={setSelectableTagsArray}
-                tagArray={tagArray}
-            />
-            {/* Table */}
-            <motion.section
-                className={style.tableContainer}
-                ref={containerRef}
-                layout="position"
+    if (displayCardCollection.length > 0 && cardCollection) {
+        return (
+            <main
+                className={style.tableContainerWrapper}
+                ref={containerWrapRef}
             >
-                <TableHeader
-                    headingRef={headingRef}
-                    columns={columns}
-                    setColumns={setColumns}
-                    colsWidth={colsWidth}
-                    targetSlideHeading={targetSlideHeading}
-                    tagArray={tagArray}
-                    setFilteredTags={setFilteredTags}
-                    filteredTags={filteredTags}
-                    selectableTagsArray={selectableTagsArray}
-                    setSelectableTagsArray={setSelectableTagsArray}
+                {/* Displaying current toggled filters */}
+                <ApppliedFilters
                     filteredDiff={filteredDiff}
                     setFilteredDiff={setFilteredDiff}
-                    setHiddenColumns={setHiddenColumns}
+                    filteredTags={filteredTags}
+                    setFilteredTags={setFilteredTags}
                     hiddenColumns={hiddenColumns}
+                    setColumns={setColumns}
+                    setHiddenColumns={setHiddenColumns}
+                    setSelectableTagsArray={setSelectableTagsArray}
+                    tagArray={tagArray}
                 />
-
-                {displayCardCollection &&
-                    displayCardCollection.map((card) => {
-                        return (
-                            <section
-                                style={{
-                                    opacity: selDeleting.includes(card.id)
-                                        ? 0.3
-                                        : 1,
-                                    transition: "opacity 0.12s ease-in-out",
-                                }}
-                                key={card.id}
-                                className={style.tableRow}
-                            >
-                                <aside className={style.rowAction}>
-                                    <div className={style.rowActionRel}>
-                                        {/* <HiSquares2X2 /> */}
-                                        <div
-                                            onClick={() =>
-                                                delRowHandler(card.id)
-                                            }
-                                            className={style.rowActionPopOver}
-                                        >
-                                            <HiMiniTrash />
-                                        </div>
-                                    </div>
-                                </aside>
-                                <div
+                {/* Table */}
+                <motion.table
+                    className={style.tableContainer}
+                    ref={containerRef}
+                    layout="position"
+                >
+                    <TableHeader
+                        headingRef={headingRef}
+                        columns={columns}
+                        setColumns={setColumns}
+                        colsWidth={colsWidth}
+                        targetSlideHeading={targetSlideHeading}
+                        tagArray={tagArray}
+                        setFilteredTags={setFilteredTags}
+                        filteredTags={filteredTags}
+                        selectableTagsArray={selectableTagsArray}
+                        setSelectableTagsArray={setSelectableTagsArray}
+                        filteredDiff={filteredDiff}
+                        setFilteredDiff={setFilteredDiff}
+                        setHiddenColumns={setHiddenColumns}
+                        hiddenColumns={hiddenColumns}
+                    />
+                    <tbody className={style.tbody}>
+                        {displayCardCollection &&
+                            displayCardCollection.map((card, index) => (
+                                <tr
                                     style={{
-                                        backgroundColor: selItems.includes(
-                                            card.id
-                                        )
-                                            ? colours.grey(0.2)
-                                            : "",
+                                        opacity: selDeleting.includes(card.id)
+                                            ? 0.3
+                                            : 1,
+                                        transition: "opacity 0.12s ease-in-out",
                                     }}
-                                    className={style.selCol}
+                                    key={`${card.id}-tr-${index}`}
+                                    className={style.tableRow}
                                 >
-                                    <Checkbox
-                                        id={card.id}
-                                        handler={selHandler}
-                                    />
-                                </div>
-                                {columns.map((item) => {
-                                    // Column Item Types
-                                    const isQuestionOrAnswer = [
-                                        "item_question",
-                                        "item_answer",
-                                    ].includes(item);
-
-                                    const isTags = ["item_tags"].includes(item);
-
-                                    const isDifficulty = [
-                                        "difficulty",
-                                    ].includes(item);
-
-                                    const isLastModified = [
-                                        "last_modified",
-                                    ].includes(item);
-
-                                    return (
-                                        <section
+                                    <td className={style.rowSideBtns}>
+                                        <aside className={style.rowAction}>
+                                            <div className={style.rowActionRel}>
+                                                <div
+                                                    onClick={() =>
+                                                        delRowHandler(card.id)
+                                                    }
+                                                    className={
+                                                        style.rowActionPopOver
+                                                    }
+                                                >
+                                                    <HiMiniTrash />
+                                                </div>
+                                            </div>
+                                        </aside>
+                                        <div
                                             style={{
-                                                width: `${colsWidth[item]}px`,
                                                 backgroundColor:
                                                     selItems.includes(card.id)
                                                         ? colours.grey(0.2)
                                                         : "",
                                             }}
-                                            className={` ${style.tableItem} ${style.tableItemRel}`}
+                                            className={style.selCol}
                                         >
-                                            <label
-                                                className={style.tableItemLabel}
-                                                key={`${item}-${card.id}`}
-                                                htmlFor={`${item}-${card.id}-input`}
-                                            ></label>
-                                            {/* Table item -  Generic string output */}
-                                            {isQuestionOrAnswer && (
-                                                <GenericTableItem
-                                                    item={item}
-                                                    tableItemRef={tableItemRef}
-                                                    card={card}
-                                                    itemEditRef={itemEditRef}
-                                                    inputValues={inputValues}
-                                                    handleInputChange={
-                                                        handleInputChange
-                                                    }
-                                                    labelEditEnterHandler={
-                                                        labelEditEnterHandler
-                                                    }
-                                                    updateCardHandler={
-                                                        updateCardHandler
-                                                    }
-                                                    editInputRef={editInputRef}
-                                                    // Props for PopOver Toggler (Invisible)
-                                                    labelItemEditHandler={
-                                                        labelItemEditHandler
-                                                    }
-                                                    itemLabelRef={itemLabelRef}
-                                                />
-                                            )}
-                                            {isTags && (
-                                                <TagsTableItem
-                                                    item={item}
-                                                    tableItemRef={tableItemRef}
-                                                    card={card}
-                                                    itemEditRef={itemEditRef}
-                                                    inputValues={inputValues}
-                                                    handleInputChange={
-                                                        handleInputChange
-                                                    }
-                                                    labelEditEnterHandler={
-                                                        labelEditEnterHandler
-                                                    }
-                                                    updateCardHandler={
-                                                        updateCardHandler
-                                                    }
-                                                    editInputRef={editInputRef}
-                                                    // Props for PopOver Toggler (Invisible)
-                                                    labelItemEditHandler={
-                                                        labelItemEditHandler
-                                                    }
-                                                    itemLabelRef={itemLabelRef}
-                                                    handleValueChange={
-                                                        handleValueChange
-                                                    }
-                                                />
-                                            )}
-                                            {isDifficulty && (
-                                                <DifficultyTableItem
-                                                    item={item}
-                                                    tableItemRef={tableItemRef}
-                                                    card={card}
-                                                    itemEditRef={itemEditRef}
-                                                    inputValues={inputValues}
-                                                    // Props for PopOver Toggler (Invisible)
-                                                    labelItemEditHandler={
-                                                        labelItemEditHandler
-                                                    }
-                                                    itemLabelRef={itemLabelRef}
-                                                    handleValueChange={
-                                                        handleValueChange
-                                                    }
-                                                />
-                                            )}
+                                            <Checkbox
+                                                id={card.id}
+                                                handler={selHandler}
+                                            />
+                                        </div>
+                                    </td>
+                                    {columns.map((item) => {
+                                        // Column Item Types
+                                        const isQuestionOrAnswer = [
+                                            "item_question",
+                                            "item_answer",
+                                        ].includes(item);
 
-                                            {isLastModified && (
-                                                <LastModifiedTableItem
-                                                    card={card}
-                                                    item={item}
-                                                />
-                                            )}
-                                        </section>
-                                    );
-                                })}
-                            </section>
-                        );
-                    })}
-            </motion.section>
-            <TableShadow targetRef={containerRef} cardsCount={cardsCount} />
-        </section>
-    );
+                                        const isTags = ["item_tags"].includes(
+                                            item
+                                        );
+
+                                        const isDifficulty = [
+                                            "difficulty",
+                                        ].includes(item);
+
+                                        const isLastModified = [
+                                            "last_modified",
+                                        ].includes(item);
+
+                                        return (
+                                            <td
+                                                key={`${card.id}-${index}-${item}`}
+                                                style={{
+                                                    width: `${colsWidth[item]}px`,
+                                                    backgroundColor:
+                                                        selItems.includes(
+                                                            card.id
+                                                        )
+                                                            ? colours.grey(0.2)
+                                                            : "",
+                                                }}
+                                                className={` ${style.tableItem} ${style.tableItemRel}`}
+                                            >
+                                                <label
+                                                    className={
+                                                        style.tableItemLabel
+                                                    }
+                                                    key={`${item}-${card.id}`}
+                                                    htmlFor={`${item}-${card.id}-input`}
+                                                ></label>
+                                                {/* Table item -  Generic string output */}
+                                                {isQuestionOrAnswer && (
+                                                    <GenericTableItem
+                                                        item={item}
+                                                        tableItemRef={
+                                                            tableItemRef
+                                                        }
+                                                        card={card}
+                                                        itemEditRef={
+                                                            itemEditRef
+                                                        }
+                                                        inputValues={
+                                                            inputValues
+                                                        }
+                                                        handleInputChange={
+                                                            handleInputChange
+                                                        }
+                                                        labelEditEnterHandler={
+                                                            labelEditEnterHandler
+                                                        }
+                                                        updateCardHandler={
+                                                            updateCardHandler
+                                                        }
+                                                        editInputRef={
+                                                            editInputRef
+                                                        }
+                                                        // Props for PopOver Toggler (Invisible)
+                                                        labelItemEditHandler={
+                                                            labelItemEditHandler
+                                                        }
+                                                        itemLabelRef={
+                                                            itemLabelRef
+                                                        }
+                                                    />
+                                                )}
+                                                {isTags && (
+                                                    <TagsTableItem
+                                                        item={item}
+                                                        tableItemRef={
+                                                            tableItemRef
+                                                        }
+                                                        card={card}
+                                                        itemEditRef={
+                                                            itemEditRef
+                                                        }
+                                                        inputValues={
+                                                            inputValues
+                                                        }
+                                                        handleInputChange={
+                                                            handleInputChange
+                                                        }
+                                                        labelEditEnterHandler={
+                                                            labelEditEnterHandler
+                                                        }
+                                                        updateCardHandler={
+                                                            updateCardHandler
+                                                        }
+                                                        editInputRef={
+                                                            editInputRef
+                                                        }
+                                                        // Props for PopOver Toggler (Invisible)
+                                                        labelItemEditHandler={
+                                                            labelItemEditHandler
+                                                        }
+                                                        itemLabelRef={
+                                                            itemLabelRef
+                                                        }
+                                                        handleValueChange={
+                                                            handleValueChange
+                                                        }
+                                                    />
+                                                )}
+                                                {isDifficulty && (
+                                                    <DifficultyTableItem
+                                                        item={item}
+                                                        tableItemRef={
+                                                            tableItemRef
+                                                        }
+                                                        card={card}
+                                                        itemEditRef={
+                                                            itemEditRef
+                                                        }
+                                                        inputValues={
+                                                            inputValues
+                                                        }
+                                                        // Props for PopOver Toggler (Invisible)
+                                                        labelItemEditHandler={
+                                                            labelItemEditHandler
+                                                        }
+                                                        itemLabelRef={
+                                                            itemLabelRef
+                                                        }
+                                                        handleValueChange={
+                                                            handleValueChange
+                                                        }
+                                                    />
+                                                )}
+                                                {isLastModified && (
+                                                    <LastModifiedTableItem
+                                                        card={card}
+                                                        item={item}
+                                                    />
+                                                )}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                    </tbody>
+                </motion.table>
+                <TableShadow targetRef={containerRef} cardsCount={cardsCount} />
+            </main>
+        );
+    }
 }
 
 export default CardsTable;

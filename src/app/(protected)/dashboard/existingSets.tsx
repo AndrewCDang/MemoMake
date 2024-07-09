@@ -135,9 +135,6 @@ async function ExistingSets({ session }: { session: Session | null }) {
                     },
                 ]}
             />
-            {/* Modals | Preview set/collection | Study Settings Modal */}
-            <PreviewModal />
-            <ReviseModal session={session} contentType={"collection"} />
         </section>
     );
 }

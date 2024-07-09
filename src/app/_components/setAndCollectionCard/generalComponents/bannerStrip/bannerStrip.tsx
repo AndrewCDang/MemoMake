@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { ReactNode, useEffect } from "react";
 import style from "./bannerStrip.module.scss";
 import { CollectionIcon, SetIcon } from "@/app/_components/svgs";
 import {
@@ -14,28 +14,37 @@ import { Flashcard_set } from "@/app/_types/types";
 import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import { spring } from "@/app/_components/framerMotion/springTransition";
 import { colours } from "@/app/styles/colours";
+import { BannerIcon } from "../bannerBtns/bannerBtns";
 
 function BannerStrip({
+    set,
+    account,
     contentType,
     isFavourited,
     themeColour,
 }: {
     contentType: "collection" | "set";
-    account: Account;
+    account: Account | undefined;
     set: Flashcard_collection_set_joined | Flashcard_set;
     isFavourited: boolean;
     themeColour: string;
 }) {
+    // Card not created by user
+    const publicCard =
+        account && account.user_id !== set.user_id ? true : false;
+
     // Controls gap per number of icons on top left banner
     const bannerRadius = 20;
     const defaultBannerSpacing = () => {
         const iconSize = 40;
-        let conditions = 0;
-        if (isFavourited) conditions++;
+        let conditions = 1;
 
-        return conditions * iconSize;
+        if (isFavourited) conditions += 1;
+        if (publicCard) conditions -= 1;
+
+        return bannerRadius + conditions * iconSize;
     };
-    const pathValue = useMotionValue(bannerRadius + defaultBannerSpacing());
+    const pathValue = useMotionValue(defaultBannerSpacing());
     const pathGap = useSpring(pathValue, spring);
     const pathGapBtm = useSpring(pathValue.get() + bannerRadius, spring);
     const pathGapEnd = useSpring(pathValue.get() + 2 * bannerRadius, spring);
@@ -43,7 +52,7 @@ function BannerStrip({
     const newPathD = useMotionTemplate`path("M0 64 Q0 40 16 40 L${pathGap} 40  Q${pathGapBtm} 40 ${pathGapBtm} 16 Q${pathGapBtm} 0 ${pathGapEnd} 0 H10000 V10000 H0 Z")`;
 
     const pathGapHandler = () => {
-        const spacing = bannerRadius + defaultBannerSpacing();
+        const spacing = defaultBannerSpacing();
         pathValue.set(spacing);
         pathGapBtm.set(spacing + bannerRadius);
         pathGapEnd.set(spacing + 2 * bannerRadius);
@@ -74,12 +83,26 @@ function BannerStrip({
         return null;
     };
 
+    const IconContainer = ({ children }: { children: ReactNode }) => {
+        return (
+            <div
+                className={`${style.bannerIcon} foregroundContainer2`}
+                style={{
+                    backgroundColor: themeColour,
+                    boxShadow: iconBoxShadows,
+                }}
+            >
+                {children}
+            </div>
+        );
+    };
+
     return (
         <>
             <div onClick={pathGapHandler} className={style.bannerContainer}>
                 <div className={style.bannerInternal}>
                     <section className={style.iconContainer}>
-                        {contentType && (
+                        {!publicCard && contentType && (
                             <div
                                 className={`${style.bannerIcon} foregroundContainer2`}
                                 style={{
@@ -94,23 +117,45 @@ function BannerStrip({
                                 ) : null}
                             </div>
                         )}
-                        <AnimatePresence initial={false}>
-                            {isFavourited && (
-                                <motion.div
-                                    className={`${style.bannerIcon} foregroundContainer2`}
-                                    style={{
-                                        backgroundColor: themeColour,
-                                        boxShadow: iconBoxShadows,
-                                    }}
-                                    initial={{ y: 10, opacity: 0, scale: 0.9 }}
-                                    animate={{ y: 0, opacity: 1, scale: 1 }}
-                                    exit={{ y: 10, opacity: 0, scale: 0.9 }}
-                                    transition={spring}
-                                >
-                                    <AiFillPushpin />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                        {publicCard && (
+                            <BannerIcon
+                                handler={() => null}
+                                hoverText={set.creator.user_name || "test"}
+                            >
+                                <IconContainer>
+                                    <img
+                                        src={set.creator.image}
+                                        className={style.bannerProfileImage}
+                                        alt=""
+                                    ></img>
+                                </IconContainer>
+                            </BannerIcon>
+                        )}
+                        {account && (
+                            <AnimatePresence initial={false}>
+                                {isFavourited && (
+                                    <motion.div
+                                        className={`${style.bannerIcon} foregroundContainer2`}
+                                        style={{
+                                            backgroundColor: publicCard
+                                                ? colours.white()
+                                                : themeColour,
+                                            boxShadow: iconBoxShadows,
+                                        }}
+                                        initial={{
+                                            y: 10,
+                                            opacity: 0,
+                                            scale: 0.9,
+                                        }}
+                                        animate={{ y: 0, opacity: 1, scale: 1 }}
+                                        exit={{ y: 10, opacity: 0, scale: 0.9 }}
+                                        transition={spring}
+                                    >
+                                        <AiFillPushpin />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        )}
                     </section>
                 </div>
             </div>
@@ -121,11 +166,15 @@ function BannerStrip({
                 <motion.div
                     style={{
                         clipPath: newPathD,
-                        backgroundColor: themeColour,
+                        backgroundColor: publicCard
+                            ? colours.white()
+                            : themeColour,
                         // boxShadow: `6px 6px 0px rgba(0,0,0,0.4), 6px 6px 0px ${themeColour}`,
                     }}
                     className={style.backgroundContainer}
-                ></motion.div>
+                >
+                    {/* <img src={set.image} alt={``}></img> */}
+                </motion.div>
             </div>
         </>
     );

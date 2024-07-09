@@ -1,4 +1,5 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import { db } from "../_lib/db";
 
 export const toggleSetPublicAccess = async ({ setId }: { setId: string }) => {
@@ -16,22 +17,29 @@ export const toggleSetPublicAccess = async ({ setId }: { setId: string }) => {
         }
 
         if (previousPublicState[0].public_access === false) {
-            await db`
+            const toggleTrue = await db`
                 UPDATE flashcard_set
                 SET public_access = true
                 WHERE id = ${setId}
+                RETURNING public_access
             `;
+            return {
+                status: 200,
+                message: toggleTrue[0],
+            };
         } else if (previousPublicState[0].public_access === true) {
-            await db`
+            const toggleFalse = await db`
                 UPDATE flashcard_set
                 SET public_access = false
                 WHERE id = ${setId}
+                RETURNING public_access
             `;
+            revalidatePath("dashboard/edit/");
+            return {
+                status: 200,
+                message: toggleFalse[0],
+            };
         }
-        return {
-            status: 200,
-            message: { public_access: !previousPublicState[0].public_access },
-        };
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.log({ status: 500, message: error.message });

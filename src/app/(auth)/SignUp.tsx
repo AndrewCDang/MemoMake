@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import style from "./authForm.module.scss";
-import InputField from "../_components/input/inputField";
+import FormInputField from "../_components/input/formInputField";
 import {
     AuthSignUpType,
     AuthSignUp,
@@ -23,6 +23,12 @@ import SubmitMessage from "./_components/submitResults/submitMessage";
 import signInGoogle from "./signInGoogle";
 import PasswordRequirements from "./passwordRequirements";
 
+export interface DataValidationType {
+    validated: boolean;
+    error?: string;
+    message?: string;
+}
+
 function SignUp() {
     const [validated, setValidated] = useState<boolean | undefined>(undefined);
     const [message, setMessage] = useState<string | undefined>(undefined);
@@ -39,19 +45,14 @@ function SignUp() {
         mode: "onChange",
     });
 
-    type DataValidationType = {
-        validated: boolean;
-        message?: string;
-    };
-
     const submitHandler = (data: AuthSignUpType) => {
         startTransition(() => {
-            signUp(data).then((data: DataValidationType) => {
-                setValidated(data.validated);
-                if (data.message) {
-                    setMessage(data.message);
+            signUp(data).then((value: DataValidationType) => {
+                setValidated(value.validated);
+                if (value.message) {
+                    setMessage(value.message);
                 }
-                if (data.validated) {
+                if (value.validated) {
                     reset();
                 }
             });
@@ -73,7 +74,7 @@ function SignUp() {
                     className={style.form}
                     onSubmit={handleSubmit(submitHandler)}
                 >
-                    <InputField
+                    <FormInputField
                         id="signUp-id"
                         type="email"
                         placeholder="Email"
@@ -82,7 +83,7 @@ function SignUp() {
                         errorMessage={errors.email && errors.email.message}
                         register={register}
                     />
-                    <InputField
+                    <FormInputField
                         id="signUp-userName"
                         type="text"
                         placeholder="User name"
@@ -93,7 +94,7 @@ function SignUp() {
                         }
                         register={register}
                     />
-                    <InputField
+                    <FormInputField
                         id="signUp-password"
                         type="password"
                         placeholder="Password"
@@ -108,7 +109,7 @@ function SignUp() {
                         }
                         register={register}
                     />
-                    <InputField
+                    <FormInputField
                         id="signUp-repeat-password"
                         type="password"
                         placeholder="Repeat Password"

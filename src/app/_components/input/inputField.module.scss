@@ -3,21 +3,22 @@
 .fieldset {
     position: relative;
     padding: unset;
-    border: 0.5px solid $col-black;
     margin: 0;
     border-radius: 0.5rem;
+    border: 0;
 
     input,
     textarea {
         width: 100%;
         resize: none;
         padding: 1rem 0.5rem;
-        border: unset;
+        border: 1px solid $col-grey;
         font-size: 1rem;
         font-weight: 400;
         z-index: 10;
         background: unset;
         background-color: unset;
+        border-radius: 0.5rem;
     }
 
     label {
@@ -44,6 +45,7 @@
         font-size: 0.7rem;
         top: 0;
         transform: translateY(-50%);
+        color: $col-blue-select;
     }
 
     input:not(:placeholder-shown) + label,
@@ -56,14 +58,19 @@
     textarea:focus + label {
         font-size: 0.7rem;
         top: 0;
+        color: $col-blue-select;
     }
 
     input:focus,
     textarea:focus {
-        outline: 0;
+        outline: 2px solid $col-blue-select; /* Restores outline with desired style */
+        // outline-offset: -1.5px;
     }
 
     .errorText {
         position: absolute;
+    }
+    .error {
+        color: $col-red !important;
     }
 }

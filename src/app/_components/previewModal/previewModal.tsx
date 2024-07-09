@@ -120,6 +120,7 @@ const PreviewModal = () => {
             closeHandler={() => hideUsePreviewModal()}
             modalTitle={previewTitle() || "Preview"}
             footer={<Buttons />}
+            widthFit="wide"
         >
             {ischeck ? (
                 <PreviewModalSet

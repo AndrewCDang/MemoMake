@@ -227,8 +227,8 @@ function CreateCollectionModal({
                                         >
                                             {item.set_name}
                                             <span className={style.itemCount}>
-                                                {item.count} card
-                                                {item.count > 1 ? "s" : ""}
+                                                {item.item_count} card
+                                                {item.item_count > 1 ? "s" : ""}
                                             </span>
                                         </div>
                                     );

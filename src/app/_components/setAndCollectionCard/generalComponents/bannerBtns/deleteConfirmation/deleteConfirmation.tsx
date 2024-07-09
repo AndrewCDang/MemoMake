@@ -1,7 +1,7 @@
 "use client";
 import style from "./deleteConfirmation.module.scss";
 import DefaultButton from "@/app/_components/(buttons)/defaultButton";
-import { ContentType } from "@/app/_types/types";
+import { Account, ContentType } from "@/app/_types/types";
 import { capitaliseFirstChar } from "@/app/_functions/capitaliseFirstChar";
 import { HiMiniTrash } from "react-icons/hi2";
 import PopOverContent from "@/app/_components/_generalUi/popOverContent/popOverContent";
@@ -9,6 +9,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { delSetOrCollection } from "@/app/_actions/delSetOrCollection";
 
 type DeleteConfirmationTypes = {
+    account: Account;
     id: string;
     contentType: ContentType;
     isOn: boolean;
@@ -16,6 +17,7 @@ type DeleteConfirmationTypes = {
 };
 
 function DeleteConfirmation({
+    account,
     id,
     contentType,
     isOn,
@@ -50,7 +52,11 @@ function DeleteConfirmation({
 
     // Delete Handler
     const delHandler = async () => {
-        const del = await delSetOrCollection({ id, contentType });
+        const del = await delSetOrCollection({
+            id,
+            contentType,
+            userId: account.user_id,
+        });
         console.log(del);
     };
 

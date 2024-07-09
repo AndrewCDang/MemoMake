@@ -1,0 +1,66 @@
+@import "../../../../styles/colours.scss";
+
+@mixin searchItem {
+    border-radius: 0.5rem;
+    cursor: pointer;
+    .collectionName {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        svg {
+            height: 1.5rem;
+            width: 1.5rem;
+        }
+        .spanName {
+            display: flex;
+            gap: 0;
+            .highlightedText {
+                border-radius: 0.25rem;
+            }
+        }
+    }
+    .colourIcon {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 0.5rem;
+    }
+    .countGroup {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: nowrap;
+        font-size: 0.75em;
+        span {
+            font-size: 0.75em;
+            line-height: 0.75em;
+        }
+    }
+    a {
+        height: 100%;
+        width: 100%;
+        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        justify-content: space-between;
+        @media (max-width: "450px") {
+            flex-direction: column;
+            align-items: start;
+            gap: 0;
+            .countGroup {
+                margin-left: 2rem;
+                gap: 0.5rem;
+            }
+        }
+    }
+    &:hover {
+        background-color: rgba($col-grey, 0.2);
+    }
+}
+
+.collectionItem {
+    @include searchItem();
+}
+
+.setItem {
+    @include searchItem();
+}

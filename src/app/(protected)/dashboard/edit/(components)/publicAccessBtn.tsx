@@ -13,11 +13,11 @@ const PublicAccessBtn = ({
         const publicAccessResponse = await toggleSetPublicAccess({
             setId: flashcard_set.id,
         });
+        console.log(publicAccessResponse);
     };
 
     return (
         <div className={style.publicAccessContainer}>
-            <span>Public Access</span>
             <SliderToggle
                 checked={
                     (flashcard_set && flashcard_set.public_access) || false
@@ -26,6 +26,7 @@ const PublicAccessBtn = ({
                 handler={togglePublicAccessHandler}
                 variant="coloured"
             />
+            <span>Public Access</span>
         </div>
     );
 };

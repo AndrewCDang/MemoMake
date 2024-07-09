@@ -1,7 +1,7 @@
 import { db } from "@/app/_lib/db";
 import style from "./set.module.scss";
 import { Flashcard_item, Flashcard_set } from "@/app/_types/types";
-import CreateCard from "../createCard";
+import CreateCard from "../[id]/createCard";
 import ReviseCard from "../reviseCard";
 import { HiMiniStop } from "react-icons/hi2";
 import LinkText from "@/app/_components/linkText/linkText";

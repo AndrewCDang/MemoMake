@@ -1,0 +1,48 @@
+@import "../../../../../styles/mixins";
+@import "../../../../../styles/colours.scss";
+
+.publicAccess {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+.headingContainer {
+    display: grid;
+    grid-template-columns: 1fr 2rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .tagsContainer {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+        overflow-x: scroll;
+        padding: 0.5rem;
+        .tags {
+            @include tagLabel;
+            background-color: rgba($col-white, 0.5);
+            border: 0;
+            box-shadow: $box-shadow-sm;
+        }
+    }
+    .editSettings {
+        display: flex;
+        gap: 0.25rem;
+        .settingsBtn {
+            cursor: pointer;
+            svg {
+                width: 2rem;
+                height: 2rem;
+                fill: $col-grey;
+                @include transition(fill);
+            }
+            &:hover {
+                svg {
+                    fill: $col-black;
+                }
+            }
+        }
+    }
+}

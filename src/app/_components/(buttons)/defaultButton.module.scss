@@ -37,3 +37,16 @@
         background-color: rgba($col-red, 0.1);
     }
 }
+
+.defaultButtonYellow {
+    background-color: $col-yellow;
+    border: 0.5px solid $col-yellow;
+    color: $col-black;
+    &:hover {
+        background-color: rgba($col-yellow, 0.8);
+    }
+}
+
+.noOutline {
+    border: 0 !important;
+}

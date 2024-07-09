@@ -119,3 +119,7 @@
     border-radius: 0.25rem;
     cursor: pointer;
 }
+
+@mixin transition($property) {
+    transition: $property 0.12s ease-in-out;
+}

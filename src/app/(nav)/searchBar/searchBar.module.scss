@@ -1,0 +1,19 @@
+@import "../../styles/colours.scss";
+.searchNavWrapContainer {
+    z-index: 1000;
+
+    .searchNavWrap {
+        position: absolute;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .searchActiveWrap {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        background-color: rgba($col-black, 0.2);
+    }
+}

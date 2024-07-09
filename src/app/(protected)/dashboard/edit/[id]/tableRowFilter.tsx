@@ -9,7 +9,7 @@ import { HiOutlineX } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiArrowUturnLeft } from "react-icons/hi2";
 import { labelColour } from "@/app/_components/_generalUi/difficultyColours/difficultyColours";
-import { diffArray } from "./tableItems/difficultyTableItem";
+import { diffArray } from "./(components)/tableItems/difficultyTableItem";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 type TableRowFilterTypes = {

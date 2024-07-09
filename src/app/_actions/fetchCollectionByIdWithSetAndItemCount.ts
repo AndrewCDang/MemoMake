@@ -28,7 +28,7 @@ export async function fetchCollectionByIdWithSetAndItemCount({
             const fetch: Flashcard_set_with_count[] = await db`
                 SELECT fs.*, COUNT(DISTINCT fi.id) AS item_count
                 FROM flashcard_set fs
-                JOIN flashcard_item fi ON fi.set_id = fs.id
+                LEFT JOIN flashcard_item fi ON fi.set_id = fs.id
                 WHERE fs.user_id = ${userId}
                 GROUP BY fs.id
             `;

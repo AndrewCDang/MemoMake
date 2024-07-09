@@ -6,8 +6,11 @@ import { db } from "../_lib/db";
 import { getUserByEmail } from "../_data/user";
 import generateVerificationToken from "../_lib/generateToken";
 import { verifyEmail } from "../(auth)/verifyEmail";
+import { DataValidationType } from "../(auth)/SignUp";
 
-export const signUp = async (values: z.infer<typeof AuthSignUp>) => {
+export const signUp = async (
+    values: z.infer<typeof AuthSignUp>
+): Promise<DataValidationType> => {
     const validated = AuthSignUp.safeParse(values);
 
     if (!validated.success) {
@@ -50,7 +53,7 @@ export const signUp = async (values: z.infer<typeof AuthSignUp>) => {
             VALUES (${userId})
         `;
     } catch (error) {
-        return { validated: false, message: error };
+        return { validated: false };
     }
 
     const verification = await generateVerificationToken(email);

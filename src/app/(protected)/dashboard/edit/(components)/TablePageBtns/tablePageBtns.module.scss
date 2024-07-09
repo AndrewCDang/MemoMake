@@ -1,0 +1,26 @@
+@import "../../../../../styles/colours.scss";
+
+.tablePageBtns {
+    position: fixed;
+    bottom: calc(2rem);
+    display: flex;
+    gap: 1rem;
+    width: fit-content;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: $box-shadow-sm;
+    background-color: $col-white;
+    .pageBtn {
+        display: flex;
+        gap: 0.25rem;
+        flex-wrap: nowrap;
+        align-items: center;
+        font-weight: 600;
+        svg {
+            height: 2.5rem;
+            width: 2.5rem;
+        }
+    }
+}

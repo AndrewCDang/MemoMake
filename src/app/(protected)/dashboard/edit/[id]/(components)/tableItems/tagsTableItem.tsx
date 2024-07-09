@@ -1,11 +1,10 @@
 import React, { MutableRefObject, useEffect, useRef } from "react";
-import { ColumnName, Refs, InputValues } from "../cardTableTypes";
+import { ColumnName, Refs, InputValues } from "../../cardTableTypes";
 import { UpdateCardTypes } from "@/app/_actions/updateCard";
-import style from "../cardsTable.module.scss";
+import style from "../../cardsTable.module.scss";
 import { Flashcard_item } from "@/app/_types/types";
 import PopToggler from "./popToggler";
 import { HiOutlineX } from "react-icons/hi";
-import { motion } from "framer-motion";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 type GenericField = {

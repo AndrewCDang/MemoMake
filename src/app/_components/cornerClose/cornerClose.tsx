@@ -5,7 +5,7 @@ import style from "./close.module.scss";
 type CloseHandler = {
     handler: () => void;
     cornerSpace?: "normal" | "tight";
-    type?: "withinCorner" | "circleCorner";
+    type?: "withinCorner" | "circleCorner" | "relative";
 };
 
 function CornerClose({
@@ -30,6 +30,11 @@ function CornerClose({
             )}
             {type === "circleCorner" && (
                 <button onClick={handler} className={style.closeCircleCorner}>
+                    <HiMiniXMark />
+                </button>
+            )}
+            {type === "relative" && (
+                <button onClick={handler} className={style.closeRelative}>
                     <HiMiniXMark />
                 </button>
             )}

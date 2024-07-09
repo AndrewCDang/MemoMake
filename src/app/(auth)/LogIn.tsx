@@ -3,7 +3,7 @@
 import React, { startTransition, useState, useRef, ReactNode } from "react";
 import { FcGoogle } from "react-icons/fc";
 import style from "./authForm.module.scss";
-import InputField from "../_components/input/inputField";
+import FormInputField from "../_components/input/formInputField";
 import { AuthAccountType, AuthSchema } from "../../schema/authSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -88,7 +88,7 @@ function LogIn() {
                     className={style.form}
                     onSubmit={handleSubmit(submitHandler)}
                 >
-                    <InputField
+                    <FormInputField
                         id="logIn-id"
                         type="email"
                         placeholder="Email"
@@ -97,7 +97,7 @@ function LogIn() {
                         errorMessage={errors.email && errors.email.message}
                         register={register}
                     />
-                    <InputField
+                    <FormInputField
                         id="logIn-password"
                         type="password"
                         placeholder="Password"

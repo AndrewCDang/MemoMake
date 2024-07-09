@@ -39,3 +39,16 @@
     }
     z-index: 10;
 }
+
+.closeRelative {
+    svg {
+        width: 2rem !important;
+        height: 2rem !important;
+        cursor: pointer;
+        fill: $col-black;
+    }
+    svg:hover {
+        scale: 0.95;
+    }
+    z-index: 10;
+}

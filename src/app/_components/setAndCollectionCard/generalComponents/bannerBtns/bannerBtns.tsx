@@ -12,14 +12,15 @@ import DeleteConfirmation from "./deleteConfirmation/deleteConfirmation";
 import PopOverContent from "@/app/_components/_generalUi/popOverContent/popOverContent";
 
 type BannerBtnsTypes = {
+    publicCard: boolean;
     setIsFavourited: Dispatch<SetStateAction<boolean>>;
     isFavourited: boolean;
-    account: Account;
+    account: Account | undefined;
     set: Flashcard_collection_set_joined | Flashcard_set;
     contentType: ContentType;
 };
 
-const BannerIcon = ({
+export const BannerIcon = ({
     hoverText,
     children,
     handler,
@@ -36,6 +37,7 @@ const BannerIcon = ({
     );
 };
 function BannerBtns({
+    publicCard,
     setIsFavourited,
     isFavourited,
     set,
@@ -65,38 +67,47 @@ function BannerBtns({
 
     return (
         <div className={style.bannerBtnsContainer}>
-            <BannerIcon
-                hoverText={`Pin ${cardType}`}
-                handler={() => setIsFavourited((prevState) => !prevState)}
-            >
-                <PinIcon
-                    favourited={isFavourited}
-                    userId={account && account.user_id}
-                    setId={set.id}
-                />
-            </BannerIcon>
-            <div className={style.delBannerContainer}>
+            {account && (
                 <BannerIcon
-                    hoverText={`Delete ${cardType}`}
-                    handler={() => setDelConfirmation(true)}
+                    hoverText={`Pin ${cardType}`}
+                    handler={() => setIsFavourited((prevState) => !prevState)}
                 >
-                    <HiMiniTrash style={{ fill: colours.black(0.4) }} />
-                </BannerIcon>
-                <PopOverContent isOn={delConfirmation}>
-                    <DeleteConfirmation
-                        isOn={delConfirmation}
-                        setIsOn={setDelConfirmation}
-                        contentType={contentType}
-                        id={set.id}
+                    <PinIcon
+                        favourited={isFavourited}
+                        userId={account && account.user_id}
+                        setId={set.id}
                     />
-                </PopOverContent>
-            </div>
-            <BannerIcon
-                hoverText={`Preview ${cardType}`}
-                handler={() => previewHandler(set.id)}
-            >
-                <HiMiniMagnifyingGlass style={{ fill: colours.black(0.4) }} />
-            </BannerIcon>
+                </BannerIcon>
+            )}
+            {account && account.user_id === set.user_id && (
+                <div className={style.delBannerContainer}>
+                    <BannerIcon
+                        hoverText={`Delete ${cardType}`}
+                        handler={() => setDelConfirmation(true)}
+                    >
+                        <HiMiniTrash style={{ fill: colours.black(0.4) }} />
+                    </BannerIcon>
+                    <PopOverContent isOn={delConfirmation}>
+                        <DeleteConfirmation
+                            account={account}
+                            isOn={delConfirmation}
+                            setIsOn={setDelConfirmation}
+                            contentType={contentType}
+                            id={set.id}
+                        />
+                    </PopOverContent>
+                </div>
+            )}
+            {!publicCard && (
+                <BannerIcon
+                    hoverText={`Preview ${cardType}`}
+                    handler={() => previewHandler(set.id)}
+                >
+                    <HiMiniMagnifyingGlass
+                        style={{ fill: colours.black(0.4) }}
+                    />
+                </BannerIcon>
+            )}
         </div>
     );
 }
