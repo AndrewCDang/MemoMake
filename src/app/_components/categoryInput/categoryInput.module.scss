@@ -1,4 +1,5 @@
 @import "../../styles/colours.scss";
+@import "../../styles/mixins";
 
 @mixin removeCategoryCSS {
     position: absolute;
@@ -24,7 +25,10 @@
 @mixin categoryItemCSS {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.5rem;
+    max-height: 200px;
+    padding-top: 0.5rem;
+    overflow-y: auto;
     & > div {
         background-color: rgba($col-grey, 0.5);
         padding: 0.25rem 1rem;
@@ -42,6 +46,7 @@
 .categoriesDisplay {
     @include categoryItemCSS();
 }
+@include customScrollbar(".categoriesDisplay");
 
 .inputField {
     padding: 0.2rem !important;

@@ -13,6 +13,9 @@ import DefaultButton from "../(buttons)/defaultButton";
 import { HiChevronRight } from "react-icons/hi2";
 
 type UploadImageTypes = {
+    insertOnUpload?: boolean;
+    onUploadHandler?: () => void;
+    showImage?: boolean;
     image: File | undefined;
     setImage: Dispatch<SetStateAction<File | undefined>>;
 };
@@ -44,7 +47,13 @@ export const uploadImageHandler = async (
     }
 };
 
-function UploadImage({ image, setImage }: UploadImageTypes) {
+function UploadImage({
+    insertOnUpload = false,
+    onUploadHandler = () => null,
+    showImage = true,
+    image,
+    setImage,
+}: UploadImageTypes) {
     const [imageUrl, setImageUrl] = useState<string>("");
 
     const onChangeHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +61,7 @@ function UploadImage({ image, setImage }: UploadImageTypes) {
         if (e.target.files) {
             const image = e.target.files[0] as File;
             setImage(image);
+            onUploadHandler();
         }
     };
 
@@ -76,12 +86,16 @@ function UploadImage({ image, setImage }: UploadImageTypes) {
             if (!contentType || !contentType.startsWith("image/")) {
                 throw new Error("URL does not point to an image");
             }
+
+            const urlParts = imageUrl.split("/");
+            const imageName = urlParts[urlParts.length - 1] || "image.jpg";
+
             const blob = await response.blob();
-            const file = new File([blob], "image.jpg", {
+            const file = new File([blob], imageName, {
                 type: blob.type,
             });
-
             setImage(file);
+            onUploadHandler();
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setUrlError(true);
@@ -92,16 +106,17 @@ function UploadImage({ image, setImage }: UploadImageTypes) {
 
     return (
         <div className={style.imageformUploadContainer}>
-            {image && (
-                <img
-                    className={style.uploadedImagePreview}
-                    src={URL.createObjectURL(image)}
-                    alt={image.name}
-                />
+            {showImage && image && (
+                <>
+                    <img
+                        className={style.uploadedImagePreview}
+                        src={URL.createObjectURL(image)}
+                        alt={image.name}
+                    />
+                    <span className={style.imageNameLabel}>{image.name}</span>
+                </>
             )}
-            {image && (
-                <span className={style.imageNameLabel}>{image.name}</span>
-            )}
+
             <div className={style.inputUrlContainer}>
                 <div className={style.inputContainer}>
                     <input

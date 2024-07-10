@@ -2,6 +2,7 @@ import React from "react";
 import { ColumnName } from "../../cardTableTypes";
 import { Flashcard_item } from "@/app/_types/types";
 import style from "../../cardsTable.module.scss";
+import { formatDate } from "@/app/_functions/formatDate";
 
 type GenericField = {
     item: ColumnName;
@@ -9,12 +10,7 @@ type GenericField = {
 };
 
 function LastModifiedTableItem({ item, card }: GenericField) {
-    const date = card.last_modified;
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear(); // Get full year
-
-    const formattedDate = `${day}/${month}/${year}`;
+    const formattedDate = formatDate(card.last_modified);
     return (
         <>
             {/* Table item - LastModifed */}

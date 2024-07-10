@@ -1,10 +1,18 @@
-import React, { MutableRefObject } from "react";
+"use client";
+import React, { MutableRefObject, useEffect, useState } from "react";
 import { ColumnName, Refs, InputValues } from "../../cardTableTypes";
 import { UpdateCardTypes } from "@/app/_actions/updateCard";
 import style from "../../cardsTable.module.scss";
 import { Flashcard_item } from "@/app/_types/types";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import PopToggler from "./popToggler";
+import UploadImage from "@/app/_components/uploadImage/uploadImage";
+import { FaImage } from "react-icons/fa6";
+import DefaultButton from "@/app/_components/(buttons)/defaultButton";
+import { HiArrowUturnLeft } from "react-icons/hi2";
+import ButtonWrap from "@/app/_components/(buttons)/buttonWrap";
+import { uploadImageHandler } from "@/app/_components/uploadImage/uploadImage";
+import { updateQuestionAnswerImageUrl } from "@/app/_actions/updateQuestionAnswerImage";
 
 type GenericField = {
     item: ColumnName;
@@ -45,6 +53,43 @@ function GenericTableItem({
     itemLabelRef,
     editInputRef,
 }: GenericField) {
+    const defaultImg =
+        item === "item_answer"
+            ? card.answer_img
+            : item === "item_question"
+            ? card.question_img
+            : null;
+
+    const defaultText = card[item] || "";
+
+    const [text, setText] = useState<string>();
+    const [image, setImage] = useState<File>();
+    const [uploadImageModal, setUploadImageModal] = useState<boolean>(false);
+
+    const uploadImage = async () => {
+        try {
+            if (image) {
+                const imageUpload = await uploadImageHandler(image);
+                if (imageUpload) {
+                    const updateImgDb = await updateQuestionAnswerImageUrl({
+                        type: (item as "item_question") || "item_answer",
+                        image: imageUpload.url,
+                        id: card.id,
+                    });
+                    console.log(updateImgDb);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        if (image) {
+            uploadImage();
+        }
+    }, [image]);
+
     return (
         <>
             {/* Label Value  */}
@@ -54,7 +99,25 @@ function GenericTableItem({
                     tableItemRef.current[`${item}~${card.id}`] = el;
                 }}
             >
-                {card[item] as string}
+                {defaultImg && !image && (
+                    <div className={style.imageThumbnail}>
+                        <img
+                            className={style.uploadedImagePreview}
+                            src={defaultImg}
+                            alt={``}
+                        />
+                    </div>
+                )}
+                {image && (
+                    <div className={style.imageThumbnail}>
+                        <img
+                            className={style.uploadedImagePreview}
+                            src={URL.createObjectURL(image)}
+                            alt={``}
+                        />
+                    </div>
+                )}
+                <span>{text || (card[item] as string)}</span>
             </div>
             {/* Invisible Input */}
             <PopToggler
@@ -70,28 +133,93 @@ function GenericTableItem({
                     itemEditRef.current[`${item}~${card.id}`] = el;
                 }}
             >
-                <ReactTextareaAutosize
-                    id={`${item}-${card.id}-edit`}
-                    value={
-                        inputValues[`${item}~${card.id}`] ??
-                        (item !== "item_tags" && item !== "last_modified"
-                            ? card[item]
-                            : "")
-                    }
-                    ref={(el) =>
-                        (editInputRef.current[`${item}~${card.id}`] = el)
-                    }
-                    onChange={(e) => handleInputChange(e, `${item}~${card.id}`)}
-                    onKeyDown={(e) => labelEditEnterHandler(e, item, card.id)}
-                    // onBlur={(e) =>
-                    //     e.target.value &&
-                    //     updateCardHandler({
-                    //         id: card.id,
-                    //         object: item,
-                    //         value: e.target.value,
-                    //     })
-                    // }
-                />
+                {!uploadImageModal && (
+                    <>
+                        {image && (
+                            <div className={style.imageContainerWrap}>
+                                <div className={style.imageContainer}>
+                                    <img
+                                        className={style.uploadedImagePreview}
+                                        src={URL.createObjectURL(image)}
+                                        alt={image.name}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {defaultImg && !image && (
+                            <div className={style.imageContainerWrap}>
+                                <div className={style.imageContainer}>
+                                    <img
+                                        className={style.uploadedImagePreview}
+                                        src={defaultImg}
+                                        alt={defaultImg}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        <ReactTextareaAutosize
+                            id={`${item}-${card.id}-edit`}
+                            value={
+                                inputValues[`${item}~${card.id}`] ??
+                                (item !== "item_tags" &&
+                                item !== "last_modified"
+                                    ? card[item]
+                                    : "")
+                            }
+                            ref={(el) =>
+                                (editInputRef.current[`${item}~${card.id}`] =
+                                    el)
+                            }
+                            onChange={(e) => (
+                                setText(e.target.value || " "),
+                                handleInputChange(e, `${item}~${card.id}`)
+                            )}
+                            onKeyDown={(e) =>
+                                labelEditEnterHandler(e, item, card.id)
+                            }
+                        />
+                    </>
+                )}
+                <div className={style.popContent}>
+                    <div>
+                        <button
+                            onClick={() => setUploadImageModal(true)}
+                            className={style.popButtons}
+                        >
+                            <FaImage />
+                            <span className={style.popButtonHoverLabel}>
+                                Upload Image
+                            </span>
+                        </button>
+                    </div>
+                    <div>
+                        <div
+                            style={{
+                                display: !uploadImageModal ? "none" : "unset",
+                            }}
+                        >
+                            <ButtonWrap
+                                handler={() => setUploadImageModal(false)}
+                                variant="Black"
+                            >
+                                <div className={style.returnBtn}>
+                                    <HiArrowUturnLeft />
+                                </div>
+                            </ButtonWrap>
+                        </div>
+                    </div>
+                </div>
+                {uploadImageModal && (
+                    <div className={style.uploadImageContainer}>
+                        <UploadImage
+                            onUploadHandler={() => setUploadImageModal(false)}
+                            insertOnUpload={true}
+                            showImage={false}
+                            image={image}
+                            setImage={setImage}
+                        />
+                    </div>
+                )}
             </div>
         </>
     );

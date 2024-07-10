@@ -14,19 +14,28 @@
     flex-wrap: wrap;
     justify-content: space-between;
 
-    .tagsContainer {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 0.5rem;
-        overflow-x: scroll;
-        padding: 0.5rem;
-        .tags {
-            @include tagLabel;
-            background-color: rgba($col-white, 0.5);
-            border: 0;
-            box-shadow: $box-shadow-sm;
+    .tagsContainerWrap {
+        width: 100%;
+        overflow-x: auto; /* Show horizontal scrollbar only when needed */
+
+        .tagsContainer {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 0.5rem;
+            overflow-x: scroll;
+            padding: 0.5rem;
+            text-wrap: nowrap;
+            overflow-x: auto; /* Show horizontal scrollbar only when needed */
+
+            .tags {
+                @include tagLabel;
+                background-color: rgba($col-white, 0.5);
+                border: 0;
+                box-shadow: $box-shadow-sm;
+            }
         }
     }
+    @include scrollX-sm(".tagsContainer");
     .editSettings {
         display: flex;
         gap: 0.25rem;

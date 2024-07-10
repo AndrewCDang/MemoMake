@@ -24,7 +24,7 @@ function EditHeading({ set }: EditHeadingType) {
                 </div>
             )}
             <div className={style.headingContainer}>
-                <div>
+                <div className={style.tagsContainerWrap}>
                     <div className={style.tagsContainer}>
                         {set.set_categories &&
                             set.set_categories.map((item) => {

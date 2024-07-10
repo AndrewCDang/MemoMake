@@ -18,6 +18,7 @@ import DifficultyTableItem, {
 import TableHeader from "./tableHeader";
 import ApppliedFilters from "./apppliedFilters";
 import TableShadow from "./(components)/shadowComponent/tableShadow";
+import { formatDate } from "@/app/_functions/formatDate";
 
 // Type of Card Object
 type CardTableTypes = {
@@ -353,7 +354,25 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
     };
 
     // Placing initial/existing values into input edit field
-    const [inputValues, setInputValues] = useState<InputValues>({});
+
+    const defaultInputValues = cardCollection
+        .map((card) => {
+            const arrayObjects = columns.reduce((acc, item) => {
+                const itemValue =
+                    item !== "last_modified"
+                        ? card[item]
+                        : formatDate(card.last_modified);
+                acc[`${item}~${card.id}`] = itemValue;
+                return acc;
+            }, {} as { [key: string]: string | string[] | undefined });
+            return arrayObjects;
+        })
+        .reduce((acc, obj) => {
+            return { ...acc, ...obj };
+        }, {});
+
+    const [inputValues, setInputValues] =
+        useState<InputValues>(defaultInputValues);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -425,7 +444,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
 
     const checkUpdate = async () => {
         if (focusedLabel) {
-            const value = inputValues[focusedLabel];
+            const value = inputValues[focusedLabel] || null;
             const id = focusedLabel.split("~")[1];
             const object = focusedLabel.split("~")[0] as ColumnName;
             const foundObject = cardCollection.find(
@@ -440,8 +459,10 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                 );
                 if (comparisonIsTrue) return;
             }
+            console.log(value);
+            console.log(existingValue);
 
-            if (value !== existingValue && value) {
+            if (value !== existingValue) {
                 console.log(`
                     id:${id}
                     object:${object}
@@ -451,7 +472,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                     const updateItem = await updateCard({
                         id: id,
                         object: object,
-                        value: value,
+                        value: value || null,
                     });
                     console.log(updateItem.message);
                 } catch (error) {

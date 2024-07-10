@@ -4,11 +4,12 @@
     display: flex;
     flex-wrap: nowrap;
     gap: 0.5rem;
-    height: 100%;
+    width: fit-content;
+    height: fit-content;
     align-items: center;
-    border: 0.5px solid $col-grey;
+    border: 1px solid $col-grey;
     border-radius: 0.5rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.25rem;
     font-weight: 500;
     background-color: rgba($col-white, 0.15);
     cursor: pointer;

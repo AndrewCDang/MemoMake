@@ -94,7 +94,6 @@ function CreateSetModal({ setModal }: CreateSetTypes) {
                 <FormInputField
                     id="create_set_id"
                     type="text"
-                    placeholder="Set Name*"
                     object="setName"
                     error={errors.setName ? true : false}
                     errorMessage={errors.setName && errors.setName.message}
@@ -104,7 +103,6 @@ function CreateSetModal({ setModal }: CreateSetTypes) {
                 <FormInputField
                     id="create_set_description"
                     type="text"
-                    placeholder="Description"
                     object="description"
                     error={errors.description ? true : false}
                     errorMessage={

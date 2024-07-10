@@ -1,9 +1,10 @@
 import React from "react";
 import categoryStyle from "./categoryInput.module.scss";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { HiOutlineX } from "react-icons/hi";
 import inputStyle from "../input/inputField.module.scss";
 import style from "./categoryInput.module.scss";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 type CategoryInputType = {
     categories: string[];
@@ -21,6 +22,7 @@ function LabelInput({
     setTypedCategory,
 }: CategoryInputType) {
     const categoryRef = useRef<HTMLInputElement>(null);
+    const [parent] = useAutoAnimate();
 
     const appendCategory = () => {
         if (
@@ -32,8 +34,8 @@ function LabelInput({
                 categoryRef.current.value.trim().slice(1);
             const included = categories.includes(categoryValue);
             if (!included) {
-                setCategories([...categories, categoryValue]);
-                categoryHandler([...categories, categoryValue]);
+                setCategories([categoryValue, ...categories]);
+                categoryHandler([categoryValue, ...categories]);
             }
             categoryRef.current.value = "";
             categoryRef.current.setAttribute("value", "");
@@ -96,6 +98,7 @@ function LabelInput({
             <section
                 style={{ marginBottom: categories.length > 0 ? "1rem" : "0" }}
                 className={categoryStyle.categoriesDisplay}
+                ref={parent}
             >
                 {categories.length > 0 &&
                     categories.map((category) => {

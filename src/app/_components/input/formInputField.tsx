@@ -5,6 +5,7 @@ type InputRef<T extends string> = {
     ref?: RefObject<HTMLInputElement>;
     error?: boolean;
     id: T;
+    object: T;
     type: string;
     errorMessage?: string | null;
     register: any;
@@ -17,6 +18,7 @@ function FormInputField<T extends string>({
     id,
     type,
     errorMessage = "Error",
+    object,
     register,
     textarea,
     defaultValue = "",
@@ -39,7 +41,7 @@ function FormInputField<T extends string>({
                     id={id}
                     type={type}
                     className={style.input}
-                    {...register(id)}
+                    {...register(object)}
                 ></input>
             )}
             <label className={`${error ? style.error : ""}`} htmlFor={id}>

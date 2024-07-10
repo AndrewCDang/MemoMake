@@ -104,6 +104,7 @@ function CreateCardModal({ setId }: CreateCardTypes) {
             <FormInputField
                 id="item_question"
                 type="text"
+                object="item_question"
                 error={errors.item_question ? true : false}
                 errorMessage={
                     errors.item_question && errors.item_question.message
@@ -112,6 +113,7 @@ function CreateCardModal({ setId }: CreateCardTypes) {
             />
             <FormInputField
                 id="item_answer"
+                object="item_answer"
                 type="text"
                 textarea={true}
                 error={errors.item_answer ? true : false}

@@ -6,7 +6,7 @@ import { ColumnName } from "../(protected)/dashboard/edit/[id]/cardTableTypes";
 export type UpdateCardTypes = {
     id: string;
     object: ColumnName;
-    value: string | string[];
+    value: string | string[] | null;
 };
 
 export const updateCard = async ({
@@ -18,7 +18,7 @@ export const updateCard = async ({
         try {
             await db`
             UPDATE flashcard_item
-            SET ${db(object)} = ${value}, last_modified = ${new Date()}
+            SET ${db(object)} = ${value || null}, last_modified = ${new Date()}
             WHERE id = ${id}
             `;
             revalidatePath("dashboard/flashcard");
@@ -34,7 +34,7 @@ export const updateCard = async ({
             try {
                 await db`
             UPDATE flashcard_item
-            SET difficulty = ${value}, last_modified = ${new Date()}
+            SET difficulty = ${value || null}, last_modified = ${new Date()}
             WHERE id = ${id}
             `;
                 revalidatePath("dashboard/flashcard");
@@ -52,7 +52,7 @@ export const updateCard = async ({
             try {
                 await db`
             UPDATE flashcard_item
-            SET item_tags = ${value}, last_modified = ${new Date()}
+            SET item_tags = ${value || null}, last_modified = ${new Date()}
             WHERE id = ${id}
             `;
                 revalidatePath("dashboard/flashcard");

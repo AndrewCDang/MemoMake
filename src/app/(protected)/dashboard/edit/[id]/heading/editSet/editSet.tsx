@@ -70,7 +70,7 @@ function EditSet({ set }: EditSetTypes) {
     // Checks to see if category input has any tpyed(but not inserted) input before submission, if so, inserts the input then submits.
     const preSubmitHandler = (e: FormEvent) => {
         e.preventDefault();
-        if (typedCategory) {
+        if (typedCategory && !categories.includes(typedCategory)) {
             const submitCategory = [...categories, typedCategory];
             console.log(submitCategory);
             setValue("set_categories", submitCategory);

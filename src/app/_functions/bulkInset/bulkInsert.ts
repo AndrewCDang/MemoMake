@@ -1,5 +1,5 @@
 import { AuthItemTypes } from "@/schema/itemSchema";
-import insertFlashCard from "../_actions/insertFlashCard";
+import insertFlashCard from "../../_actions/insertFlashCard";
 
 type BulkInsertTypes = {
     setId: string;
