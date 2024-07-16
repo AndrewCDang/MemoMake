@@ -1,4 +1,4 @@
-import { ChangeEvent, RefObject } from "react";
+import { ChangeEvent, KeyboardEvent, RefObject } from "react";
 import style from "./inputField.module.scss";
 
 type InputRef = {
@@ -14,6 +14,8 @@ type InputRef = {
         e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => void;
     inputValue: string;
+    height?: "normal" | "short";
+    enterHandler?: () => void;
 };
 
 function TextInput({
@@ -26,7 +28,17 @@ function TextInput({
     handler,
     keyDownHandler,
     inputValue,
+    height = "normal",
+    enterHandler,
 }: InputRef) {
+    const watchEnterHandler = (
+        e: KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
+    ) => {
+        if (e.key === "Enter") {
+            enterHandler && enterHandler();
+        }
+    };
+
     return (
         <fieldset className={style.fieldset}>
             {textarea ? (
@@ -37,10 +49,16 @@ function TextInput({
                     className={style.input}
                     value={inputValue}
                     onChange={(e) => handler(e)}
-                    onKeyDown={(e) => keyDownHandler && keyDownHandler(e)}
+                    onKeyDown={(e) => (
+                        keyDownHandler && keyDownHandler(e),
+                        enterHandler && watchEnterHandler(e)
+                    )}
                 ></textarea>
             ) : (
                 <input
+                    style={{
+                        padding: height === "normal" ? "" : "0.5rem 0.5rem",
+                    }}
                     ref={refObject as RefObject<HTMLInputElement>}
                     placeholder=""
                     id={id}
@@ -48,15 +66,15 @@ function TextInput({
                     value={inputValue}
                     className={style.input}
                     onChange={(e) => handler(e)}
-                    onKeyDown={(e) => keyDownHandler && keyDownHandler(e)}
+                    onKeyDown={(e) => (
+                        keyDownHandler && keyDownHandler(e),
+                        enterHandler && watchEnterHandler(e)
+                    )}
                 ></input>
             )}
             <label
                 style={{
-                    color:
-                        error == true
-                            ? "rgb(255, 86, 120)"
-                            : "rgb(169, 169, 169)",
+                    color: error === true ? "rgb(255, 86, 120)" : "",
                 }}
                 htmlFor={id}
             >

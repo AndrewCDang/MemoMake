@@ -3,11 +3,10 @@
 
 .studyContainer {
     margin: 0 auto;
-    width: fit-content;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100vw;
+    width: 100%;
     height: calc(100vh - 2rem);
     padding-bottom: 8rem;
     position: relative;
@@ -64,7 +63,7 @@
 
     .flashCardContainer {
         position: relative;
-        width: 100vw;
+        width: 100%;
         flex: 1;
         z-index: 10;
 
@@ -192,9 +191,26 @@
                             padding: 0 2rem;
                             z-index: 10;
                         }
+                        .imageContainer {
+                            margin: 0 auto;
+                            width: 50%;
+                            min-width: 120px;
+                            height: fit-content;
+
+                            img {
+                                border-radius: 0.5rem;
+                                overflow: hidden;
+                                width: 100%;
+                                aspect-ratio: 1;
+                                object-fit: cover;
+                            }
+                        }
                         .cardContent {
                             z-index: 10;
                             position: relative;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
                         }
                     }
                 }

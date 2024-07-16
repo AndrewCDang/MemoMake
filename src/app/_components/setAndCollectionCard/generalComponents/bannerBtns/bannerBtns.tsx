@@ -24,15 +24,23 @@ export const BannerIcon = ({
     hoverText,
     children,
     handler,
+    hoverPos = "top",
 }: {
     hoverText: string;
     children: ReactNode;
     handler: () => void;
+    hoverPos?: "top" | "left";
 }) => {
     return (
         <button onClick={handler} className={style.bannerIcon}>
             {children}
-            <span className={style.hoverLabel}>{hoverText}</span>
+            <span
+                className={
+                    hoverPos === "top" ? style.hoverLabel : style.hoverLabelLeft
+                }
+            >
+                {hoverText}
+            </span>
         </button>
     );
 };
@@ -87,7 +95,10 @@ function BannerBtns({
                     >
                         <HiMiniTrash style={{ fill: colours.black(0.4) }} />
                     </BannerIcon>
-                    <PopOverContent isOn={delConfirmation}>
+                    <PopOverContent
+                        setIsOn={setDelConfirmation}
+                        isOn={delConfirmation}
+                    >
                         <DeleteConfirmation
                             account={account}
                             isOn={delConfirmation}

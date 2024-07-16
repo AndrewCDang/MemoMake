@@ -65,8 +65,16 @@ export const {
             return false;
         },
         async session({ token, session }) {
+            console.log(token);
+            console.log(session);
             if (token.sub && session.user) {
                 session.user.id = token.sub;
+            }
+            if (token.user_name && session.user) {
+                session.user.user_name = token.user_name as string;
+            }
+            if (token.user_name && session.user) {
+                session.user.image = token.image as string;
             }
             if (token.role && session.user) {
                 session.user.role = token.role as UserRole;
@@ -86,6 +94,8 @@ export const {
                     throw new Error("Network response was not ok");
                 }
                 const data = await response.json();
+                token.image = data.user.image;
+                token.user_name = data.user.user_name;
                 const userRole = data.user.role;
                 if (!userRole) return token;
                 token.role = userRole.role;

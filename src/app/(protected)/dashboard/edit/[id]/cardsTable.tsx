@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Flashcard_item } from "@/app/_types/types";
 import style from "./cardsTable.module.scss";
 import { motion } from "framer-motion";
@@ -355,24 +355,29 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
 
     // Placing initial/existing values into input edit field
 
-    const defaultInputValues = cardCollection
-        .map((card) => {
-            const arrayObjects = columns.reduce((acc, item) => {
-                const itemValue =
-                    item !== "last_modified"
-                        ? card[item]
-                        : formatDate(card.last_modified);
-                acc[`${item}~${card.id}`] = itemValue;
-                return acc;
-            }, {} as { [key: string]: string | string[] | undefined });
-            return arrayObjects;
-        })
-        .reduce((acc, obj) => {
-            return { ...acc, ...obj };
-        }, {});
+    const defaultInputValues = useMemo(() => {
+        return cardCollection
+            .map((card) => {
+                const arrayObjects = columns.reduce((acc, item) => {
+                    const itemValue =
+                        item !== "last_modified"
+                            ? card[item]
+                            : formatDate(card.last_modified);
+                    acc[`${item}~${card.id}`] = itemValue;
+                    return acc;
+                }, {} as { [key: string]: string | string[] | undefined });
+                return arrayObjects;
+            })
+            .reduce((acc, obj) => {
+                return { ...acc, ...obj };
+            }, {});
+    }, [cardCollection, columns]);
 
-    const [inputValues, setInputValues] =
-        useState<InputValues>(defaultInputValues);
+    const [inputValues, setInputValues] = useState(defaultInputValues);
+
+    useEffect(() => {
+        setInputValues(defaultInputValues);
+    }, [defaultInputValues]);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -459,7 +464,12 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                 );
                 if (comparisonIsTrue) return;
             }
-            console.log(value);
+            console.log(focusedLabel);
+            console.log(inputValues[focusedLabel]);
+            console.log(inputValues);
+            console.log(Object.keys(inputValues));
+            console.log(Object.keys(inputValues).includes(focusedLabel));
+
             console.log(existingValue);
 
             if (value !== existingValue) {

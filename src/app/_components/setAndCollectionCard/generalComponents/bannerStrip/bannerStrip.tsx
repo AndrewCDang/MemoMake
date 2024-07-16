@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect } from "react";
 import style from "./bannerStrip.module.scss";
-import { CollectionIcon, SetIcon } from "@/app/_components/svgs";
+import { CollectionIcon, SetIcon } from "@/app/_components/svgs/svgs";
 import {
     AnimatePresence,
     motion,

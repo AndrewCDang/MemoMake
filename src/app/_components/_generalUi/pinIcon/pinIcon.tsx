@@ -9,9 +9,15 @@ type PinIconTypes = {
     favourited: boolean;
     userId: string;
     setId: string;
+    revalidate?: boolean;
 };
 
-const PinIcon = ({ favourited = false, userId, setId }: PinIconTypes) => {
+const PinIcon = ({
+    favourited = false,
+    userId,
+    setId,
+    revalidate = true,
+}: PinIconTypes) => {
     const [pinIcon, setpinIcon] = useState(favourited);
 
     const handler = async () => {
@@ -21,7 +27,7 @@ const PinIcon = ({ favourited = false, userId, setId }: PinIconTypes) => {
         const favouriteDb = await addRemoveFavourites({
             id: userId,
             setId: setId,
-            revalidate: true,
+            revalidate: revalidate,
         });
     };
     return (

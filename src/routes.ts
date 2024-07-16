@@ -25,6 +25,6 @@ export const apiVerifyEmail = "/api/auth/verify";
 export const apiAuthPrefix = "/api/auth";
 
 /**
- * API redirect when logged in
+ * API redirect when logged in!
  */
 export const defaultLogInRedirect = "/dashboard";

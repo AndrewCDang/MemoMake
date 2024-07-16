@@ -1,6 +1,9 @@
 @import "../../../styles/colours.scss";
+@import "../../../styles/mixins";
 
 .searchNavContainer {
+    width: fit-content;
+    margin: 0 auto;
     position: relative;
     display: flex;
     gap: 0.25rem;
@@ -48,7 +51,11 @@
     .searchBarContainer {
         position: relative;
         background-color: $col-white;
-
+        .desktopText {
+            @include breakpoint-mobile {
+                display: none;
+            }
+        }
         .searchContainer {
             display: flex;
             align-items: center;
@@ -57,6 +64,9 @@
             border-radius: 0.5rem;
             padding-right: 3rem;
             color: transparent;
+            @include breakpoint-mobile {
+                padding-right: 1rem;
+            }
         }
         .searchContainerHover {
             position: absolute;

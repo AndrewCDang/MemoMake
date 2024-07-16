@@ -1,6 +1,12 @@
 @import "/src/app/styles/breakpoints.scss";
 @import "./colours.scss";
 
+@mixin transition($property) {
+    transition: $property 0.12s ease-in-out;
+}
+@mixin transition2($property) {
+    transition: $property 0.2s ease-in-out;
+}
 @mixin difficultyLabel {
     width: fit-content;
     display: flex;
@@ -87,7 +93,7 @@
 
     #{$class}::-webkit-scrollbar:horizontal {
         height: 6px;
-        background-color: $col-light-grey;
+        background-color: rgba($col-light-grey, 0.5);
         border-radius: 4px;
     }
 
@@ -95,7 +101,6 @@
         border-radius: 4px;
         background-color: $col-grey;
         transition: all 0.1s ease-in-out;
-        @include transition(transition);
     }
     #{$class}::-webkit-scrollbar-thumb:hover {
         background-color: rgba($col-black, 0.7);
@@ -160,6 +165,19 @@
     cursor: pointer;
 }
 
-@mixin transition($property) {
-    transition: $property 0.12s ease-in-out;
+@mixin whitebgGreyHover {
+    background: linear-gradient($col-white, $col-white),
+        linear-gradient($col-white, $col-white);
+    &:hover {
+        background: linear-gradient(rgba($col-grey, 0.1), rgba($col-grey, 0.1)),
+            linear-gradient($col-white, $col-white);
+    }
+}
+
+@mixin whitebgColHover {
+    background-color: $col-white;
+    @include transition(background-color);
+    &:hover {
+        background-color: $col-grey-hover;
+    }
 }

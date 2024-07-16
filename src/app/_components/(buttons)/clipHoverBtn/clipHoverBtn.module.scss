@@ -1,0 +1,31 @@
+@import "../../../styles/mixins";
+@import "../../../styles/colours.scss";
+
+@mixin sharedChildStyle {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    height: calc(100% - 0.25rem);
+    width: calc(100% - 0.25rem);
+}
+
+.clipBtnContainer {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .hoverChild {
+        @include sharedChildStyle();
+        @include transition2(clip-path);
+        clip-path: circle(50% at -50% 50%);
+        z-index: 10;
+    }
+    .baseChild {
+        @include sharedChildStyle();
+        z-index: 0;
+    }
+    &:hover .hoverChild {
+        clip-path: circle(100% at 50% 50%);
+    }
+}

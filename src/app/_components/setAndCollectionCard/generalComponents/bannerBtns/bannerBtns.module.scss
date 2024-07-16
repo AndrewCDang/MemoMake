@@ -31,22 +31,35 @@
         stroke: unset;
     }
 
-    .hoverLabel {
+    @mixin hoverLabelMixin {
         position: absolute;
-        top: -0.5rem;
-        transform: translate(-50%, -100%);
         background-color: rgba($col-black, 0.85);
         border-radius: 0.25rem;
         padding: 0rem 0.25rem;
         color: $col-white;
-        left: 50%;
         opacity: 0;
         transition: 0.12s ease-in-out;
         width: fit-content;
         text-wrap: nowrap;
         z-index: 50;
+        white-space: pre-line;
+        text-wrap: nowrap;
+        pointer-events: none;
     }
-    &:hover .hoverLabel {
+    .hoverLabel {
+        @include hoverLabelMixin();
+        top: -0.5rem;
+        transform: translate(-50%, -100%);
+        left: 50%;
+    }
+    .hoverLabelLeft {
+        @include hoverLabelMixin();
+        top: 50%;
+        left: 0%;
+        transform: translate(calc(-100% - 0.5rem), -50%);
+    }
+    &:hover .hoverLabel,
+    &:hover .hoverLabelLeft {
         opacity: 1;
     }
 }

@@ -1,0 +1,153 @@
+@import "../../../styles/colours.scss";
+@import "../../../styles/mixins";
+
+.navBtnWrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    .createAccountBtn {
+        position: relative;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        &:hover .baseText {
+            transform: rotateX(180deg);
+        }
+        &:hover .hoverText {
+            transform: rotateX(0deg);
+        }
+        .textWidth {
+            opacity: 0;
+            padding: 0.2rem 0.5rem;
+            text-wrap: nowrap;
+        }
+        @mixin hoverText {
+            position: absolute;
+            width: fit-content;
+            height: fit-content;
+            margin: auto;
+            inset: 0;
+            backface-visibility: hidden;
+            padding: 0.2rem 0.5rem;
+            box-shadow: $box-shadow-sm;
+            text-wrap: nowrap;
+            border-radius: 0.5rem;
+            @include transition2(transform);
+        }
+        .baseText {
+            @include hoverText();
+            background-color: $col-blue;
+            z-index: 2;
+            color: $col-white;
+        }
+        .hoverText {
+            @include hoverText();
+            transform: rotateX(180deg);
+            background-color: $col-yellow;
+            z-index: 1;
+            color: $col-black;
+        }
+    }
+    .navBtn {
+        display: flex;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: $box-shadow-sm;
+        background-color: $col-yellow;
+        border: 1.5px solid $col-white;
+        @include transition(transform);
+        &:hover {
+            transform: scale(0.98);
+        }
+        cursor: pointer;
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+        .defaultUser {
+            height: 100%;
+            width: 100%;
+        }
+        .hoverChild {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            height: 100%;
+            svg {
+                height: 100%;
+                width: 100%;
+                stroke-width: 2.5;
+                stroke: rgba($col-black, 1);
+            }
+        }
+        .baseChild {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            height: 100%;
+            svg {
+                height: 100%;
+                width: 100%;
+                stroke-width: 2.5;
+                stroke: rgba($col-black, 0.5);
+            }
+        }
+    }
+    .dropDownWrap {
+        position: absolute;
+        bottom: -0.5rem;
+        right: 0rem;
+    }
+    .dropDownContainer {
+        z-index: 1000;
+        height: fit-content;
+        width: fit-contenter;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(100%);
+        background-color: $col-white;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: $box-shadow-default;
+        text-wrap: nowrap;
+
+        .dropdownItem {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0rem;
+            margin-right: 0.5rem;
+            margin-left: 0.5rem;
+            color: $col-grey;
+            justify-content: space-between;
+            cursor: pointer;
+            & > *:first-child {
+                flex: 1;
+                text-align: center;
+            }
+            &:not(:first-child) {
+                border-top: 0.5px solid $col-grey;
+            }
+            &:hover {
+                color: $col-black;
+            }
+            @include transition(color);
+            img {
+                width: 2rem;
+                height: 2rem;
+                border-radius: 0.5rem;
+                object-fit: cover;
+            }
+            &:hover img,
+            &:hover svg {
+                transform: scale(0.98);
+            }
+            svg {
+                width: 2rem;
+                height: 2rem;
+            }
+        }
+    }
+}

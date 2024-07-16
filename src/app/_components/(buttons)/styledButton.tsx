@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import style from "./styledButtons.module.scss";
-import { RightArrow } from "../svgs";
+import { RightArrow } from "../svgs/svgs";
 
-import { LoadingSpin } from "../svgs";
+import { LoadingSpin } from "../svgs/svgs";
 
 function Button({
     text,

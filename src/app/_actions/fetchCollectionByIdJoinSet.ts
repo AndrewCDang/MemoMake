@@ -29,10 +29,8 @@ LEFT JOIN
     users ON users.id = fc.user_id
 WHERE 
     fc.user_id = ${id}
-GROUP BY 
-    fc.id;
-
-        `;
+GROUP BY fc.id, users.id;
+`;
 
         return collection;
     } catch (error: unknown) {

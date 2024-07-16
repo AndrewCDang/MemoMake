@@ -1,6 +1,8 @@
 @import "../../styles/colours.scss";
 .searchNavWrapContainer {
+    flex-basis: 300px;
     z-index: 1000;
+    width: fit-content;
 
     .searchNavWrap {
         position: absolute;

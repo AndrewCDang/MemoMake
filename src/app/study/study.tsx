@@ -42,7 +42,7 @@ type TempType = {
     item_tags: string[];
 };
 
-export type CombinedType = FlashCardItemsTest<TempType>;
+export type CombinedType = FlashCardItemsTest<Flashcard_item>;
 
 type StudyTypes = {
     collectionIds: string[];
@@ -93,8 +93,8 @@ function Study({
 
             // 2 Query flashcards with paramters
             const setTitleSubtitle = (title: string[], subtitle: string[]) => {
-                setTitles(subtitle.map((item) => item));
-                setSubTitles(title.map((item) => item));
+                setTitles(title.map((item) => item));
+                setSubTitles(subtitle.map((item) => item));
             };
 
             if (collectionIds && collectionIds.length > 0) {
@@ -280,16 +280,10 @@ function Study({
         <section className={style.studyContainer}>
             <section className={style.studyTitle}>
                 {titles.length > 0 ? (
-                    titles.map((item, index) => <h6 key={index}>{item}</h6>)
+                    titles.map((item, index) => <h3 key={index}>{item}</h3>)
                 ) : (
-                    <h6>Loading</h6>
+                    <h6>{}</h6>
                 )}
-                <div className={style.setLabelContainer}>
-                    {subTitles &&
-                        subTitles.map((item, index) => (
-                            <div key={index}>{item}</div>
-                        ))}
-                </div>
             </section>
             <AnimatePresence>
                 {currentCard < chosenQuestions.length ? (

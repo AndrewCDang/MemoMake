@@ -1,0 +1,50 @@
+@import "../../styles/colours.scss";
+@import "../../styles/mixins";
+
+.colourPickContainer {
+    display: grid;
+    gap: 0.25rem;
+    grid-template-columns: repeat(2, 1.5rem);
+    grid-template-rows: repeat(2, 1.5rem);
+    .colPickBtn {
+        height: 1.5rem;
+        width: 1.5rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        @include transition(all);
+
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+    .whiteBtn {
+        border: 1px solid $col-grey;
+    }
+    .colPickBtn:nth-child(1) {
+        grid-row: 1/2;
+        grid-column: 1/2;
+    }
+    .colPickBtn:nth-child(2) {
+        grid-row: 1/2;
+        grid-column: 2/3;
+    }
+    .colPickBtn:nth-child(3) {
+        grid-row: 2/3;
+        grid-column: 1/2;
+    }
+    .colPickBtn:nth-child(4) {
+        grid-row: 2/3;
+        grid-column: 2/3;
+    }
+    .colPickBtn:nth-child(5) {
+        grid-row: 3/4;
+        grid-column: 1/2;
+    }
+    .colPickBtn:nth-child(6) {
+        grid-row: 3/4;
+        grid-column: 2/3;
+    }
+    .selectShadow {
+        box-shadow: $box-shadow-sm;
+    }
+}

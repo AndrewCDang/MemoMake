@@ -142,7 +142,7 @@ input[type="text"] {
     outline: none;
 }
 input[type="text"]:focus {
-    outline: 1.5px solid $col-blue-select; /* Restores outline with desired style */
+    outline: 2px solid $col-blue-select; /* Restores outline with desired style */
     outline-offset: -1.5px;
 }
 

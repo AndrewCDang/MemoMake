@@ -4,6 +4,8 @@ import { DateTime } from "next-auth/providers/kakao";
 export type ExtendedUser = DefaultSession["user"] & {
     role: "ADMIN" | "USER";
     id: string;
+    image: string;
+    user_name: string;
 };
 
 // EXTENDING default types of Next-Auth Session to include additional attributes - e.g -role

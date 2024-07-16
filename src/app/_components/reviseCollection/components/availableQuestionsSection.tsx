@@ -1,6 +1,6 @@
 "use client";
 import { Flashcard_item, Flashcard_set_with_cards } from "@/app/_types/types";
-import LoadingSpin from "../../svgs";
+import LoadingSpin from "../../svgs/svgs";
 import TickValidate from "../../tickValidate/tickValidate";
 import style from "../reviseCards.module.scss";
 import { useEffect } from "react";

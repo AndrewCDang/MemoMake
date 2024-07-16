@@ -12,14 +12,15 @@ import {
 } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import PreviewModal from "@/app/_components/previewModal/previewModal";
 import { fetchRecentTested } from "./_actions/fetchRecentTested";
-import RecentItems from "./_dashboardSections/recentItems";
+import DashboardLanding from "./_dashboardSections/dashboardLanding";
 import SetAndCollectionCard from "@/app/_components/setAndCollectionCard/setAndCollectionCard";
 import CreateSetBtn from "./_dashboardButtons/createSetBtn";
 import { Flashcard_set } from "@/app/_types/types";
-import { CollectionIcon, SetIcon } from "@/app/_components/svgs";
+import { CollectionIcon, SetIcon } from "@/app/_components/svgs/svgs";
 import { AiFillPushpin } from "react-icons/ai";
 import ReviseModal from "@/app/_components/reviseCollection/reviseModal";
 import { HiArrowPathRoundedSquare } from "react-icons/hi2";
+import { fetchUserNotes } from "./_dashboardSections/pinAndToDo/_actions/fetchUserNotes";
 
 // Dashboard Page containing sections of card content
 async function ExistingSets({ session }: { session: Session | null }) {
@@ -61,6 +62,9 @@ async function ExistingSets({ session }: { session: Session | null }) {
         }[];
     };
 
+    // Fetch User Notes
+    const userNotes = (await fetchUserNotes(session.user.id)) || [];
+
     // Template dividing each section of dashboard, displaying groups of sets/collection/pinned items
     const SectionTemplate = ({
         CreateBtn,
@@ -101,21 +105,20 @@ async function ExistingSets({ session }: { session: Session | null }) {
         <section>
             {/* Recent sets/collection Selection */}
             <div className={style.sectionTitle}>
-                <div className={style.iconAndTitle}>
-                    <HiArrowPathRoundedSquare />
-                    <h6>Recently Tested</h6>
-                </div>
-                <RecentItems recentItems={fetchHistory} account={account} />
+                <DashboardLanding
+                    userNotes={userNotes}
+                    session={session}
+                    recentItems={fetchHistory}
+                    account={account}
+                    itemsArray={[
+                        { contentType: "set", array: favouriteSets },
+                        {
+                            contentType: "collection",
+                            array: favouriteCollections,
+                        },
+                    ]}
+                />
             </div>
-            {/* Favourites section */}
-            <SectionTemplate
-                title="Pinned Items"
-                Icon={<AiFillPushpin />}
-                itemsArray={[
-                    { contentType: "set", array: favouriteSets },
-                    { contentType: "collection", array: favouriteCollections },
-                ]}
-            />
             {/* Sets Selection */}
             <SectionTemplate
                 title="Flash Card Sets"

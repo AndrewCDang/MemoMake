@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import style from "./previewModal.module.scss";
 import { Flashcard_set_with_cards } from "@/app/_types/types";
 import { colours } from "@/app/styles/colours";
-import { SetIcon } from "../svgs";
+import { SetIcon } from "../svgs/svgs";
 import { motion } from "framer-motion";
 import { MdPlayArrow } from "react-icons/md";
 import ExpandHeightToggler from "../expandHeightToggler/expandHeightToggler";

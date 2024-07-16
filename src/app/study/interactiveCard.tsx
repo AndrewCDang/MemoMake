@@ -10,7 +10,7 @@ import {
     MotionValue,
     AnimatePresence,
 } from "framer-motion";
-import { CombinedType } from "./page";
+import { CombinedType } from "./study";
 import { HiCheck } from "react-icons/hi2";
 import { HiMiniXMark } from "react-icons/hi2";
 
@@ -233,6 +233,7 @@ function InteractiveCard({
                     return (
                         // Controls drag move in x direction / swiping card left and right
                         <motion.div
+                            key={`${item.id}-interactive-card`}
                             onMouseDown={(e) => holdFlashCard(e, item.id)}
                             onMouseUp={releaseFlashCard}
                             onMouseMove={(e) => (
@@ -318,7 +319,20 @@ function InteractiveCard({
                                                             style.cardContent
                                                         }
                                                     >
-                                                        {item.item_question}
+                                                        <div
+                                                            className={
+                                                                style.imageContainer
+                                                            }
+                                                        >
+                                                            <img
+                                                                src={
+                                                                    item.question_img
+                                                                }
+                                                            />
+                                                        </div>
+                                                        <span>
+                                                            {item.item_question}
+                                                        </span>
                                                     </div>
                                                     <CardPattern text="Question" />
                                                 </div>
@@ -334,7 +348,20 @@ function InteractiveCard({
                                                             style.cardContent
                                                         }
                                                     >
-                                                        {item.item_answer}
+                                                        <div
+                                                            className={
+                                                                style.imageContainer
+                                                            }
+                                                        >
+                                                            <img
+                                                                src={
+                                                                    item.question_img
+                                                                }
+                                                            />
+                                                        </div>
+                                                        <span>
+                                                            {item.item_answer}
+                                                        </span>
                                                     </div>
                                                     <CardPattern text="Answer" />
                                                 </div>

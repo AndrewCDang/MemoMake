@@ -5,7 +5,7 @@ import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionB
 import PopOverContent from "../../_generalUi/popOverContent/popOverContent";
 import { useState } from "react";
 import CornerClose from "../../cornerClose/cornerClose";
-import { MulitpleSetsIcon, SetIcon } from "../../svgs";
+import { MulitpleSetsIcon, SetIcon } from "../../svgs/svgs";
 import { HiChevronRight } from "react-icons/hi2";
 import { colours } from "@/app/styles/colours";
 

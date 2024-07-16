@@ -1,6 +1,6 @@
 "use client";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { CombinedType } from "../page";
+import { CombinedType } from "../study";
 import style from "./flashResults.module.scss";
 import ExpandHeightToggler from "@/app/_components/expandHeightToggler/expandHeightToggler";
 import MaxHeightToggler from "./maxHeightToggler";
@@ -85,9 +85,6 @@ function FlashResults({
             {sortedArray.map((item) => {
                 return (
                     <section key={item.id} className={style.resultContainer}>
-                        <aside className={style.itemEdit}>
-                            <TbEdit />
-                        </aside>
                         <section
                             onClick={() =>
                                 setToggleOn((prevState) => {
@@ -153,7 +150,39 @@ function FlashResults({
                                         isToggled={toggleOn[item.id]}
                                         isQuestion={true}
                                     >
-                                        {item.item_question}
+                                        <div
+                                            className={
+                                                style.questionAnswerContainer
+                                            }
+                                        >
+                                            {item.question_img && (
+                                                <motion.div
+                                                    animate={{
+                                                        height: toggleOn[
+                                                            item.id
+                                                        ]
+                                                            ? "4rem"
+                                                            : "1.5rem",
+                                                        width: toggleOn[item.id]
+                                                            ? "4rem"
+                                                            : "1.5rem",
+                                                    }}
+                                                    transition={{
+                                                        stiffness: 150,
+                                                        damping: 15,
+                                                        mass: 0.1,
+                                                    }}
+                                                    className={
+                                                        style.imageContainer
+                                                    }
+                                                >
+                                                    <img
+                                                        src={item.question_img}
+                                                    ></img>
+                                                </motion.div>
+                                            )}
+                                            {item.item_question}
+                                        </div>
                                     </MaxHeightToggler>
                                     <div className={style.arrow}>
                                         <HiArrowRight />
@@ -162,7 +191,39 @@ function FlashResults({
                                         isToggled={toggleOn[item.id]}
                                         isQuestion={false}
                                     >
-                                        {item.item_answer}
+                                        <div
+                                            className={
+                                                style.questionAnswerContainer
+                                            }
+                                        >
+                                            {item.answer_img && (
+                                                <motion.div
+                                                    animate={{
+                                                        height: toggleOn[
+                                                            item.id
+                                                        ]
+                                                            ? "4rem"
+                                                            : "1.5rem",
+                                                        width: toggleOn[item.id]
+                                                            ? "4rem"
+                                                            : "1.5rem",
+                                                    }}
+                                                    transition={{
+                                                        stiffness: 150,
+                                                        damping: 15,
+                                                        mass: 0.1,
+                                                    }}
+                                                    className={
+                                                        style.imageContainer
+                                                    }
+                                                >
+                                                    <img
+                                                        src={item.answer_img}
+                                                    ></img>
+                                                </motion.div>
+                                            )}
+                                            <span>{item.item_answer}</span>
+                                        </div>
                                     </MaxHeightToggler>
                                 </div>
                             </section>

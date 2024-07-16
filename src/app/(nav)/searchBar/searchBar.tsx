@@ -10,19 +10,21 @@ import {
 async function SearchBar() {
     const session = await auth();
 
-    const listSet = session
-        ? ((await fetchCollectionByIdWithSetAndItemCount({
-              userId: session.user.id,
-              type: "set",
-          })) as Flashcard_set_with_count[])
-        : [];
+    const listSet =
+        session && session.user
+            ? ((await fetchCollectionByIdWithSetAndItemCount({
+                  userId: session.user.id,
+                  type: "set",
+              })) as Flashcard_set_with_count[])
+            : [];
 
-    const listCollection = session
-        ? ((await fetchCollectionByIdWithSetAndItemCount({
-              userId: session.user.id,
-              type: "collection",
-          })) as Flashcard_collection_with_count[])
-        : [];
+    const listCollection =
+        session && session.user
+            ? ((await fetchCollectionByIdWithSetAndItemCount({
+                  userId: session.user.id,
+                  type: "collection",
+              })) as Flashcard_collection_with_count[])
+            : [];
 
     return (
         <div className={style.searchNavWrapContainer}>

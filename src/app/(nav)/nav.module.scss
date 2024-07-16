@@ -2,9 +2,14 @@
     display: flex;
     justify-content: space-between;
     height: 2rem;
+    & > * {
+        flex: 1;
+    }
 }
 
 .navButtons {
     display: flex;
     gap: 1rem;
+    justify-content: end;
+    position: relative;
 }

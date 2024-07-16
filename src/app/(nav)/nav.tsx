@@ -1,30 +1,26 @@
 import React from "react";
 import style from "./nav.module.scss";
 import { signOut } from "@/auth";
-import ModalBtn from "./modalBtn";
 import { auth } from "@/auth";
 import SearchBar from "./searchBar/searchBar";
-
+import NavUser from "./searchBar/navItems/navUser";
+import { FlashmuLogo } from "../_components/svgs/svgs";
+import { redirect } from "next/navigation";
 async function Nav() {
     const session = await auth();
 
+    const signOutHandler = async () => {
+        "use server";
+        console.log("signning out");
+        await signOut();
+    };
+
     return (
         <nav className={style.nav}>
-            <section>MM</section>
+            <FlashmuLogo />
             <SearchBar />
             <section className={style.navButtons}>
-                {session ? (
-                    <form
-                        action={async () => {
-                            "use server";
-                            await signOut();
-                        }}
-                    >
-                        <button>Sign Out</button>
-                    </form>
-                ) : (
-                    <ModalBtn />
-                )}
+                <NavUser session={session} />
             </section>
         </nav>
     );

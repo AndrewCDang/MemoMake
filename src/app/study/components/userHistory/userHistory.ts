@@ -49,7 +49,7 @@ export const updateUserHistory = async ({
         const update = await db`
                 UPDATE account
                 SET user_history = CASE
-                WHEN array_length(user_history, 1) >= 5 THEN
+                WHEN array_length(user_history, 1) >= 6 THEN
                     ARRAY_PREPEND(
                         ROW(
                             ARRAY[${db.array(newIdsArray)}]::text[], 

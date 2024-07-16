@@ -16,9 +16,11 @@ function SearchNav({ handler }: { handler: () => void }) {
                 </div>
             </div>
             <div className={style.searchBarContainer}>
-                <span className={style.searchContainer}>Search Flashcards</span>
+                <span className={style.searchContainer}>
+                    Search <span className={style.desktopText}>Flashcards</span>
+                </span>
                 <span className={style.searchContainerBase}>
-                    Search Flashcards
+                    Search <span className={style.desktopText}>Flashcards</span>
                 </span>
                 <span className={style.searchContainerHover}>
                     Search Flashcards

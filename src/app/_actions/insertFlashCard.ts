@@ -19,11 +19,14 @@ const insertFlashCard = async ({ data, setId }: InsertFlashCardTypes) => {
         const nextSequence = sequenceResult[0].next_sequence;
 
         // Inserting card into db
+
         await db`
                 INSERT INTO flashcard_item (set_id, item_question, item_answer, item_tags, difficulty, last_modified, sequence)
-                VALUES(${setId}, ${data.item_question}, ${data.item_answer}, ${
-            data.item_tags
-        }, ${data.difficulty}, ${new Date()}, ${nextSequence}
+                VALUES(${setId}, ${data.item_question || null}, ${
+            data.item_answer || null
+        }, ${data.item_tags || null}, ${
+            data.difficulty
+        }, ${new Date()}, ${nextSequence}
         )
             `;
         revalidatePath("/dashboard/flashcard");

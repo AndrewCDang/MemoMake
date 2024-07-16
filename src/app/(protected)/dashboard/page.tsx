@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 
 async function page() {
     const session = await auth();
+    console.log(session);
     if (!session) notFound();
     const collectionSet = await FetchCollectionSetCount({
         userId: session.user.id,

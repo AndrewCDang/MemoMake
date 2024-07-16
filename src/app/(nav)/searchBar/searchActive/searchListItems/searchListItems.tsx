@@ -6,7 +6,7 @@ import {
     Flashcard_set_with_count,
 } from "@/app/_types/types";
 import style from "./searchListItems.module.scss";
-import { CollectionIcon, SetIcon } from "@/app/_components/svgs";
+import { CollectionIcon, SetIcon } from "@/app/_components/svgs/svgs";
 import { colours, coloursType } from "@/app/styles/colours";
 import Link from "next/link";
 import { capitaliseFirstChar } from "@/app/_functions/capitaliseFirstChar";

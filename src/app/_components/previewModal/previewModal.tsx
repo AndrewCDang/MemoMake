@@ -12,7 +12,7 @@ import {
 import { setRevisionModal } from "./_hooks/setRevisionModal";
 import PreviewModalSet from "./previewModalSet";
 import ThemeColourStrip from "../_generalUi/themeColourStrip/themeColourStrip";
-import { CollectionIcon } from "../svgs";
+import { CollectionIcon } from "../svgs/svgs";
 
 const PreviewModal = () => {
     const { isUsePreviewModalOn, previewCollectionItems, hideUsePreviewModal } =
