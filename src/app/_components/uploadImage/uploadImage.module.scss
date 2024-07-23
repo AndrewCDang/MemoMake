@@ -18,7 +18,8 @@
 
     .imageNameLabel {
         width: clamp(160px, calc(100px + 5vw), 200px);
-
+        overflow: hidden;
+        text-overflow: hidden;
         font-size: 0.75rem;
         line-height: 0.75rem;
         color: $col-grey;

@@ -11,11 +11,13 @@ type InputRef<T extends string> = {
     register: any;
     textarea?: boolean;
     defaultValue?: string;
+    labelText?: string;
 };
 
 function FormInputField<T extends string>({
     error,
     id,
+    labelText,
     type,
     errorMessage = "Error",
     object,
@@ -45,7 +47,7 @@ function FormInputField<T extends string>({
                 ></input>
             )}
             <label className={`${error ? style.error : ""}`} htmlFor={id}>
-                {error ? id : id}
+                {labelText ? labelText : id}
             </label>
         </fieldset>
     );

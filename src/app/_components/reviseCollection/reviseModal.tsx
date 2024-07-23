@@ -4,6 +4,7 @@ import { Session } from "next-auth";
 import Modal from "../modal/modal";
 import ReviseCollectionModalContent from "./reviseModalContent";
 import { useReviseModal } from "./useReviseModal";
+import { capitaliseFirstChar } from "@/app/_functions/capitaliseFirstChar";
 
 function ReviseModal({
     session,
@@ -16,7 +17,7 @@ function ReviseModal({
 
     return (
         <Modal
-            modalTitle="Collection Preview"
+            modalTitle={`${capitaliseFirstChar(contentType)} Preview`}
             modalOn={isReviseModalOn}
             closeHandler={hideReviseModal}
         >

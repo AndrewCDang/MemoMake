@@ -26,8 +26,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    padding-top: 1rem;
     max-height: 200px;
-    padding-top: 0.5rem;
     overflow-y: auto;
     & > div {
         background-color: rgba($col-grey, 0.5);
@@ -52,5 +52,6 @@
     padding: 0.2rem !important;
     label {
         pointer-events: none;
+        width: fit-content;
     }
 }

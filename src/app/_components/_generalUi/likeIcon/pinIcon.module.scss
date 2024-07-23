@@ -1,0 +1,13 @@
+@import "../../../styles/colours.scss";
+
+.likeIcon {
+    svg {
+        stroke: $col-black;
+    }
+}
+.pinned svg {
+    fill: $col-black;
+}
+.notPinned svg {
+    fill: none;
+}

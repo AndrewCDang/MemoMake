@@ -49,13 +49,13 @@ function PreviewEditStudyBtns({
     console.log(publicCard);
     return (
         <div className={style.buttonContainer}>
-            {isRecentTested ||
+            {/* {isRecentTested ||
                 (publicCard && (
                     <DefaultButton handler={() => previewHandler(set.id)}>
                         <span>Preview</span>
                         <HiMiniMagnifyingGlass />
                     </DefaultButton>
-                ))}
+                ))} */}
             {!publicCard && contentType === "set" && (
                 <Link href={`dashboard/edit/${set.id}`}>
                     <DefaultButton>

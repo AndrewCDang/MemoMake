@@ -22,25 +22,36 @@ function ColourSwatchPicker({
         <aside className={style.colourPickContainer}>
             {colourArray &&
                 colourArray.map((item) => (
-                    <button
-                        onClick={() => handler(id, item)}
-                        style={{
-                            backgroundColor: colours[item](),
-                            outline:
-                                selected === item
-                                    ? `1px solid ${colours.black()}`
-                                    : "",
-                            border:
-                                selected === item
-                                    ? `1.5px solid ${colours.black()}`
-                                    : "",
-                            pointerEvents: selected === item ? "none" : "unset",
-                        }}
-                        className={`${style.colPickBtn} ${
-                            selected === item && style.selectShadow
-                        } ${item === "white" && style.whiteBtn}`}
+                    <div
+                        className={`${style.colPickBtn} ${style.radioContainer}`}
                         key={`col-swatch-${item}`}
-                    ></button>
+                    >
+                        <input
+                            type="radio"
+                            id={`${id}-colour-${item}`}
+                            name={`${id}-colourSwatch`}
+                            onChange={() => handler(id, item)}
+                        ></input>
+                        <label
+                            htmlFor={`${id}-colour-${item}`}
+                            style={{
+                                backgroundColor: colours[item](),
+                                outline:
+                                    selected === item
+                                        ? `1px solid ${colours.black()}`
+                                        : "",
+                                border:
+                                    selected === item
+                                        ? `1.5px solid ${colours.black()}`
+                                        : "",
+                                pointerEvents:
+                                    selected === item ? "none" : "unset",
+                            }}
+                            className={`${
+                                selected === item && style.selectShadow
+                            } ${item === "white" && style.whiteBtn}`}
+                        ></label>
+                    </div>
                 ))}
         </aside>
     );

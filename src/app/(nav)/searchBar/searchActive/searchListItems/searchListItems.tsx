@@ -64,19 +64,27 @@ const splitHighlightText = ({
                 {/* Due to html tags not displaying spaces, will need to manually add  &nbsp; spaces in */}
                 {/* Checks if first char has space */}
                 {item[0] === " " ? (
-                    <>
+                    <span className="top">
                         &nbsp;
                         {capitaliseConsecutiveWords({
                             string: item.slice(1),
                         })}
-                    </>
+                    </span>
                 ) : (
                     // Word might be partly highlight/ partly non-highlighted, in these cases the first character (none-highlighted joined word) should not be uppercased.
-                    <span>
+                    <span className="bottom">
                         {capitaliseConsecutiveWords({
                             string: item,
-                            firstWord: false,
+                            firstWord:
+                                (array[index - 1] &&
+                                    array[index - 1].endsWith(" ")) ||
+                                index === 0
+                                    ? true
+                                    : false,
                         })}
+                        {capitaliseConsecutiveWords({
+                            string: item,
+                        }).endsWith(" ") && <>&nbsp;</>}
                     </span>
                 )}
             </span>

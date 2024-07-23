@@ -120,7 +120,8 @@
 @mixin customScrollbar($className) {
     #{$className}::-webkit-scrollbar {
         width: 0.5rem;
-        background: rgba($col-grey, 0.25);
+        margin-left: 0.5rem;
+        background: $col-grey-hover;
         border-radius: 0.5rem;
     }
     #{$className}::-webkit-scrollbar-thumb {

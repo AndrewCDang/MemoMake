@@ -53,19 +53,19 @@ function PopOverMenu({
                     setIsOn={setFocusedNoteMenu}
                 >
                     <div className={style.menuOptions}>
-                        {/* Delete */}
-                        <BannerIcon
-                            hoverText={"Delete Note"}
-                            handler={() => deleteNoteHandler(item.id)}
-                        >
-                            <HiMiniTrash />
-                        </BannerIcon>
                         {/* Edit */}
                         <BannerIcon
                             hoverText={"Edit Note"}
                             handler={() => setFocusedNote(item.id)}
                         >
                             <HiMiniPencilSquare />
+                        </BannerIcon>
+                        {/* Delete */}
+                        <BannerIcon
+                            hoverText={"Delete Note"}
+                            handler={() => deleteNoteHandler(item.id)}
+                        >
+                            <HiMiniTrash />
                         </BannerIcon>
                         {/* Change Colour */}
                         <BannerIcon

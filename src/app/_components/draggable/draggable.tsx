@@ -21,7 +21,7 @@ const Draggable: React.FC<DraggableProps> = ({
     const start = () => {
         timerRef.current = setTimeout(() => {
             draggingRef.current = true;
-        }, 100);
+        }, 200);
     };
 
     const end = () => {

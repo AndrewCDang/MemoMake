@@ -14,7 +14,7 @@ export async function FetchCollectionSetCount({
     try {
         if (setNotEmpty) {
             const fetch: Flashcard_set_with_count[] = await db`
-            SELECT fs.*, COUNT(fi.id)
+            SELECT fs.*, COUNT(fi.id) as item_count
             FROM flashcard_set fs
             LEFT JOIN flashcard_item fi ON fs.id = fi.set_id
             WHERE fs.user_id = ${userId}
@@ -23,7 +23,7 @@ export async function FetchCollectionSetCount({
             return fetch;
         } else {
             const fetch: Flashcard_set_with_count[] = await db`
-            SELECT fs.*, COUNT(fi.id)
+            SELECT fs.*, COUNT(fi.id) as item_count
             FROM flashcard_item fi
             LEFT JOIN flashcard_set fs ON fi.set_id = fs.id
             WHERE fs.user_id = ${userId}

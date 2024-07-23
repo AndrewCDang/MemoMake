@@ -14,6 +14,9 @@ import CategoryInput from "@/app/_components/categoryInput/labelInput";
 import style from "./createSetModal.module.scss";
 import UploadImage from "@/app/_components/uploadImage/uploadImage";
 import { uploadImageHandler } from "@/app/_components/uploadImage/uploadImage";
+import ColourSwatchPicker from "@/app/_components/colourSwatchPicker/colourSwatchPicker";
+import { coloursType } from "@/app/styles/colours";
+import ColourThemeBanner from "../sharedComponents/colourThemeBanner/colourThemeBanner";
 
 type CreateSetTypes = {
     setModal: Dispatch<SetStateAction<boolean>>;
@@ -56,6 +59,7 @@ function CreateSetModal({ setModal }: CreateSetTypes) {
                 setCategories([]);
                 toastNotify("Created new flashcard set");
                 setModal(false);
+                setSelectedColour("white");
             } catch (error) {}
         }
         setLoading(false);
@@ -63,6 +67,13 @@ function CreateSetModal({ setModal }: CreateSetTypes) {
 
     const categoryHandler = (categories: string[]) => {
         setValue("categories", categories as [string, ...string[]]);
+    };
+
+    const [selectedColour, setSelectedColour] = useState<coloursType>("white");
+
+    const colourSwatchHandler = (id: string, col: coloursType) => {
+        setSelectedColour(col);
+        setValue("colours", col);
     };
 
     const displayError: SubmitErrorHandler<{
@@ -93,6 +104,7 @@ function CreateSetModal({ setModal }: CreateSetTypes) {
             >
                 <FormInputField
                     id="create_set_id"
+                    labelText="Set Name"
                     type="text"
                     object="setName"
                     error={errors.setName ? true : false}
@@ -100,23 +112,35 @@ function CreateSetModal({ setModal }: CreateSetTypes) {
                     register={register}
                 />
                 <UploadImage image={image} setImage={setImage} />
-                <FormInputField
-                    id="create_set_description"
-                    type="text"
-                    object="description"
-                    error={errors.description ? true : false}
-                    errorMessage={
-                        errors.description && errors.description.message
-                    }
-                    register={register}
-                />
-                <CategoryInput
-                    categories={categories}
-                    setTypedCategory={setTypedCategory}
-                    setCategories={setCategories}
-                    categoryHandler={categoryHandler}
-                    formRef={formRef}
-                />
+                <ColourThemeBanner col={selectedColour} />
+                <div className={style.colourSwatchWrap}>
+                    <label>Set Colour</label>
+                    <ColourSwatchPicker
+                        id="setModal"
+                        selected={selectedColour}
+                        handler={colourSwatchHandler}
+                    />
+                </div>
+                <div>
+                    <FormInputField
+                        id="create_set_description"
+                        labelText="Set Description"
+                        type="text"
+                        object="description"
+                        error={errors.description ? true : false}
+                        errorMessage={
+                            errors.description && errors.description.message
+                        }
+                        register={register}
+                    />
+                    <CategoryInput
+                        categories={categories}
+                        setTypedCategory={setTypedCategory}
+                        setCategories={setCategories}
+                        categoryHandler={categoryHandler}
+                        formRef={formRef}
+                    />
+                </div>
 
                 <Button
                     handler={(e) => {

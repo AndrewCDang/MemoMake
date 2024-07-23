@@ -11,6 +11,10 @@ import { insertCollection } from "@/app/_actions/insertCollection";
 import { toastNotify } from "@/app/(toast)/toast";
 import { z } from "zod";
 import LabelInput from "@/app/_components/categoryInput/labelInput";
+import ColourThemeBanner from "../sharedComponents/colourThemeBanner/colourThemeBanner";
+import ColourSwatchPicker from "@/app/_components/colourSwatchPicker/colourSwatchPicker";
+import { colours, coloursType } from "@/app/styles/colours";
+import { ThemeColourSchema } from "@/schema/setSchema";
 
 function CreateCollectionModal({
     collectionSet,
@@ -20,9 +24,9 @@ function CreateCollectionModal({
     userId: string;
 }) {
     const [parent] = useAutoAnimate();
-
     const [selectedSets, setSelectedSets] = useState<Flashcard_set[]>([]);
     const [searchSetInput, setSearchSetInput] = useState<string>("");
+    const [selectedColour, setSelectedColour] = useState<coloursType>("white");
 
     const setListHandler = (item: Flashcard_set) => {
         if (selectedSets.some((selItem) => item.id === selItem.id)) {
@@ -67,6 +71,12 @@ function CreateCollectionModal({
         }
     };
 
+    // Colour Handler
+
+    const colourSwatchHandler = (id: string, col: coloursType) => {
+        setSelectedColour(col);
+    };
+
     // Creates collection
     const [isLoading, setIsloading] = useState<boolean>(false);
     const [collectionName, setCollectionName] = useState<string>("");
@@ -82,6 +92,7 @@ function CreateCollectionModal({
         setIds: z.array(z.string()).min(2, {
             message: "Must have more than 1 set inside a collection",
         }),
+        colours: ThemeColourSchema,
         name: z
             .string()
             .min(3, {
@@ -118,6 +129,7 @@ function CreateCollectionModal({
             name: collectionName,
             setIds: setIds,
             id: userId,
+            colours: selectedColour,
             categories: extraCategory
                 ? [...categories, extraCategory]
                 : categories,
@@ -198,67 +210,86 @@ function CreateCollectionModal({
                     })}
                 </div>
             </div>
-            <section>
-                <section className={style.insertSetWrapper}>
-                    <section
-                        style={{ overflow: "hidden" }}
-                        className={style.insertSetContainer}
-                    >
-                        <TextInput
-                            type="text"
-                            id={"otherSets"}
-                            placeholder="Search for set in your library"
-                            handler={searchSetHandler}
-                            keyDownHandler={keydownHandler}
-                            inputValue={searchSetInput}
-                        />
-                        <div className={style.setSuggestionList}>
-                            <input
-                                className={style.insertSetCheckbox}
-                                type="checkbox"
-                                defaultChecked={searchSetInput ? true : false}
-                            ></input>
-                            {filteredList.length > 0 &&
-                                filteredList.map((item) => {
-                                    return (
-                                        <div
-                                            onClick={() => setListHandler(item)}
-                                            key={item.id}
-                                        >
-                                            {item.set_name}
-                                            <span className={style.itemCount}>
-                                                {item.item_count} card
-                                                {item.item_count > 1 ? "s" : ""}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
-                        </div>
+            <div>
+                <section>
+                    <section className={style.insertSetWrapper}>
+                        <section
+                            style={{ overflow: "hidden" }}
+                            className={style.insertSetContainer}
+                        >
+                            <TextInput
+                                type="text"
+                                id={"otherSets"}
+                                placeholder="Search for set in your library"
+                                handler={searchSetHandler}
+                                keyDownHandler={keydownHandler}
+                                inputValue={searchSetInput}
+                            />
+                            <div className={style.setSuggestionList}>
+                                <input
+                                    className={style.insertSetCheckbox}
+                                    type="checkbox"
+                                    defaultChecked={
+                                        searchSetInput ? true : false
+                                    }
+                                ></input>
+                                {filteredList.length > 0 &&
+                                    filteredList.map((item) => {
+                                        return (
+                                            <div
+                                                onClick={() =>
+                                                    setListHandler(item)
+                                                }
+                                                key={item.id}
+                                            >
+                                                {item.set_name}
+                                                <span
+                                                    className={style.itemCount}
+                                                >
+                                                    {item.item_count} card
+                                                    {item.item_count > 1
+                                                        ? "s"
+                                                        : ""}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                            </div>
+                        </section>
                     </section>
                 </section>
-            </section>
-            {collectionIdsErr && (
-                <section className={style.stateCheckValidation}>
-                    {selectedSets.length > 1 && (
-                        <div>
-                            Selected set{selectedSets.length > 1 ? "s" : ""}
-                        </div>
-                    )}
-                    {selectedSets.length <= 1 && (
-                        <span>Select more than 1 set</span>
-                    )}
-                    <TickValidate
-                        condition={selectedSets.length > 1 ? true : false}
+                {collectionIdsErr && (
+                    <section className={style.stateCheckValidation}>
+                        {selectedSets.length > 1 && (
+                            <div>
+                                Selected set{selectedSets.length > 1 ? "s" : ""}
+                            </div>
+                        )}
+                        {selectedSets.length <= 1 && (
+                            <span>Select more than 1 set</span>
+                        )}
+                        <TickValidate
+                            condition={selectedSets.length > 1 ? true : false}
+                        />
+                    </section>
+                )}
+                <ColourThemeBanner col={selectedColour} />
+                <div className={style.colourSwatchWrap}>
+                    <label>Set Colour</label>
+                    <ColourSwatchPicker
+                        id="id"
+                        selected={selectedColour}
+                        handler={colourSwatchHandler}
                     />
-                </section>
-            )}
-            <LabelInput
-                formRef={formRef}
-                categories={categories}
-                setCategories={setCategories}
-                categoryHandler={categoryHandler}
-                setTypedCategory={setTypedCategory}
-            />
+                </div>
+                <LabelInput
+                    formRef={formRef}
+                    categories={categories}
+                    setCategories={setCategories}
+                    categoryHandler={categoryHandler}
+                    setTypedCategory={setTypedCategory}
+                />
+            </div>
             <Button loading={isLoading} text="Create Collection" />
         </form>
     );

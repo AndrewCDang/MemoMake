@@ -13,13 +13,14 @@ type InsertTypes = {
 export const insertSet = async ({ data, id, imageUrl }: InsertTypes) => {
     try {
         await db`
-            INSERT INTO flashcard_set (user_id, set_name, set_categories, description, image, last_modified)
+            INSERT INTO flashcard_set (user_id, set_name, set_categories, description, image, theme_colour, last_modified)
             VALUES (${id}, ${data.setName}, ${
             data.categories ? data.categories : null
         }, ${data.description ? data.description : null}, ${
             imageUrl ? imageUrl : null
-        }, ${new Date()})
-
+        }, 
+        ${data.colours},
+        ${new Date()})
         `;
         revalidatePath("/dashboard");
         return { success: true, message: "Inserted set into database" };

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import style from "./setAndColelctionCard.module.scss";
 import childStyle from "./generalComponents/bannerStrip/bannerStrip.module.scss";
-import { Account, Flashcard_set } from "@/app/_types/types";
+import { AccountWithLikes, Flashcard_set } from "@/app/_types/types";
 import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import CollectionSets from "./collectionComponents/collectionSetsV2";
 import BannerStrip from "./generalComponents/bannerStrip/bannerStrip";
@@ -13,7 +13,7 @@ import PreviewEditStudyBtns from "./generalComponents/previewEditStudyBtns/previ
 
 type SetAndCollectionCardTypes = {
     set: Flashcard_set | Flashcard_collection_set_joined;
-    account: Account | undefined;
+    account: AccountWithLikes | undefined;
     contentType: "collection" | "set";
     originalId?: string | null;
 };
@@ -48,6 +48,13 @@ function SetAndCollectionCard({
         account !== undefined ? account.favourites.includes(set.id) : false
     );
 
+    // Liked State
+    const [isLiked, setIsliked] = useState<boolean>(
+        account !== undefined
+            ? account.user_likes.map((item) => item.item_id).includes(set.id)
+            : false
+    );
+
     // ThemeColour
     const themeColour = set.theme_colour
         ? colours[set.theme_colour]()
@@ -61,7 +68,7 @@ function SetAndCollectionCard({
                 <div className={style.titleContainer}>
                     <div
                         style={{
-                            paddingTop: publicCard ? "0.5rem" : "1.25rem",
+                            paddingTop: publicCard ? "0.5rem" : "0.75rem",
                         }}
                         className={style.titleImageContainer}
                     >
@@ -83,17 +90,30 @@ function SetAndCollectionCard({
     return (
         <motion.article key={set.id} className={style.setContainer}>
             <BannerStrip
+                setIsFavourited={setIsFavourited}
+                setIsLiked={setIsliked}
                 contentType={contentType}
                 set={set}
                 account={account}
                 isFavourited={isFavourited}
+                isLiked={isLiked}
                 themeColour={themeColour}
             />
-            <section className={style.bannerBtns}>
+            <section
+                style={{
+                    top:
+                        contentType === "set" && account?.id === set.id
+                            ? "1.25rem"
+                            : "0.5rem",
+                }}
+                className={style.bannerBtns}
+            >
                 <BannerBtns
                     publicCard={publicCard}
                     contentType={contentType}
                     setIsFavourited={setIsFavourited}
+                    setIsLiked={setIsliked}
+                    isLiked={isLiked}
                     isFavourited={isFavourited}
                     account={account}
                     set={set}
@@ -117,14 +137,3 @@ function SetAndCollectionCard({
 }
 
 export default SetAndCollectionCard;
-
-{
-    /* Cateogories list */
-}
-{
-    /* <ul className={style.categoryContainer}>
-                    {cardCategories.map((category, index) => {
-                        return <li key={index}>{category}</li>;
-                    })}
-                </ul> */
-}

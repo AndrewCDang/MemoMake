@@ -29,6 +29,7 @@ async function ExistingSets({ session }: { session: Session | null }) {
     // Data Fetching
     // Fetch Sets
     const searchExistingSets = await fetchExistingSetsFromId(session.user.id);
+    console.log(searchExistingSets);
 
     // Fetch Collection
     const collectionWithSets = await fetchCollectionByIdJoinSet({
@@ -60,6 +61,7 @@ async function ExistingSets({ session }: { session: Session | null }) {
             contentType: "collection" | "set";
             array: Flashcard_set[] | Flashcard_collection_set_joined[];
         }[];
+        id: string;
     };
 
     // Fetch User Notes
@@ -71,9 +73,10 @@ async function ExistingSets({ session }: { session: Session | null }) {
         Icon,
         title,
         itemsArray,
+        id,
     }: SectionTemplateTypes) => {
         return (
-            <section className={style.sectionContainer}>
+            <section id={id} className={style.sectionContainer}>
                 <div className={style.sectionTitle}>
                     <div className={style.iconAndTitle}>
                         {Icon && Icon}
@@ -104,7 +107,7 @@ async function ExistingSets({ session }: { session: Session | null }) {
     return (
         <section>
             {/* Recent sets/collection Selection */}
-            <div className={style.sectionTitle}>
+            <section id="dashboard_home" className={style.sectionTitle}>
                 <DashboardLanding
                     userNotes={userNotes}
                     session={session}
@@ -118,9 +121,10 @@ async function ExistingSets({ session }: { session: Session | null }) {
                         },
                     ]}
                 />
-            </div>
+            </section>
             {/* Sets Selection */}
             <SectionTemplate
+                id={"dashboard_set"}
                 title="Flash Card Sets"
                 Icon={<SetIcon />}
                 CreateBtn={<CreateSetBtn />}
@@ -128,6 +132,7 @@ async function ExistingSets({ session }: { session: Session | null }) {
             />
             {/* Collection Section */}
             <SectionTemplate
+                id={"dashboard_collection"}
                 title="Flash Card Collection"
                 Icon={<CollectionIcon />}
                 CreateBtn={<CreateCollectionBtn />}

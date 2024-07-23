@@ -1,7 +1,18 @@
 @import "../../styles/colours.scss";
 
-.link {
-    color: $col-grey;
-    text-decoration: underline;
-    font-weight: 700;
+.linkContainer {
+    display: flex;
+    align-items: center;
+    svg {
+        stroke-width: 1;
+        fill: $col-grey;
+        stroke: $col-grey;
+    }
+
+    .link {
+        color: $col-grey;
+    }
+    &:hover .link {
+        text-decoration: underline;
+    }
 }

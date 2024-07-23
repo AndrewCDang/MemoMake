@@ -25,8 +25,8 @@
         fill: $col-black !important;
     }
     & svg {
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 1.25rem;
+        height: 1.25rem;
         aspect-ratio: 1;
         stroke: unset;
     }
@@ -55,8 +55,8 @@
     .hoverLabelLeft {
         @include hoverLabelMixin();
         top: 50%;
-        left: 0%;
-        transform: translate(calc(-100% - 0.5rem), -50%);
+        left: 100%;
+        transform: translate(0.5rem, -50%);
     }
     &:hover .hoverLabel,
     &:hover .hoverLabelLeft {

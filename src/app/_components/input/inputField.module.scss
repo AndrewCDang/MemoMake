@@ -31,6 +31,7 @@
         background-color: $col-white;
         line-height: clamp(0.7rem, 0.6rem + 1vw, 1rem) !important;
         padding: 0 0.25rem;
+        width: fit-content;
     }
     textarea + label {
         top: 1rem;

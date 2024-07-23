@@ -1,8 +1,17 @@
-import React, { ReactNode, useEffect } from "react";
+import React, {
+    Dispatch,
+    ReactNode,
+    SetStateAction,
+    useEffect,
+    useMemo,
+    useReducer,
+    useState,
+} from "react";
 import style from "./bannerStrip.module.scss";
 import { CollectionIcon, SetIcon } from "@/app/_components/svgs/svgs";
 import {
     AnimatePresence,
+    LayoutGroup,
     motion,
     useMotionTemplate,
     useMotionValue,
@@ -15,18 +24,93 @@ import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionB
 import { spring } from "@/app/_components/framerMotion/springTransition";
 import { colours } from "@/app/styles/colours";
 import { BannerIcon } from "../bannerBtns/bannerBtns";
+import { IoMdThumbsUp } from "react-icons/io";
+import { addRemoveFavourites } from "@/app/_actions/addRemoveFavourites";
+import { addRemoveLike } from "@/app/_actions/addRemoveLike";
+
+const MotionIconContainer = ({
+    children,
+    publicCard,
+    themeColour,
+    iconBoxShadows,
+    highlight,
+    handler,
+}: {
+    children: ReactNode;
+    publicCard: boolean;
+    themeColour: string;
+    iconBoxShadows: string;
+    handler: () => void;
+
+    highlight: boolean;
+}) => {
+    return (
+        <motion.div
+            onClick={handler}
+            className={`${style.bannerIcon} ${
+                highlight && style.bannerIconSelected
+            } foregroundContainer2`}
+            style={{
+                backgroundColor: publicCard ? colours.white() : themeColour,
+                boxShadow: iconBoxShadows,
+            }}
+            initial={{
+                y: 10,
+                opacity: 0,
+                scale: 0.9,
+            }}
+            animate={{
+                y: 0,
+                opacity: 1,
+                scale: 1,
+            }}
+            exit={{ y: 10, opacity: 0, scale: 0.9 }}
+            transition={spring}
+        >
+            {children}
+        </motion.div>
+    );
+};
+
+const IconContainer = ({
+    children,
+    themeColour,
+    iconBoxShadows,
+}: {
+    children: ReactNode;
+    themeColour: string;
+    iconBoxShadows: string;
+}) => {
+    return (
+        <div
+            className={`${style.bannerIcon} foregroundContainer2`}
+            style={{
+                backgroundColor: themeColour,
+                boxShadow: iconBoxShadows,
+            }}
+        >
+            {children}
+        </div>
+    );
+};
 
 function BannerStrip({
     set,
     account,
     contentType,
     isFavourited,
+    setIsFavourited,
+    setIsLiked,
+    isLiked,
     themeColour,
 }: {
     contentType: "collection" | "set";
     account: Account | undefined;
     set: Flashcard_collection_set_joined | Flashcard_set;
     isFavourited: boolean;
+    setIsFavourited: Dispatch<SetStateAction<boolean>>;
+    setIsLiked: Dispatch<SetStateAction<boolean>>;
+    isLiked: boolean;
     themeColour: string;
 }) {
     // Card not created by user
@@ -37,10 +121,10 @@ function BannerStrip({
     const bannerRadius = 20;
     const defaultBannerSpacing = () => {
         const iconSize = 40;
-        let conditions = 1;
+        let conditions = 0;
 
         if (isFavourited) conditions += 1;
-        if (publicCard) conditions -= 1;
+        if (set.public_access === true) conditions += 1;
 
         return bannerRadius + conditions * iconSize;
     };
@@ -60,7 +144,7 @@ function BannerStrip({
 
     useEffect(() => {
         pathGapHandler();
-    }, [isFavourited]);
+    }, [isFavourited, isLiked]);
 
     // Box Shadow - icons
     const iconBoxShadows = `0px 2px 4px rgba(0,0,0,0.2)`;
@@ -71,10 +155,10 @@ function BannerStrip({
         } else if (contentType === "collection") {
             return (
                 <motion.div
+                    layout
                     style={{
                         clipPath: newPathD,
                         backgroundColor: colours.white(),
-                        // boxShadow: `6px 6px 0px rgba(0,0,0,0.4), 6px 6px 0px ${themeColour}`,
                     }}
                     className={style.backgroundCollectionContainer}
                 ></motion.div>
@@ -83,18 +167,106 @@ function BannerStrip({
         return null;
     };
 
-    const IconContainer = ({ children }: { children: ReactNode }) => {
-        return (
-            <div
-                className={`${style.bannerIcon} foregroundContainer2`}
-                style={{
-                    backgroundColor: themeColour,
-                    boxShadow: iconBoxShadows,
-                }}
-            >
-                {children}
-            </div>
-        );
+    const pinHandler = async () => {
+        setIsFavourited(false);
+        if (account) {
+            const favouriteDb = await addRemoveFavourites({
+                id: account.user_id,
+                setId: set.id,
+                revalidate: false,
+            });
+        }
+    };
+
+    const getPinIcon = () => {
+        if (isFavourited) {
+            return (
+                <MotionIconContainer
+                    handler={pinHandler}
+                    highlight={false}
+                    publicCard={publicCard}
+                    iconBoxShadows={iconBoxShadows}
+                    themeColour={themeColour}
+                >
+                    <AiFillPushpin />
+                </MotionIconContainer>
+            );
+        }
+    };
+
+    const likeHandler = async () => {
+        setIsLiked((prevState) => !prevState);
+        if (account) {
+            const favouriteDb = await addRemoveLike({
+                id: account.user_id,
+                setId: set.id,
+                revalidate: false,
+                contentType: contentType,
+            });
+        }
+    };
+
+    const [initialLiked, setInitialLiked] = useState<boolean>(isLiked);
+
+    const getLikeCount = () => {
+        if (isLiked === initialLiked) return set.like_count;
+        if (isLiked !== initialLiked) {
+            if (initialLiked) {
+                return Number(set.like_count) - 1;
+            } else {
+                return Number(set.like_count) + 1;
+            }
+        }
+        return undefined;
+    };
+
+    const getLikeIcon = () => {
+        if (set.public_access) {
+            return (
+                <MotionIconContainer
+                    handler={likeHandler}
+                    highlight={isLiked}
+                    publicCard={publicCard}
+                    iconBoxShadows={iconBoxShadows}
+                    themeColour={themeColour}
+                >
+                    <div
+                        className={`${style.iconLikedContent} ${
+                            isLiked && style.isLiked
+                        }`}
+                    >
+                        <span>{getLikeCount()}</span>
+                        <IoMdThumbsUp />
+                    </div>
+                </MotionIconContainer>
+            );
+        }
+        return undefined;
+    };
+
+    type BannerContentType = "pinIcon" | "likeIcon";
+    const bannerArray: {
+        name: BannerContentType;
+        content: React.JSX.Element | undefined;
+    }[] = [
+        { name: "pinIcon" as BannerContentType, content: getPinIcon() },
+        { name: "likeIcon" as BannerContentType, content: getLikeIcon() },
+    ].filter((item) => item.content && item);
+
+    const hoverTextForIcon = (item: BannerContentType) => {
+        if (item === "likeIcon") {
+            if (isLiked) {
+                return "Unlike";
+            } else {
+                return "Like";
+            }
+        }
+        if (item === "pinIcon") {
+            if (isFavourited) {
+                return "Unpin";
+            }
+        }
+        return "";
     };
 
     return (
@@ -120,9 +292,12 @@ function BannerStrip({
                         {publicCard && (
                             <BannerIcon
                                 handler={() => null}
-                                hoverText={set.creator.user_name || "test"}
+                                hoverText={set.creator.user_name || "OC"}
                             >
-                                <IconContainer>
+                                <IconContainer
+                                    iconBoxShadows={iconBoxShadows}
+                                    themeColour={themeColour}
+                                >
                                     <img
                                         src={set.creator.image}
                                         className={style.bannerProfileImage}
@@ -131,35 +306,32 @@ function BannerStrip({
                                 </IconContainer>
                             </BannerIcon>
                         )}
-                        {account && (
-                            <AnimatePresence initial={false}>
-                                {isFavourited && (
+                        <AnimatePresence mode="popLayout">
+                            {bannerArray.map((item, i) => (
+                                <BannerIcon
+                                    key={item.name}
+                                    hoverText={hoverTextForIcon(item.name)}
+                                    handler={() => null}
+                                >
                                     <motion.div
-                                        className={`${style.bannerIcon} foregroundContainer2`}
-                                        style={{
-                                            backgroundColor: publicCard
-                                                ? colours.white()
-                                                : themeColour,
-                                            boxShadow: iconBoxShadows,
+                                        transition={{
+                                            stiffness: 800,
+                                            damping: 10,
+                                            mass: 1,
                                         }}
-                                        initial={{
-                                            y: 10,
-                                            opacity: 0,
-                                            scale: 0.9,
-                                        }}
-                                        animate={{ y: 0, opacity: 1, scale: 1 }}
-                                        exit={{ y: 10, opacity: 0, scale: 0.9 }}
-                                        transition={spring}
+                                        layout
                                     >
-                                        <AiFillPushpin />
+                                        {item.content}
                                     </motion.div>
-                                )}
-                            </AnimatePresence>
-                        )}
+                                </BannerIcon>
+                            ))}
+                        </AnimatePresence>
                     </section>
                 </div>
             </div>
+            {/* Bg for collection item */}
             <ForegroundContainer />
+            {/* Bg for set/collection item */}
             <div
                 className={`${style.backgroundContainerWrap} foregroundContainer`}
             >
@@ -169,11 +341,14 @@ function BannerStrip({
                         backgroundColor: publicCard
                             ? colours.white()
                             : themeColour,
-                        // boxShadow: `6px 6px 0px rgba(0,0,0,0.4), 6px 6px 0px ${themeColour}`,
                     }}
                     className={style.backgroundContainer}
                 >
-                    {/* <img src={set.image} alt={``}></img> */}
+                    {contentType === "set" && (
+                        <div className={style.foregroundContainerWrap}>
+                            <div className={style.foregroundContainer}></div>
+                        </div>
+                    )}
                 </motion.div>
             </div>
         </>

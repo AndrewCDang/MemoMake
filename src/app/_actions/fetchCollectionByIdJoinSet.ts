@@ -20,17 +20,22 @@ SELECT
         'id', users.id,
         'user_name', users.user_name,
         'image',users.image
-    ) as creator
+    ) as creator,
+     COUNT(ul) as like_count
 FROM 
     flashcard_collection fc
 LEFT JOIN 
     flashcard_set fs ON fs.id = ANY(fc.ids)
 LEFT JOIN
     users ON users.id = fc.user_id
+LEFT JOIN
+    user_likes ul ON ul.item_id = fc.id
 WHERE 
     fc.user_id = ${id}
-GROUP BY fc.id, users.id;
+GROUP BY fc.id, users.id
 `;
+
+        console.log(collection);
 
         return collection;
     } catch (error: unknown) {

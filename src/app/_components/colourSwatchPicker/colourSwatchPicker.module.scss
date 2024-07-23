@@ -6,15 +6,30 @@
     gap: 0.25rem;
     grid-template-columns: repeat(2, 1.5rem);
     grid-template-rows: repeat(2, 1.5rem);
+    .radioContainer {
+        input {
+            visibility: none;
+            position: absolute;
+            height: 0;
+            width: 0;
+        }
+    }
     .colPickBtn {
         height: 1.5rem;
         width: 1.5rem;
-        border-radius: 0.5rem;
         cursor: pointer;
-        @include transition(all);
 
         &:hover {
             transform: scale(1.05);
+        }
+        label {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            position: relative;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            @include transition(all);
         }
     }
     .whiteBtn {

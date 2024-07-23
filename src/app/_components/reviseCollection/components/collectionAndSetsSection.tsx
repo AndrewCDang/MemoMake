@@ -95,7 +95,6 @@ function CollectionAndSetsSection({
                 if (!initialItems) return;
                 setSelectedSearchCOllection(initialItems);
             }
-            console.log(fetch);
         } catch (error) {
             console.error("Error fetching collection with count:", error);
         }
@@ -103,7 +102,6 @@ function CollectionAndSetsSection({
 
     useEffect(() => {
         fetchCollectionWithCount();
-        console.log("hi");
     }, []);
 
     // Set Search function
@@ -142,7 +140,9 @@ function CollectionAndSetsSection({
 
                 const filteredList = (
                     searchCollection as Flashcard_collection_with_count[]
-                ).filter((item) => !selectedIds.includes(item.id));
+                )
+                    .filter((item) => !selectedIds.includes(item.id))
+                    .filter((item) => item.item_count > 0);
 
                 return filteredList as Flashcard_collection_with_count[];
             }
@@ -152,7 +152,10 @@ function CollectionAndSetsSection({
                 const selectedIds = initialSetItems.flatMap((item) => item.id);
                 const filteredList = (
                     searchCollection as Flashcard_set_with_count[]
-                ).filter((item) => !selectedIds.includes(item.id));
+                )
+                    .filter((item) => !selectedIds.includes(item.id))
+                    .filter((item) => item.item_count > 0);
+
                 return filteredList;
             }
             return searchCollection as Flashcard_set_with_count[];
@@ -174,7 +177,6 @@ function CollectionAndSetsSection({
 
     const fetchFlashItems = async (latestId: string) => {
         if (!initialCollectionItems.map((item) => item.id).includes(latestId)) {
-            console.log(`Not currently selected: ${latestId}`);
             try {
                 const fetchCollection = await fetchSetsWithItems({
                     fetchObject: { type: contentType, id: latestId },
@@ -222,7 +224,6 @@ function CollectionAndSetsSection({
                         });
                     }
                 }
-                console.log(fetchCollection);
             } catch (error: unknown) {}
         } else {
             console.log(`Currently selected: ${latestId}`);

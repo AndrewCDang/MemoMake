@@ -89,8 +89,6 @@ function SearchDashboard({
         ...filteredCollectionList,
     ].sort((a, b) => b.matches - a.matches);
 
-    console.log(searchSuggestions);
-
     if (searchSuggestions.length > 0) {
         return (
             <div className={style.dashboardContainer}>

@@ -10,11 +10,14 @@ import { usePreviewModal } from "@/app/_components/previewModal/usePreviewModal"
 import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
 import DeleteConfirmation from "./deleteConfirmation/deleteConfirmation";
 import PopOverContent from "@/app/_components/_generalUi/popOverContent/popOverContent";
+import LikeIcon from "@/app/_components/_generalUi/likeIcon/likeIcon";
 
 type BannerBtnsTypes = {
     publicCard: boolean;
     setIsFavourited: Dispatch<SetStateAction<boolean>>;
     isFavourited: boolean;
+    setIsLiked: Dispatch<SetStateAction<boolean>>;
+    isLiked: boolean;
     account: Account | undefined;
     set: Flashcard_collection_set_joined | Flashcard_set;
     contentType: ContentType;
@@ -48,6 +51,8 @@ function BannerBtns({
     publicCard,
     setIsFavourited,
     isFavourited,
+    setIsLiked,
+    isLiked,
     set,
     account,
     contentType,
@@ -75,6 +80,7 @@ function BannerBtns({
 
     return (
         <div className={style.bannerBtnsContainer}>
+            {/* Always available */}
             {account && (
                 <BannerIcon
                     hoverText={`Pin ${cardType}`}
@@ -84,9 +90,25 @@ function BannerBtns({
                         favourited={isFavourited}
                         userId={account && account.user_id}
                         setId={set.id}
+                        revalidate={false}
                     />
                 </BannerIcon>
             )}
+            {/* Only available if card/collection is set to publically available */}
+            {account && set && set.public_access && (
+                <BannerIcon
+                    hoverText={`Like ${cardType}`}
+                    handler={() => setIsLiked((prevState) => !prevState)}
+                >
+                    <LikeIcon
+                        contentType={contentType}
+                        isLiked={isLiked}
+                        userId={account && account.user_id}
+                        setId={set.id}
+                    />
+                </BannerIcon>
+            )}
+            {/* If Card Belongs to user */}
             {account && account.user_id === set.user_id && (
                 <div className={style.delBannerContainer}>
                     <BannerIcon
@@ -109,16 +131,12 @@ function BannerBtns({
                     </PopOverContent>
                 </div>
             )}
-            {!publicCard && (
-                <BannerIcon
-                    hoverText={`Preview ${cardType}`}
-                    handler={() => previewHandler(set.id)}
-                >
-                    <HiMiniMagnifyingGlass
-                        style={{ fill: colours.black(0.4) }}
-                    />
-                </BannerIcon>
-            )}
+            <BannerIcon
+                hoverText={`Preview ${cardType}`}
+                handler={() => previewHandler(set.id)}
+            >
+                <HiMiniMagnifyingGlass style={{ fill: colours.black(0.4) }} />
+            </BannerIcon>
         </div>
     );
 }

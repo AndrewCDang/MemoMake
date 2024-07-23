@@ -3,162 +3,211 @@
 
 .asideContainer {
     width: 100%;
-    height: fit-content;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    position: relative;
+    .asideAbsolute {
+        position: absolute;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
     @mixin itemsContainer {
         background-color: $col-white;
-        padding: 1rem;
+        box-shadow: $box-shadow-sm;
+        padding: 0.5rem;
         border-radius: 1rem;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
     }
-    .pinItemsContainer {
+    .pinItemsContainerWrap {
         @include itemsContainer();
-
-        .pinItem {
-            position: relative;
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem;
-            @include whitebgColHover();
-            cursor: pointer;
-            border-radius: 0.5rem;
-            background-color: rgba($col-light-grey, 0.3);
-            .leftSection {
-                display: flex;
-                gap: 0.5rem;
-                align-items: center;
-            }
-
-            & > svg {
-                width: 1.5rem;
-                height: 1.5rem;
-            }
-            .rightSvg {
-                svg {
-                    width: 1rem;
-                    height: 1rem;
-                    stroke-width: 2;
-                    stroke: $col-grey;
-                }
-            }
-            @media (pointer: fine) {
-                .rightSvg {
-                    opacity: 0;
-                    transform: translateX(-1rem);
-                    @include transition(all);
-                }
-                &:hover .rightSvg {
-                    opacity: 1;
-                    transform: translateX(0rem);
-                }
-            }
-            .clickWrap {
-                position: absolute;
-                width: calc(100% - 2rem);
-                height: 100%;
-                left: 2rem;
-                top: 0;
-            }
+        max-height: calc(100% - 2rem);
+        .pinMargin {
+            margin: 0.5rem;
         }
-    }
-    .notesContainer {
-        @include itemsContainer();
-        .noteItemsContainer {
+        .pinItemsContainer {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            z-index: 100;
-            .noteItem {
+            padding-right: 0.5rem;
+            overflow: auto;
+            height: 100%;
+            .pinItem {
                 position: relative;
                 display: flex;
                 gap: 0.5rem;
                 align-items: center;
+                justify-content: space-between;
+                padding: 0.5rem;
+                @include whitebgColHover();
+                cursor: pointer;
                 border-radius: 0.5rem;
                 background-color: rgba($col-light-grey, 0.3);
-                align-items: center;
-                @include transition2(background-color);
-                cursor: pointer;
+                .leftSection {
+                    display: flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                    button span {
+                        left: -0.25rem;
+                        transform: translate(0%, -1rem);
+                    }
+                }
+
+                & > svg {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+                .rightSvg {
+                    svg {
+                        width: 1rem;
+                        height: 1rem;
+                        stroke-width: 2;
+                        stroke: $col-grey;
+                    }
+                }
+                @media (pointer: fine) {
+                    .rightSvg {
+                        opacity: 0;
+                        transform: translateX(-1rem);
+                        @include transition(all);
+                    }
+                    &:hover .rightSvg {
+                        opacity: 1;
+                        transform: translateX(0rem);
+                    }
+                }
+                .clickWrap {
+                    position: absolute;
+                    width: calc(100% - 2rem);
+                    height: 100%;
+                    left: 2rem;
+                    top: 0;
+                }
             }
         }
+        @include customScrollbar(".pinItemsContainer");
+    }
+    .notesContainerWrap {
+        @include itemsContainer();
+        overflow: scroll;
         .newNoteItem {
-            position: relative;
             display: flex;
+            width: 100%;
             gap: 0.5rem;
             align-items: center;
             fieldset {
                 flex: 1;
             }
         }
-        .menuContainerWrap {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            padding: 0.5rem;
-            .menuContainer {
-                position: relative;
+        .notesContainer {
+            padding-right: 0.5rem;
+            overflow-y: scroll;
+            height: 100%;
+            position: relative;
+
+            .menuContainerWrap {
                 display: flex;
                 gap: 0.5rem;
-                .menuWrap {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                }
-                .menuOptions {
-                    background-color: $col-white;
-                    box-shadow: $box-shadow-sm;
-                    border-radius: 0.5rem;
-                    padding: 0.5rem;
+                align-items: center;
+                padding: 0.5rem;
+                position: relative;
+                .menuContainer {
                     display: flex;
                     gap: 0.5rem;
-                    svg {
-                        height: 1.5rem;
-                        width: 1.5rem;
-                        &:hover {
-                            background-color: $col-grey-hover;
+                    .menuWrap {
+                        position: absolute;
+                        top: 50%;
+                        left: 0.25rem;
+                        transform: translate(0%, -50%);
+                    }
+                    .menuOptions {
+                        background-color: $col-white;
+                        box-shadow: $box-shadow-sm;
+                        border-radius: 0.5rem;
+                        padding: 0.5rem;
+                        display: flex;
+                        gap: 0.5rem;
+                        svg {
+                            height: 1.5rem;
+                            width: 1.5rem;
+                            &:hover {
+                                background-color: $col-grey-hover;
+                            }
+                            border-radius: 0.25rem;
                         }
-                        border-radius: 0.25rem;
+                    }
+                    .menuOptions:first-child {
+                        button:first-child > span {
+                            left: -0.5rem;
+                            transform: translate(0%, -100%);
+                        }
                     }
                 }
             }
-        }
-        .popWrap {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            inset: 0;
-            margin: auto;
-            z-index: -10;
-        }
-        .editPopoverWrap {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            height: calc(100% + 0.5rem);
-            width: calc(100% + 0.5rem);
-            background-color: $col-white;
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: $box-shadow-default;
-            justify-content: space-between;
-            input {
-                flex: 1;
+
+            .noteItemsContainer {
+                display: flex;
+                padding: 0.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+                z-index: 100;
+                .noteItem {
+                    position: relative;
+                    display: flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                    border-radius: 0.5rem;
+                    background-color: rgba($col-light-grey, 0.3);
+                    align-items: center;
+                    @include transition2(background-color);
+                    cursor: pointer;
+                }
+                .noteItem:first-child {
+                    .menuOptions:first-child {
+                        button > span {
+                            display: none;
+                        }
+                    }
+                }
+            }
+
+            .popWrap {
+                position: absolute;
+                width: 100%;
                 height: 100%;
+                inset: 0;
+                margin: auto;
+                z-index: -10;
             }
-            button {
-                max-height: 2.5rem !important;
-                margin-right: 0.25rem;
+            .editPopoverWrap {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                height: calc(100% + 0.5rem);
+                width: calc(100% + 0.5rem);
+                background-color: $col-white;
+                border-radius: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                box-shadow: $box-shadow-sm;
+                justify-content: space-between;
+                input {
+                    flex: 1;
+                    height: 100%;
+                }
+                button {
+                    max-height: 2.5rem !important;
+                    margin-right: 0.25rem;
+                }
             }
         }
+        @include customScrollbar(".notesContainer");
     }
     .colourSwatchPickerWrap {
         position: absolute;
@@ -166,11 +215,14 @@
         height: fit-content;
         z-index: 1000;
         top: 50%;
-        left: 0;
-        transform: translate(-50%, -50%);
+        left: 0.25rem;
+        transform: translate(0%, -50%);
         background-color: $col-white;
         padding: 0.5rem;
         border-radius: 0.5rem;
-        box-shadow: $box-shadow-default;
+        box-shadow: $box-shadow-sm;
+    }
+    .linkLikedContainer {
+        margin-top: 1rem;
     }
 }

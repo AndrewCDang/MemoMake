@@ -96,7 +96,7 @@ function LabelInput({
     return (
         <div>
             <section
-                style={{ marginBottom: categories.length > 0 ? "1rem" : "0" }}
+                style={{ marginBottom: categories.length > 0 ? "0.5rem" : "0" }}
                 className={categoryStyle.categoriesDisplay}
                 ref={parent}
             >

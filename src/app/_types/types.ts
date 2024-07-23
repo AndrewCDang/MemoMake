@@ -51,6 +51,19 @@ export type Account = {
     user_history: UserHistory[];
 };
 
+export type UserLikes = {
+    id: string;
+    item_id: string;
+    user_id: string;
+    item_type: ContentType;
+};
+export type AccountWithLikes = {
+    id: string;
+    user_id: string;
+    favourites: string[];
+    user_history: UserHistory[];
+    user_likes: UserLikes[];
+};
 // export type Account = {
 //     id: string;
 //     userId: string;
@@ -95,6 +108,7 @@ export type Flashcard_set = {
     original_id: string;
     theme_colour: ThemeColour;
     creator: BasicUserDetails;
+    like_count: number;
 };
 
 export type Flashcard_collection = {
@@ -106,9 +120,10 @@ export type Flashcard_collection = {
     set_categories: string[];
     description: string;
     image: string;
-    publicAccess: boolean;
+    public_access: boolean;
     theme_colour: ThemeColour;
     creator: BasicUserDetails;
+    like_count: number;
 };
 
 export type Flashcard_collection_with_count = Flashcard_collection & {

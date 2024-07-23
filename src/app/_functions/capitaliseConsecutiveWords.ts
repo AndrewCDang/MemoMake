@@ -6,7 +6,10 @@ export const capitaliseConsecutiveWords = ({
     firstWord?: boolean;
 }) => {
     if (string === "" || !string) return "";
-    const stringArray = string.split(" ");
+    const stringArray = string
+        .split(" ")
+        .map((item) => (item === "" ? " " : item));
+
     const stringArrayMapped = stringArray.map((item, index) => {
         if (!firstWord && index === 0) {
             return item;

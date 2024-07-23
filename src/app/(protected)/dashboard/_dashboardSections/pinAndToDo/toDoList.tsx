@@ -41,39 +41,10 @@ function ToDoList({
     session: Session;
     userNotes: Notes[];
 }) {
-    // Initialising existing notes
-    const placeholder: Notes[] = [
-        {
-            id: "asd",
-            user_id: "123123123",
-            note: "Create landing page",
-            sequence: 10,
-            colour: "red",
-        },
-        {
-            id: "abc",
-            user_id: "123123123",
-            note: "Create side bar for dashboard",
-            sequence: 20,
-            colour: "lightGrey",
-        },
-        {
-            id: "abx",
-            user_id: "123123123",
-
-            note: "Allow users to adjust difficulty during card testing",
-            sequence: 30,
-            colour: "white",
-        },
-        {
-            id: "abb",
-            user_id: "123123123",
-            note: "Use AI to create flashcards",
-            sequence: 40,
-            colour: "lightGrey",
-        },
-    ];
     const [notes, setNotes] = useState<Notes[]>(userNotes);
+
+    // NotesContainerRef
+    const notesContainerRef = useRef<HTMLDivElement>(null);
 
     // State which focuses on one of the popover menus
     const [focusedNoteMenu, setFocusedNoteMenu] = useState<
@@ -105,6 +76,14 @@ function ToDoList({
         };
         setNotes((prevState) => [...prevState, newNote]);
         insertNewUserNote(newNote);
+        setTimeout(() => {
+            if (notesContainerRef.current) {
+                notesContainerRef.current.scrollTo({
+                    top: notesContainerRef.current.scrollHeight,
+                    behavior: "smooth",
+                });
+            }
+        }, 0);
         setInputValue("");
     };
 
@@ -211,137 +190,168 @@ function ToDoList({
 
     return (
         <section className={style.asideContainer}>
-            <h6>To-do / Notes</h6>
-            <div className={style.notesContainer}>
-                <Reorder.Group
-                    as="div"
-                    axis="y"
-                    onReorder={(notes) => {
-                        setNotes(notes);
-                        debouncedUpdateOrderHandler(notes);
-                    }}
-                    values={notes}
-                    className={style.noteItemsContainer}
-                >
-                    {notes &&
-                        notes.map((item) => {
-                            return (
-                                <Reorder.Item
-                                    as="div"
-                                    layout="position"
-                                    value={item}
-                                    className={style.noteItem}
-                                    style={{
-                                        backgroundColor:
-                                            item.colour &&
-                                            ![
-                                                "white",
-                                                "lightGrey",
-                                                "grey",
-                                            ].includes(item.colour)
-                                                ? colours[item.colour]()
-                                                : colours.lightGrey(0.3),
-                                    }}
-                                    key={`${item.note}`}
-                                >
-                                    <Draggable
-                                        fit="stretch"
-                                        clickHandler={() =>
-                                            isFocused
-                                                ? null
-                                                : setFocusedNoteMenu(item.id)
-                                        } //When popover is toggled on, clicking on popover won't fire this callback function
-                                    >
-                                        <div
-                                            className={style.menuContainerWrap}
+            <div className={style.asideAbsolute}>
+                <h6>To-do / Notes</h6>
+                <div className={style.notesContainerWrap}>
+                    <div
+                        ref={notesContainerRef}
+                        className={style.notesContainer}
+                    >
+                        <Reorder.Group
+                            as="div"
+                            axis="y"
+                            onReorder={(notes) => {
+                                setNotes(notes);
+                                debouncedUpdateOrderHandler(notes);
+                            }}
+                            values={notes}
+                            className={style.noteItemsContainer}
+                        >
+                            {notes &&
+                                notes.map((item) => {
+                                    return (
+                                        <Reorder.Item
+                                            as="div"
+                                            layout="position"
+                                            value={item}
+                                            className={style.noteItem}
+                                            style={{
+                                                backgroundColor:
+                                                    item.colour &&
+                                                    ![
+                                                        "white",
+                                                        "lightGrey",
+                                                        "grey",
+                                                    ].includes(item.colour)
+                                                        ? colours[item.colour]()
+                                                        : colours.lightGrey(
+                                                              0.3
+                                                          ),
+                                            }}
+                                            key={`${item.note}`}
                                         >
-                                            {/* PopOverMenu */}
-                                            <PopOverMenu
-                                                item={item}
-                                                focusedColour={focusedColour}
-                                                focusedNote={focusedNote}
-                                                focusedNoteMenu={
-                                                    focusedNoteMenu
-                                                }
-                                                setFocusedNoteMenu={
-                                                    setFocusedNoteMenu
-                                                }
-                                                deleteNoteHandler={
-                                                    deleteNoteHandler
-                                                }
-                                                setFocusedColour={
-                                                    setFocusedColour
-                                                }
-                                                setFocusedNote={setFocusedNote}
-                                            />
-                                            {/* Edit Text Popover */}
-                                            <PopItemWrap
-                                                focused={
-                                                    focusedNote === item.id
-                                                }
-                                                setFocus={setFocusedNote}
-                                            >
-                                                <EditPopOver
-                                                    id={item.id}
-                                                    notes={notes}
-                                                    setNotes={setNotes}
-                                                    focusedNote={focusedNote}
-                                                    setFocusedNote={
-                                                        setFocusedNote
-                                                    }
-                                                    insertNoteHandler={
-                                                        insertNoteHandler
-                                                    }
-                                                />
-                                            </PopItemWrap>
-                                            {/* Colour Picker Popover */}
-                                            <PopItemWrap
-                                                focused={
-                                                    focusedColour === item.id
-                                                }
-                                                setFocus={setFocusedColour}
+                                            <Draggable
+                                                fit="stretch"
+                                                clickHandler={() =>
+                                                    isFocused
+                                                        ? null
+                                                        : setFocusedNoteMenu(
+                                                              item.id
+                                                          )
+                                                } //When popover is toggled on, clicking on popover won't fire this callback function
                                             >
                                                 <div
                                                     className={
-                                                        style.colourSwatchPickerWrap
+                                                        style.menuContainerWrap
                                                     }
                                                 >
-                                                    <ColourSwatchPicker
-                                                        id={item.id}
-                                                        selected={item.colour}
-                                                        handler={(
-                                                            id: string,
-                                                            colour: coloursType
-                                                        ) =>
-                                                            noteColourHandler(
-                                                                id,
-                                                                colour
-                                                            )
+                                                    {/* PopOverMenu */}
+                                                    <PopOverMenu
+                                                        item={item}
+                                                        focusedColour={
+                                                            focusedColour
+                                                        }
+                                                        focusedNote={
+                                                            focusedNote
+                                                        }
+                                                        focusedNoteMenu={
+                                                            focusedNoteMenu
+                                                        }
+                                                        setFocusedNoteMenu={
+                                                            setFocusedNoteMenu
+                                                        }
+                                                        deleteNoteHandler={
+                                                            deleteNoteHandler
+                                                        }
+                                                        setFocusedColour={
+                                                            setFocusedColour
+                                                        }
+                                                        setFocusedNote={
+                                                            setFocusedNote
                                                         }
                                                     />
+                                                    {/* Edit Text Popover */}
+                                                    <PopItemWrap
+                                                        focused={
+                                                            focusedNote ===
+                                                            item.id
+                                                        }
+                                                        setFocus={
+                                                            setFocusedNote
+                                                        }
+                                                    >
+                                                        <EditPopOver
+                                                            id={item.id}
+                                                            notes={notes}
+                                                            setNotes={setNotes}
+                                                            focusedNote={
+                                                                focusedNote
+                                                            }
+                                                            setFocusedNote={
+                                                                setFocusedNote
+                                                            }
+                                                            insertNoteHandler={
+                                                                insertNoteHandler
+                                                            }
+                                                        />
+                                                    </PopItemWrap>
+                                                    {/* Colour Picker Popover */}
+                                                    <PopItemWrap
+                                                        focused={
+                                                            focusedColour ===
+                                                            item.id
+                                                        }
+                                                        setFocus={
+                                                            setFocusedColour
+                                                        }
+                                                    >
+                                                        <div
+                                                            className={
+                                                                style.colourSwatchPickerWrap
+                                                            }
+                                                        >
+                                                            <ColourSwatchPicker
+                                                                id={item.id}
+                                                                selected={
+                                                                    item.colour
+                                                                }
+                                                                handler={(
+                                                                    id: string,
+                                                                    colour: coloursType
+                                                                ) =>
+                                                                    noteColourHandler(
+                                                                        id,
+                                                                        colour
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </PopItemWrap>
+                                                    <span>{item.note}</span>
                                                 </div>
-                                            </PopItemWrap>
-                                            <span>{item.note}</span>
-                                            <span>{item.sequence}</span>
-                                        </div>
-                                    </Draggable>
-                                </Reorder.Item>
-                            );
-                        })}
-                </Reorder.Group>
-                <div className={style.newNoteItem}>
-                    <TextInput
-                        height="short"
-                        id="to-do-input"
-                        placeholder="Type in new to-do / note"
-                        type="text"
-                        handler={changeHandler}
-                        inputValue={inputValue}
-                        enterHandler={insertNoteHandler}
-                    />
-                    <DefaultButton variant="Black" handler={insertNoteHandler}>
-                        <HiChevronRight />
-                    </DefaultButton>
+                                            </Draggable>
+                                        </Reorder.Item>
+                                    );
+                                })}
+                        </Reorder.Group>
+                    </div>
+                    <div className={style.newNoteItem}>
+                        <TextInput
+                            height="short"
+                            id="to-do-input"
+                            placeholder="Type in new to-do / note"
+                            type="text"
+                            handler={changeHandler}
+                            inputValue={inputValue}
+                            enterHandler={insertNoteHandler}
+                        />
+                        <DefaultButton
+                            variant="Black"
+                            handler={insertNoteHandler}
+                        >
+                            <HiChevronRight />
+                        </DefaultButton>
+                    </div>
                 </div>
             </div>
         </section>
