@@ -2,7 +2,7 @@ import React from "react";
 import style from "./collectionItem.module.scss";
 import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import CollectionItemBtn from "./collectionItemBtn";
 
 type CollectionItemTypes = {

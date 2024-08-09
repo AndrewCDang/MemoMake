@@ -19,7 +19,7 @@ export const insertSet = async ({ data, id, imageUrl }: InsertTypes) => {
         }, ${data.description ? data.description : null}, ${
             imageUrl ? imageUrl : null
         }, 
-        ${data.colours},
+        ${data.colours || null},
         ${new Date()})
         `;
         revalidatePath("/dashboard");

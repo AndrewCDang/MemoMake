@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Outfit } from "next/font/google";
 import "./styles/globals.scss";
 import AuthForm from "./(auth)/authForm";
 import Nav from "./(nav)/nav";
@@ -9,7 +9,14 @@ import { auth } from "@/auth";
 
 const poppins = Poppins({
     subsets: ["latin"],
+    variable: "--font-poppins",
     weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
+const outfit = Outfit({
+    subsets: ["latin"],
+    variable: "--font-outfit",
+    weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -24,7 +31,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={poppins.className}>
+            <body className={`${poppins.variable} ${outfit.variable}`}>
                 <Nav />
                 {children}
                 <GlobalModals />

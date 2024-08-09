@@ -3,24 +3,21 @@ import React, {
     ReactNode,
     SetStateAction,
     useEffect,
-    useMemo,
-    useReducer,
     useState,
 } from "react";
 import style from "./bannerStrip.module.scss";
 import { CollectionIcon, SetIcon } from "@/app/_components/svgs/svgs";
 import {
     AnimatePresence,
-    LayoutGroup,
     motion,
     useMotionTemplate,
     useMotionValue,
     useSpring,
 } from "framer-motion";
 import { AiFillPushpin } from "react-icons/ai";
-import { Account, ThemeColour } from "@/app/_types/types";
+import { Account } from "@/app/_types/types";
 import { Flashcard_set } from "@/app/_types/types";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import { spring } from "@/app/_components/framerMotion/springTransition";
 import { colours } from "@/app/styles/colours";
 import { BannerIcon } from "../bannerBtns/bannerBtns";
@@ -154,14 +151,16 @@ function BannerStrip({
             return <div className={style.foregroundContainer}></div>;
         } else if (contentType === "collection") {
             return (
-                <motion.div
-                    layout
-                    style={{
-                        clipPath: newPathD,
-                        backgroundColor: colours.white(),
-                    }}
-                    className={style.backgroundCollectionContainer}
-                ></motion.div>
+                <div className={style.backgroundCollectionContainerWrap}>
+                    <motion.div
+                        layout
+                        style={{
+                            clipPath: newPathD,
+                            backgroundColor: colours.white(),
+                        }}
+                        className={style.backgroundCollectionContainer}
+                    ></motion.div>
+                </div>
             );
         }
         return null;
@@ -186,7 +185,7 @@ function BannerStrip({
                     highlight={false}
                     publicCard={publicCard}
                     iconBoxShadows={iconBoxShadows}
-                    themeColour={themeColour}
+                    themeColour={"white"}
                 >
                     <AiFillPushpin />
                 </MotionIconContainer>
@@ -228,7 +227,7 @@ function BannerStrip({
                     highlight={isLiked}
                     publicCard={publicCard}
                     iconBoxShadows={iconBoxShadows}
-                    themeColour={themeColour}
+                    themeColour={"white"}
                 >
                     <div
                         className={`${style.iconLikedContent} ${
@@ -306,7 +305,7 @@ function BannerStrip({
                                 </IconContainer>
                             </BannerIcon>
                         )}
-                        <AnimatePresence mode="popLayout">
+                        <AnimatePresence initial={false} mode="popLayout">
                             {bannerArray.map((item, i) => (
                                 <BannerIcon
                                     key={item.name}
@@ -330,7 +329,7 @@ function BannerStrip({
                 </div>
             </div>
             {/* Bg for collection item */}
-            <ForegroundContainer />
+            {contentType === "collection" && <ForegroundContainer />}
             {/* Bg for set/collection item */}
             <div
                 className={`${style.backgroundContainerWrap} foregroundContainer`}
@@ -340,7 +339,9 @@ function BannerStrip({
                         clipPath: newPathD,
                         backgroundColor: publicCard
                             ? colours.white()
-                            : themeColour,
+                            : contentType === "collection"
+                            ? themeColour
+                            : colours.white(),
                     }}
                     className={style.backgroundContainer}
                 >

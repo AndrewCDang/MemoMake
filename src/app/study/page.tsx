@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { Difficulty } from "../_types/types";
 import Study from "./study";
+import { notFound } from "next/navigation";
 
 async function page({ searchParams }: any) {
     const session = await auth();
@@ -12,12 +13,28 @@ async function page({ searchParams }: any) {
         (searchParams.difficulties?.split("_") as Difficulty[]) || [];
     const userId = session?.user.id;
 
+    const contentType =
+        collectionIds.length > 0
+            ? "collection"
+            : setIds.length > 0
+            ? "set"
+            : null;
+
+    const ids =
+        collectionIds.length > 0
+            ? collectionIds
+            : setIds.length > 0
+            ? setIds
+            : null;
+
+    if (!contentType || !ids) return notFound();
+
     return (
         <Study
-            collectionIds={collectionIds}
-            setIds={setIds}
-            collectionTags={collectionTags}
-            collectionDifficulties={collectionDifficulties}
+            ids={ids}
+            contentType={contentType}
+            tags={collectionTags}
+            difficulties={collectionDifficulties}
             userId={userId}
         />
     );

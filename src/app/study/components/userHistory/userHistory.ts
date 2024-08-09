@@ -9,8 +9,8 @@ export const updateUserHistory = async ({
 }: {
     item: {
         ids: string[];
-        tags: string[];
-        difficulties: Difficulty[];
+        tags: string[] | undefined;
+        difficulties: Difficulty[] | undefined;
         content_type: ContentType;
         correct: number;
     };
@@ -33,9 +33,7 @@ export const updateUserHistory = async ({
         // If new history item and latest history item does not match, add new item to array.
         const newIdsArray = item.ids;
         const diffArray = item.difficulties;
-        console.log(diffArray);
         const tagArray = item.tags;
-        console.log(tagArray);
 
         // Construct removeArrayElement based on matchingPreviousIndex
         const removeArrayElement =
@@ -54,12 +52,12 @@ export const updateUserHistory = async ({
                         ROW(
                             ARRAY[${db.array(newIdsArray)}]::text[], 
                             ${
-                                item.tags.length > 0
+                                tagArray && tagArray.length > 0
                                     ? db`ARRAY[${db.array(tagArray)}]::text[]`
                                     : db`ARRAY[]::text[]`
                             },
                             ${
-                                item.difficulties.length > 0
+                                diffArray && diffArray.length > 0
                                     ? db`ARRAY[${db.array(
                                           diffArray
                                       )}]::difficulty[]`
@@ -75,12 +73,12 @@ export const updateUserHistory = async ({
                         ROW(
                             ARRAY[${db.array(newIdsArray)}]::text[], 
                             ${
-                                item.tags.length > 0
+                                tagArray && tagArray.length > 0
                                     ? db`ARRAY[${db.array(tagArray)}]::text[]`
                                     : db`ARRAY[]::text[]`
                             },
                             ${
-                                item.difficulties.length > 0
+                                diffArray && diffArray.length > 0
                                     ? db`ARRAY[${db.array(
                                           diffArray
                                       )}]::difficulty[]`

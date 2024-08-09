@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import style from "../recentItems.module.scss";
 import { RecentItemsTypes } from "../../_actions/fetchRecentTested";
 import { Flashcard_set } from "@/app/_types/types";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import RecentItemsCard from "../recentComponents/recentItemsCard";
 import { colours } from "@/app/styles/colours";
 import LinkText from "@/app/_components/linkText/linkText";

@@ -4,8 +4,8 @@ import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 import React from "react";
 import { HiArrowSmallRight, HiMiniMagnifyingGlass } from "react-icons/hi2";
 import style from "./collectionItem.module.scss";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
-import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
+import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
 import { usePreviewModal } from "@/app/_components/previewModal/usePreviewModal";
 
 function CollectionItemBtn({

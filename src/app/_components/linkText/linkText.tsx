@@ -4,7 +4,7 @@ import { HiChevronRight } from "react-icons/hi2";
 
 function LinkText({ link, text }: { link: string; text: string }) {
     return (
-        <Link href={link}>
+        <Link href={link} className={style.linkWrap}>
             <div className={style.linkContainer}>
                 <span className={style.link}>{text}</span>
                 <HiChevronRight />

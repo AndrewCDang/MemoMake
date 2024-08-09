@@ -1,6 +1,7 @@
 // import Button from "../_components/(buttons)/styledButton";
 // import AuthAccount from "../(auth)/authHandler";
 import style from "./home.module.scss";
+import Landing from "./landing/landing";
 
 async function page() {
     type Data<UserData> = {
@@ -10,8 +11,8 @@ async function page() {
 
     return (
         <section className={style.homeContainer}>
-            <h1>Home Page</h1>
-            <h2>test</h2>
+            <Landing />
+
             {/* <AuthAccount mode="logIn">
                 <Button text="Log In" />
             </AuthAccount>

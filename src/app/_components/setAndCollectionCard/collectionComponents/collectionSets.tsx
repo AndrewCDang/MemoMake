@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import style from "./collectionSets.module.scss";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import PopOverContent from "../../_generalUi/popOverContent/popOverContent";
 import { useState } from "react";
 import CornerClose from "../../cornerClose/cornerClose";

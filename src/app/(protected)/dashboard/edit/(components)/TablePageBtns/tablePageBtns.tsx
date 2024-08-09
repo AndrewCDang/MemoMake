@@ -8,7 +8,7 @@ import Modal from "@/app/_components/modal/modal";
 import { Flashcard_set, Flashcard_set_with_count } from "@/app/_types/types";
 import { Session } from "next-auth";
 import StudyBtn from "@/app/_components/setAndCollectionCard/generalComponents/previewEditStudyBtns/studyBtn/studyBtn";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import ReviseModal from "@/app/_components/reviseCollection/reviseModal";
 import insertFlashCard from "@/app/_actions/insertFlashCard";
 import { AuthItemTypes } from "@/schema/itemSchema";

@@ -79,10 +79,13 @@ function UploadImage({
         try {
             if (urlError) setUrlError(false);
             const response = await fetch(imageUrl);
+
             if (!response.ok) {
                 throw new Error("Network Response not OK");
             }
+
             const contentType = response.headers.get("content-type");
+            console.log(contentType);
             if (!contentType || !contentType.startsWith("image/")) {
                 throw new Error("URL does not point to an image");
             }
@@ -129,11 +132,7 @@ function UploadImage({
                         <HiChevronRight />
                     </DefaultButton>
                 </div>
-                {urlError && (
-                    <span className={style.error}>
-                        Invalid URL | URL does not directly point to image
-                    </span>
-                )}
+                {urlError && <span className={style.error}>Invalid URL</span>}
             </div>
             <span>or</span>
             <div>

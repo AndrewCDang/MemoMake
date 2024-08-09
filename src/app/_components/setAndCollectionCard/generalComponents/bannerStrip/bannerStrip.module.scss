@@ -125,10 +125,10 @@
 .setContainer:hover .backgroundContainerWrap {
     filter: drop-shadow(0px 2px 4px rgba($col-red, 0.4));
 }
-
-.backgroundCollectionContainer {
-    position: absolute;
+.backgroundCollectionContainerWrap {
+    filter: drop-shadow($box-shadow-sm);
     z-index: -2;
+    position: absolute;
     width: calc(100% - 0.5rem);
     height: calc(100% - 0.5rem);
     top: 0.25rem;
@@ -136,7 +136,12 @@
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
-    box-shadow: $box-shadow-sm;
+    overflow: hidden;
+
+    .backgroundCollectionContainer {
+        height: 100%;
+        width: 100%;
+    }
 }
 
 .bannerIconBackground {

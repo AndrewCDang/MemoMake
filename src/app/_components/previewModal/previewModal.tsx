@@ -11,7 +11,6 @@ import {
 } from "@/app/_types/types";
 import { setRevisionModal } from "./_hooks/setRevisionModal";
 import PreviewModalSet from "./previewModalSet";
-import ThemeColourStrip from "../_generalUi/themeColourStrip/themeColourStrip";
 import { CollectionIcon } from "../svgs/svgs";
 
 const PreviewModal = () => {
@@ -136,9 +135,7 @@ const PreviewModal = () => {
                                 key={item.id}
                                 className={style.collectionGroup}
                             >
-                                <ThemeColourStrip
-                                    colour={item.theme_colour || "grey"}
-                                />
+                                {/* THEMECOLOURSTRIP */}
                                 <div className={style.collectionGroupTitle}>
                                     <CollectionIcon />
                                     <h6>{item.collection_name}</h6>

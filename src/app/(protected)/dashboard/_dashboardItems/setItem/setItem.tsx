@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import style from "../../existingSets.module.scss";
-import CreateSetBtn from "../../_dashboardButtons/createSetBtn";
+import CreateSetBtn from "@/app/_components/setCollectionContentSection/_dashboardButtons/createSetBtn";
 import {
     Account,
     Flashcard_set,
@@ -10,7 +10,7 @@ import {
 import { HiArrowSmallRight, HiMiniMagnifyingGlass } from "react-icons/hi2";
 import FavouriteIcon from "@/app/_components/favouriteIcon/favouriteIcon";
 import { usePreviewModal } from "@/app/_components/previewModal/usePreviewModal";
-import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
+import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
 import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 
 export const FlashCardItem = ({

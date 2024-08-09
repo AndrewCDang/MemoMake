@@ -1,0 +1,34 @@
+@import "../../styles/colours.scss";
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .dataArrayContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        height: fit-content;
+        max-height: 600px;
+        width: fit-content;
+        margin: 0 auto;
+        overflow-y: scroll;
+        .questionAnswerContainer {
+            display: flex;
+            gap: 1rem;
+        }
+        span {
+            padding: 0.5rem;
+            background-color: rgba($col-white, 0.6);
+            box-shadow: $box-shadow-sm;
+            border-radius: 0.5rem;
+        }
+    }
+
+    button {
+        width: fit-content;
+        margin: 0 auto;
+        margin-top: 2rem;
+    }
+}

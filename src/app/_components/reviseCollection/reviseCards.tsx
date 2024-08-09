@@ -9,7 +9,7 @@ import {
     Flashcard_set,
     Flashcard_item,
 } from "@/app/_types/types";
-import { tagsCollectionTypes } from "@/app/_actions/fetchTagsInCollection";
+import { tagsCollectionTypes } from "@/app/_lib/fetch/fetchTagsInCollection";
 import { Session } from "next-auth";
 
 type ReviseCardsTypes = {

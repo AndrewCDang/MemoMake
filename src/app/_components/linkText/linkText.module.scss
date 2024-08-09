@@ -1,7 +1,11 @@
 @import "../../styles/colours.scss";
 
+.linkWrap {
+    width: fit-content;
+}
 .linkContainer {
     display: flex;
+    width: fit-content;
     align-items: center;
     svg {
         stroke-width: 1;

@@ -1,0 +1,73 @@
+@import "../../styles/colours.scss";
+
+.landingContainer {
+    width: 100%;
+    height: calc(80vh - 3.5rem);
+    margin-bottom: 20vh;
+    position: relative;
+    display: grid;
+    place-items: center;
+    .flashmuLandingTextLogo {
+        font-size: clamp(2.5rem, 2rem + 2.5vw, 4.5rem);
+        line-height: clamp(2.5rem, 2rem + 2.5vw, 4.5rem);
+    }
+    .landingTextContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        z-index: 1;
+        div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    .leadingText {
+        span {
+            font-weight: 600;
+        }
+        span:nth-child(1) {
+            color: $col-red;
+        }
+        span:nth-child(2) {
+            color: $col-blue;
+        }
+        span:nth-child(3) {
+            color: $col-yellow;
+        }
+    }
+    .btnContainer {
+        margin-top: 1rem;
+        position: relative;
+    }
+    .arrowsContainer {
+        user-select: none;
+        pointer-events: none;
+        position: absolute;
+        svg {
+            height: 9rem;
+            width: 9rem;
+            transform: rotate(-15deg);
+        }
+    }
+    .arrowsContainer {
+        left: 0;
+        transform: translateX(calc(-100% - 1.5rem));
+    }
+    .arrowsContainer:nth-of-type(2) {
+        left: 50%;
+        transform: translateX(-50%) translateY(calc(50% + 1.5rem))
+            rotate(-90deg);
+    }
+    .arrowsContainer:nth-of-type(3) {
+        left: 100%;
+        transform: translateX(1.5rem) scaleX(-1);
+    }
+
+    .underline {
+        text-decoration: underline;
+    }
+}

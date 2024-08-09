@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import style from "./searchBar.module.scss";
 import SearchBarContent from "./searchBarContent";
-import { fetchCollectionByIdWithSetAndItemCount } from "@/app/_actions/fetchCollectionByIdWithSetAndItemCount";
+import { fetchCollectionByIdWithSetAndItemCount } from "@/app/_lib/fetch/fetchCollectionByIdWithSetAndItemCount";
 import {
     Flashcard_collection_with_count,
     Flashcard_set_with_count,

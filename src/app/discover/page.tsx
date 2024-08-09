@@ -1,49 +1,76 @@
 import React from "react";
-import style from "./page.module.scss";
-import { fetchPublicFlashsets } from "../_actions/fetchPublicFlashsets";
-import SetAndCollectionCard from "../_components/setAndCollectionCard/setAndCollectionCard";
+import { fetchPublicFlashsets } from "../_lib/fetch/fetchPublicFlashsets";
 import { auth } from "@/auth";
-import { fetchAccountFromUserId } from "../_actions/fetchAccountFromUserId";
-import { Account } from "next-auth";
-import UploadImage from "../_components/uploadImage/uploadImage";
+import { fetchAccountFromUserId } from "../_lib/fetch/fetchAccountFromUserId";
+import { fetchPublicFlashCollections } from "../_lib/fetch/fetchPublicFlashCollections";
+import SectionTemplate from "../_components/setCollectionContentSection/sectionTemplate";
+import { capitaliseFirstChar } from "../_functions/capitaliseFirstChar";
 
 async function page({ searchParams }: { searchParams: any }) {
     const searchQuery = searchParams.search as string;
     const searchType = searchParams.type;
-    console.log(searchParams);
-    console.log(searchParams.type);
     const session = await auth();
+    const itemsPerPage = 12;
 
     const userAccount = session
         ? await fetchAccountFromUserId({ id: session.user.id })
         : undefined;
 
-    console.log(searchQuery);
-    const fetch = searchQuery
-        ? await fetchPublicFlashsets({ searchQuery })
-        : [];
+    const fetchFlashSets = searchQuery
+        ? await fetchPublicFlashsets({
+              searchQuery: searchQuery,
+              paginate: true,
+              itemsPerPage: itemsPerPage,
+              pageNum: 1,
+          })
+        : undefined;
 
-    console.log(fetch);
+    const fetchCollection = searchQuery
+        ? await fetchPublicFlashCollections({
+              searchQuery,
+              itemsPerPage: itemsPerPage,
+              pageNum: 1,
+              paginate: true,
+          })
+        : undefined;
+
     return (
         <main>
             <section>
-                <h6>{searchQuery || "Discover"}</h6>
+                <label>Results for</label>
+                <h2>{capitaliseFirstChar(searchQuery) || "Discover"}</h2>
                 {searchType && <div>{searchType}</div>}
             </section>
-            <section className={style.setGrid}>
-                {fetch &&
-                    fetch.length &&
-                    fetch.map((item) => {
-                        return (
-                            <SetAndCollectionCard
-                                set={item}
-                                account={userAccount}
-                                contentType="set"
-                                originalId={item.id}
-                            />
-                        );
-                    })}
-            </section>
+            <SectionTemplate
+                createBtn={false}
+                filter={false}
+                title={`Flash Card Sets for '${capitaliseFirstChar(
+                    searchQuery
+                )}'`}
+                id="discover-flashcards"
+                content={(fetchFlashSets && fetchFlashSets.fetched_items) || []}
+                href={`/discover/sets?search=${searchQuery}`}
+                contentType="set"
+                totalPaginationItems={fetchFlashSets?.total_count}
+                account={userAccount}
+                viewBtn={true}
+                totalItemsPerPage={itemsPerPage}
+            />
+            <SectionTemplate
+                createBtn={false}
+                filter={false}
+                title={`Flash Card Collections for '${capitaliseFirstChar(
+                    searchQuery
+                )}'`}
+                id="discover-flashcollection"
+                content={fetchCollection?.fetched_items || []}
+                href="/discover/sets"
+                contentType="collection"
+                totalPaginationItems={fetchCollection?.total_count}
+                account={userAccount}
+                viewBtn={true}
+                totalItemsPerPage={itemsPerPage}
+            />
         </main>
     );
 }

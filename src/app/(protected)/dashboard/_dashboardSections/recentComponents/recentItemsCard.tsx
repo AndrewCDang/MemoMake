@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import RecentItemsBtns from "./recentItemsBtns";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import style from "../recentItems.module.scss";
 import { colours } from "@/app/styles/colours";
 import { CollectionIcon, SetIcon } from "@/app/_components/svgs/svgs";

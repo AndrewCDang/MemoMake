@@ -16,7 +16,7 @@ export const ThemeColourSchema = z.union([
 export const CreateSetSchema = z.object({
     setName: z.string().min(1, "Name required"),
     description: z.string().nullable().optional(),
-    colours: ThemeColourSchema,
+    colours: ThemeColourSchema.nullable().optional(),
     categories: z.array(z.string()).nullable().optional(),
 });
 

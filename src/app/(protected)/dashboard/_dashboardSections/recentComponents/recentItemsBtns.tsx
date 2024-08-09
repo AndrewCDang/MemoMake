@@ -3,7 +3,7 @@ import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 import style from "./recentItemsBtns.module.scss";
 import React from "react";
 import { usePreviewModal } from "@/app/_components/previewModal/usePreviewModal";
-import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
+import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
 import {
     ContentType,
     Flashcard_collection_preview,
@@ -11,7 +11,6 @@ import {
     Flashcard_set_with_cards,
 } from "@/app/_types/types";
 import { useReviseModal } from "@/app/_components/reviseCollection/useReviseModal";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
 import { HiArrowSmallRight, HiMiniMagnifyingGlass } from "react-icons/hi2";
 
 type RecentItemsBtnsTypes = {

@@ -6,7 +6,7 @@ type BulkInsertTypes = {
     dataArray: AuthItemTypes[];
 };
 
-const bulkInsert = async ({ setId, dataArray }: BulkInsertTypes) => {
+export const bulkInsert = async ({ setId, dataArray }: BulkInsertTypes) => {
     if (!dataArray) return;
     try {
         let successArray = [];

@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "./setAndColelctionCard.module.scss";
 import childStyle from "./generalComponents/bannerStrip/bannerStrip.module.scss";
 import { AccountWithLikes, Flashcard_set } from "@/app/_types/types";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import CollectionSets from "./collectionComponents/collectionSetsV2";
 import BannerStrip from "./generalComponents/bannerStrip/bannerStrip";
 import { motion } from "framer-motion";
@@ -51,14 +51,19 @@ function SetAndCollectionCard({
     // Liked State
     const [isLiked, setIsliked] = useState<boolean>(
         account !== undefined
-            ? account.user_likes.map((item) => item.item_id).includes(set.id)
+            ? Array.isArray(account.user_likes) &&
+                  account.user_likes.length > 0 &&
+                  account.user_likes
+                      .filter((item) => item !== null && item !== undefined)
+                      .map((item) => item.item_id)
+                      .includes(set.id)
             : false
     );
 
     // ThemeColour
     const themeColour = set.theme_colour
         ? colours[set.theme_colour]()
-        : colours.grey();
+        : colours.lightGrey();
 
     //
     //

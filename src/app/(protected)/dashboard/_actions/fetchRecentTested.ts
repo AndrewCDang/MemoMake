@@ -1,5 +1,5 @@
 "use server";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import { db } from "@/app/_lib/db";
 import { Flashcard_set, UserHistory } from "@/app/_types/types";
 import { ContentType, Difficulty } from "@/app/_types/types";

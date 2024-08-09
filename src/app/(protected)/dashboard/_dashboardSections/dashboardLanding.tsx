@@ -2,14 +2,12 @@
 import style from "./recentItems.module.scss";
 import { Account, Flashcard_set } from "@/app/_types/types";
 import { RecentItemsTypes } from "../_actions/fetchRecentTested";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
-import PinnedItems from "./pinAndToDo/pinnedItems";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import ToDoList, { Notes } from "./pinAndToDo/toDoList";
 import { Session } from "next-auth";
 import SideBarSection from "./sideBarSection/sideBarSection";
 import RecentItemsSection from "./recentItemsSection/recentItemsSection";
 import LikedPinnedItems from "./pinAndToDo/pinnedItems";
-import Lottie from "lottie-react";
 import { useRef } from "react";
 import welcomeGif from "@/../../public/animations/flashmu_wave.gif";
 import Image from "next/image";

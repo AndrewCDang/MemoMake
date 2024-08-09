@@ -6,7 +6,7 @@ import {
     Flashcard_collection,
     Flashcard_set,
 } from "@/app/_types/types";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import { BannerIcon } from "@/app/_components/setAndCollectionCard/generalComponents/bannerBtns/bannerBtns";
 import PinIcon from "@/app/_components/_generalUi/pinIcon/pinIcon";
 import { HiChevronRight } from "react-icons/hi2";

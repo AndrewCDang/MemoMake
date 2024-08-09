@@ -1,75 +1,165 @@
 "use client";
-import React, { ReactNode } from "react";
+import React from "react";
 import { useReviseModal } from "../useReviseModal";
 import CornerClose from "../../cornerClose/cornerClose";
 import style from "../reviseCards.module.scss";
-import ThemeColourStrip from "../../_generalUi/themeColourStrip/themeColourStrip";
-import Image from "next/image";
 import { colours } from "@/app/styles/colours";
-import { clipPath } from "../../_generalUi/clipPath/clipPath";
 import {
+    ContentType,
     Flashcard_collection_preview,
+    Flashcard_set,
     Flashcard_set_with_cards,
 } from "@/app/_types/types";
+
+export const DotIconsSetCollection = ({
+    contentType,
+    item,
+}: {
+    contentType: ContentType;
+    item:
+        | Flashcard_set_with_cards
+        | Flashcard_collection_preview
+        | Flashcard_set;
+}) => {
+    const SetIcons = ({
+        contentItem,
+    }: {
+        contentItem: Flashcard_set_with_cards;
+    }) => {
+        return (
+            <div
+                className={style.setIcon}
+                style={{
+                    backgroundColor:
+                        colours[
+                            contentItem.theme_colour
+                                ? contentItem.theme_colour
+                                : "lightGrey"
+                        ](),
+                }}
+            ></div>
+        );
+    };
+    if (contentType === "set") {
+        const contentItem = item as Flashcard_set_with_cards;
+        return <SetIcons contentItem={contentItem} />;
+    }
+    if (contentType === "collection") {
+        const contentItem = item as Flashcard_collection_preview;
+        return (
+            <div className={style.collectionIconWrap}>
+                {contentItem.sets.map((item) => {
+                    return <SetIcons key={item.id} contentItem={item} />;
+                })}
+            </div>
+        );
+    }
+};
+
+const GetCardCount = ({
+    item,
+}: {
+    item: Flashcard_collection_preview | Flashcard_set_with_cards;
+}) => {
+    const CardTemplate = ({ number }: { number: number }) => {
+        return <span className={style.totalCards}>{number} cards</span>;
+    };
+    if ("collection_name" in item) {
+        const cardCount = item.sets
+            .flatMap((item) =>
+                item.flashcards ? item.flashcards && item.flashcards.length : 0
+            )
+            .reduce((acc, curr) => acc + curr, 0);
+
+        return <CardTemplate number={cardCount} />;
+    } else if ("set_name" in item) {
+        const cardCount =
+            item && item.flashcards
+                ? item.flashcards[0] !== null
+                    ? item.flashcards.length
+                    : 0
+                : 0;
+        return <CardTemplate number={cardCount} />;
+    }
+};
+
+type SetCollectionCardTypes = {
+    item: Flashcard_collection_preview | Flashcard_set_with_cards;
+    removeFromSet: ({
+        id,
+        existingItems,
+    }: {
+        id: string;
+        existingItems: Flashcard_set_with_cards[];
+    }) => void;
+    removeFromCollection: ({
+        id,
+        existingItems,
+    }: {
+        id: string;
+        existingItems: Flashcard_collection_preview[];
+    }) => void;
+    initialSetItems: Flashcard_set_with_cards[];
+    initialCollectionItems: Flashcard_collection_preview[];
+    reviseModalType: ContentType;
+};
+
+const SetCollectionCard = ({
+    item,
+    removeFromSet,
+    removeFromCollection,
+    initialSetItems,
+    initialCollectionItems,
+    reviseModalType,
+}: SetCollectionCardTypes) => {
+    return (
+        <div className={style.setCard}>
+            <div className={style.setCardBanner}>
+                <CornerClose
+                    type="circleCorner"
+                    cornerSpace="tight"
+                    handler={() =>
+                        reviseModalType === "set"
+                            ? removeFromSet({
+                                  id: item.id,
+                                  existingItems: initialSetItems,
+                              })
+                            : reviseModalType === "collection"
+                            ? removeFromCollection({
+                                  id: item.id,
+                                  existingItems: initialCollectionItems,
+                              })
+                            : null
+                    }
+                />
+            </div>
+            <div className={style.cardBody}>
+                <div className={style.cardNameWrap}>
+                    <DotIconsSetCollection
+                        contentType={reviseModalType}
+                        item={item}
+                    />
+                    <span className={style.setCardTitle}>
+                        {reviseModalType === "collection"
+                            ? (item as Flashcard_collection_preview)
+                                  .collection_name
+                            : (item as Flashcard_set_with_cards).set_name}
+                    </span>
+                </div>
+                <GetCardCount item={item} />
+            </div>
+        </div>
+    );
+};
 
 function CollectionAndSetsSelectedObjects() {
     const {
         initialCollectionItems,
         initialSetItems,
         reviseModalType,
-        removeFromCollection,
         removeFromSet,
+        removeFromCollection,
     } = useReviseModal();
-
-    const SetDotIcons = ({ item }: { item: Flashcard_collection_preview }) => {
-        return (
-            <div>
-                {item.sets.slice(0, 10).map((card) => {
-                    return (
-                        <div
-                            key={`${card.id}-dot-set`}
-                            style={{
-                                backgroundColor:
-                                    colours[card.theme_colour || "grey"](),
-                            }}
-                            className={
-                                item.sets.length < 4
-                                    ? style.setIcons
-                                    : style.setIconsSm
-                            }
-                        ></div>
-                    );
-                })}
-            </div>
-        );
-    };
-
-    const GetCardCount = ({
-        item,
-    }: {
-        item: Flashcard_collection_preview | Flashcard_set_with_cards;
-    }) => {
-        const CardTemplate = ({ number }: { number: number }) => {
-            return (
-                <span className={style.totalCards}>
-                    <span className={style.bold}>{number}</span> cards
-                </span>
-            );
-        };
-        if ("collection_name" in item) {
-            const cardCount = item.sets
-                .flatMap((item) =>
-                    item.flashcards ? item.flashcards.length : 0
-                )
-                .reduce((acc, curr) => acc + curr, 0);
-
-            return <CardTemplate number={cardCount} />;
-        } else if ("set_name" in item) {
-            const cardCount =
-                item && item.flashcards ? item.flashcards.length : 0;
-            return <CardTemplate number={cardCount} />;
-        }
-    };
 
     return (
         <>
@@ -77,107 +167,30 @@ function CollectionAndSetsSelectedObjects() {
                 reviseModalType === "collection" &&
                 initialCollectionItems.map((item) => {
                     return (
-                        <div key={item.id} className={style.setCard}>
-                            <div className={style.setCardBanner}>
-                                <div
-                                    style={{
-                                        clipPath: clipPath({ scale: 0.4 }),
-                                        height: "1.25rem",
-                                    }}
-                                    className={style.stripContainer}
-                                >
-                                    <ThemeColourStrip
-                                        colour={item.theme_colour || "grey"}
-                                        type={1.25}
-                                        radius={false}
-                                    />
-                                </div>
-                                <CornerClose
-                                    type="circleCorner"
-                                    cornerSpace="tight"
-                                    handler={() =>
-                                        removeFromCollection({
-                                            id: item.id,
-                                            existingItems:
-                                                initialCollectionItems,
-                                        })
-                                    }
-                                />
-                            </div>
-                            <div
-                                style={{
-                                    backgroundColor:
-                                        colours[item.theme_colour || "grey"](
-                                            0.2
-                                        ),
-                                }}
-                                className={style.cardBody}
-                            >
-                                <span className={style.setCardTitle}>
-                                    {item.collection_name}
-                                </span>
-                                {reviseModalType === "collection" && (
-                                    <SetDotIcons item={item} />
-                                )}
-                                <GetCardCount item={item} />
-                            </div>
-                            <div
-                                style={{
-                                    clipPath: clipPath({ scale: 0.4 }),
-                                }}
-                                className={style.cardBg}
-                            ></div>
-                        </div>
+                        <SetCollectionCard
+                            key={`${item.id}-revise-modal`}
+                            item={item}
+                            removeFromSet={removeFromSet}
+                            removeFromCollection={removeFromCollection}
+                            initialCollectionItems={initialCollectionItems}
+                            initialSetItems={initialSetItems}
+                            reviseModalType={reviseModalType}
+                        />
                     );
                 })}
             {initialSetItems &&
                 reviseModalType === "set" &&
                 initialSetItems.map((item) => {
                     return (
-                        <div
+                        <SetCollectionCard
                             key={`${item.id}-revise-modal`}
-                            className={style.setCard}
-                        >
-                            <div className={style.setCardBanner}>
-                                <div
-                                    style={{
-                                        clipPath: clipPath({ scale: 0.4 }),
-                                        height: "1.25rem",
-                                    }}
-                                    className={style.stripContainer}
-                                >
-                                    <ThemeColourStrip
-                                        colour={item.theme_colour || "grey"}
-                                        type={1.25}
-                                        radius={false}
-                                    />
-                                </div>
-                                <CornerClose
-                                    type="circleCorner"
-                                    cornerSpace="tight"
-                                    handler={() =>
-                                        removeFromSet({
-                                            id: item.id,
-                                            existingItems: initialSetItems,
-                                        })
-                                    }
-                                />
-                            </div>
-                            <div
-                                style={{
-                                    backgroundColor:
-                                        colours[item.theme_colour || "grey"](
-                                            0.2
-                                        ),
-                                }}
-                                className={style.cardBody}
-                            >
-                                <span className={style.setCardTitle}>
-                                    {item.set_name}
-                                </span>
-                                <GetCardCount item={item} />
-                            </div>
-                        </div>
+                            item={item}
+                            removeFromSet={removeFromSet}
+                            removeFromCollection={removeFromCollection}
+                            initialCollectionItems={initialCollectionItems}
+                            initialSetItems={initialSetItems}
+                            reviseModalType={reviseModalType}
+                        />
                     );
                 })}
         </>

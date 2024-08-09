@@ -1,6 +1,6 @@
 "use client";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
-import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
+import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
 import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 import { useReviseModal } from "@/app/_components/reviseCollection/useReviseModal";
 import {

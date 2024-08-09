@@ -1,13 +1,12 @@
 import React from "react";
 import style from "./previewEditStudyBtns.module.scss";
 import DefaultButton from "@/app/_components/(buttons)/defaultButton";
-import { HiArrowSmallRight, HiMiniMagnifyingGlass } from "react-icons/hi2";
 import { HiMiniSquaresPlus } from "react-icons/hi2";
 import { LuFileCog } from "react-icons/lu";
-import { Flashcard_collection_set_joined } from "@/app/_actions/fetchCollectionByIdJoinSet";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import { ContentType, Flashcard_set } from "@/app/_types/types";
 import { usePreviewModal } from "@/app/_components/previewModal/usePreviewModal";
-import { fetchSetsWithItems } from "@/app/_actions/fetchSetsWithItems";
+import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
 import Link from "next/link";
 import StudyBtn from "./studyBtn/studyBtn";
 

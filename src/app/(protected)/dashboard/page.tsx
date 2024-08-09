@@ -2,14 +2,14 @@ import React from "react";
 import { auth } from "@/auth";
 import ExistingSets from "./existingSets";
 import DashboardModal from "./_dashboardModals/dashboardModal";
-import { FetchCollectionSetCount } from "@/app/_actions/fetchCollectionSetCount";
+import { fetchCollectionSetCount } from "@/app/_lib/fetch/fetchCollectionSetCount";
 import { notFound } from "next/navigation";
 
 async function page() {
     const session = await auth();
     console.log(session);
     if (!session) notFound();
-    const collectionSet = await FetchCollectionSetCount({
+    const collectionSet = await fetchCollectionSetCount({
         userId: session.user.id,
     });
 

@@ -9,58 +9,27 @@ import { useMotionValue } from "framer-motion";
 import FlashResults from "./flashResults/flashResults";
 import ResultButtons from "./components/resultButtons/resultButtons";
 import InteractiveCard from "./interactiveCard";
-import { shuffleArray } from "@/app/_functions/shuffleArray";
-import { useSearchParams } from "next/navigation";
-import {
-    ContentType,
-    Difficulty,
-    Flashcard_collection_with_cards,
-    Flashcard_item,
-    Flashcard_set_with_cards,
-    UserHistory,
-} from "../_types/types";
-import { studyFetchFlashCards } from "../_actions/studyFetchFlashCards";
+import { ContentType, Difficulty, Flashcard_item } from "../_types/types";
 import { updateUserHistory } from "./components/userHistory/userHistory";
-
-const diffOptions: Difficulty[] = [
-    Difficulty.NA,
-    Difficulty.EASY,
-    Difficulty.MEDIUM,
-    Difficulty.HARD,
-];
+import { fetchFlashCards } from "./functions/fetchFlashCards";
 
 type FlashCardItemsTest<T> = T & {
     correct: boolean | null;
     copy: boolean;
 };
 
-type TempType = {
-    id: string;
-    item_question: string;
-    item_answer: string;
-    difficulty: string;
-    item_tags: string[];
-};
-
 export type CombinedType = FlashCardItemsTest<Flashcard_item>;
 
 type StudyTypes = {
-    collectionIds: string[];
-    setIds: string[];
-    collectionTags: string[];
-    collectionDifficulties: Difficulty[];
+    ids: string[];
+    contentType: ContentType;
+    tags: string[] | undefined;
+    difficulties: Difficulty[] | undefined;
     userId: string | undefined;
 };
 
-function Study({
-    collectionIds,
-    setIds,
-    collectionTags,
-    collectionDifficulties,
-    userId,
-}: StudyTypes) {
+function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
     const { collectionItems, questions } = useRevisionFlashItems();
-    const searchParams = useSearchParams();
     // States for titles/subtitles
     const [titles, setTitles] = useState<string[]>(
         collectionItems.map((item) => item.collection_name)
@@ -87,91 +56,17 @@ function Study({
         CombinedType[]
     >([...initialTestCards(questions)]);
 
-    const fetchFlashCards = async () => {
-        try {
-            if (!collectionIds && !setIds) return;
-
-            // 2 Query flashcards with paramters
-            const setTitleSubtitle = (title: string[], subtitle: string[]) => {
-                setTitles(title.map((item) => item));
-                setSubTitles(subtitle.map((item) => item));
-            };
-
-            if (collectionIds && collectionIds.length > 0) {
-                const collection = await studyFetchFlashCards({
-                    fetchObject: { type: "collection", id: collectionIds },
-                    tags: collectionTags,
-                    difficulties: collectionDifficulties,
-                });
-                // 3 Set flashcards and titles/subitles
-                if (collection) {
-                    console.log(collection);
-                    const flashCards = collection.flatMap(
-                        (col) => col.flashcards
-                    );
-                    const uniqueFlashCards = flashCards.filter(
-                        (item, index, self) =>
-                            index === self.findIndex((t) => t.id === item.id)
-                    );
-                    setFlashCardItemsTest(
-                        shuffleArray<CombinedType>(
-                            initialTestCards(uniqueFlashCards)
-                        )
-                    );
-                    const collectionTitles = (
-                        collection as Flashcard_collection_with_cards[]
-                    ).map((item) => item.collection_name);
-
-                    const collectionSubtitles = (
-                        collection as Flashcard_collection_with_cards[]
-                    )
-                        .flatMap((item) => item.sets)
-                        .filter(
-                            (item, index, self) =>
-                                index === self.findIndex((t) => t === item)
-                        );
-                    setTitleSubtitle(collectionTitles, collectionSubtitles);
-                }
-            }
-            if (setIds && setIds.length > 0) {
-                const set = await studyFetchFlashCards({
-                    fetchObject: { type: "set", id: setIds },
-                    tags: collectionTags,
-                    difficulties: collectionDifficulties,
-                });
-                // 3 Set flashcards and titles/subitles
-                if (set) {
-                    const flashCards = set.flatMap((col) => col.flashcards);
-                    const uniqueFlashCards = flashCards.filter(
-                        (item, index, self) =>
-                            index === self.findIndex((t) => t.id === item.id)
-                    );
-                    setFlashCardItemsTest(
-                        shuffleArray<CombinedType>(
-                            initialTestCards(uniqueFlashCards)
-                        )
-                    );
-                    const setTitles = (set as Flashcard_set_with_cards[]).map(
-                        (item) => item.set_name
-                    );
-
-                    const setSubtitles = (set as Flashcard_set_with_cards[])
-                        .flatMap((item) => item.set_categories)
-                        .filter(
-                            (item, index, self) =>
-                                index === self.findIndex((t) => t === item)
-                        );
-                    setTitleSubtitle(setTitles, setSubtitles);
-                }
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
     useEffect(() => {
         if (questions.length === 0) {
-            fetchFlashCards();
+            fetchFlashCards({
+                ids: ids,
+                contentType: contentType,
+                tags: tags,
+                difficulties: difficulties,
+                setSubTitles: setSubTitles,
+                setFlashCardItemsTest: setFlashCardItemsTest,
+                setTitles: setTitles,
+            });
         }
     }, [questions]);
 
@@ -249,16 +144,10 @@ function Study({
             );
 
             const newItem = {
-                ids:
-                    collectionIds.length > 0
-                        ? (collectionIds as any)
-                        : (setIds as any),
-                tags: collectionTags,
-                difficulties: collectionDifficulties,
-                content_type:
-                    collectionIds.length > 0
-                        ? "collection"
-                        : ("set" as ContentType),
+                ids: ids,
+                tags: tags,
+                difficulties: difficulties,
+                content_type: contentType,
                 correct: Math.round(correctPercent),
             };
 

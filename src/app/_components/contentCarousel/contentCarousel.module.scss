@@ -1,0 +1,28 @@
+.carouselWrapOverflowOffset {
+    transform: translateX(-0.5rem);
+    width: calc(100% + 1rem);
+}
+.carouselParent {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+.carouselChild {
+    position: absolute;
+    height: fit-content;
+    padding: 0.5rem;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+.pageBtnsContainer {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0 auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    svg {
+        stroke-width: 1;
+    }
+}

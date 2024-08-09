@@ -126,11 +126,6 @@ export type Flashcard_collection = {
     like_count: number;
 };
 
-export type Flashcard_collection_with_count = Flashcard_collection & {
-    set_count: number;
-    item_count: number;
-};
-
 export type Flashcard_collection_with_type = Flashcard_collection & {
     content_type: "collection";
 };
@@ -153,6 +148,11 @@ export type Flashcard_collection_with_cards = Flashcard_collection & {
 
 export type Flashcard_collection_preview = Flashcard_collection & {
     sets: Flashcard_set_with_cards[];
+};
+
+export type Flashcard_collection_with_count = Flashcard_collection_preview & {
+    set_count: number;
+    item_count: number;
 };
 
 export enum Difficulty {

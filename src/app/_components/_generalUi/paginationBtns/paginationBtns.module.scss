@@ -1,0 +1,31 @@
+@import "../../../styles/colours.scss";
+@import "../../../styles/mixins";
+.paginationContainer {
+    display: flex;
+    gap: 0.5rem;
+    width: fit-content;
+    margin: 0 auto;
+    margin-top: 2rem;
+    &:hover .paginationBtns {
+        background-color: rgba($col-yellow, 0.5) !important;
+    }
+    .paginationBtns {
+        width: 2rem;
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        background-color: rgba($col-yellow, 0.5);
+        border-radius: 0.5rem;
+        border: 1.5px solid $col-white;
+        cursor: pointer;
+        box-shadow: $box-shadow-sm;
+        @include transition(background-color);
+        &:hover {
+            background-color: $col-yellow !important;
+        }
+        .singleBtnLabel {
+            color: rgba($col-black, 0.5);
+            font-size: 0.75rem;
+        }
+    }
+}
