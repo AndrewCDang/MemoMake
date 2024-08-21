@@ -6,7 +6,7 @@ import React from "react";
 import fetchExistingSetsFromId from "@/app/_lib/fetch/fetchExistingSetsFromId";
 import { notFound } from "next/navigation";
 
-async function page({ searchParams }: { searchParams: any }) {
+async function Page({ searchParams }: { searchParams: any }) {
     const session = await auth();
     if (!session) return notFound();
 
@@ -45,4 +45,4 @@ async function page({ searchParams }: { searchParams: any }) {
     );
 }
 
-export default page;
+export default Page;

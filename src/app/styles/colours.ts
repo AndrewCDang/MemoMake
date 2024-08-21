@@ -1,6 +1,7 @@
 export type coloursType =
     | "red"
     | "blue"
+    | "blueSelect"
     | "yellow"
     | "green"
     | "white"
@@ -12,6 +13,7 @@ export type coloursType =
 export const colours = {
     red: (alpha = 1) => `rgba(255, 86, 120, ${alpha})`,
     blue: (alpha = 1) => `rgba(5, 203, 214, ${alpha})`,
+    blueSelect: (alpha = 1) => `rgba(50, 152, 253, ${alpha})`,
     yellow: (alpha = 1) => `rgba(255, 208, 86, ${alpha})`,
     green: (alpha = 1) => `rgba(131, 230, 74, ${alpha})`,
     white: (alpha = 1) => `rgba(256, 256, 256, ${alpha})`,

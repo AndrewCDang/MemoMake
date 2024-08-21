@@ -26,9 +26,11 @@ import { HiChevronLeft } from "react-icons/hi2";
 export function ContentCarouselParent({
     children,
     updateValues = [],
+    btnType = "sideToSideBtm",
 }: {
     children: ReactNode;
     updateValues?: any[];
+    btnType?: "allInLine" | "sideToSideBtm";
 }) {
     // Converting children to an array
     const childrenArray = React.Children.toArray(children);
@@ -96,10 +98,31 @@ export function ContentCarouselParent({
 
     return (
         <section className={style.carouselWrapOverflowOffset}>
+            {/* Page Btns - Display all in line */}
+            {btnType === "allInLine" && (
+                <div className={style.btnContainer}>
+                    {filteredPageNames.map((item, index) => {
+                        return (
+                            <DefaultButton
+                                key={item}
+                                handler={() => setSelectedCarouselIndex(index)}
+                                variant={
+                                    filteredPageNames[selectedCarouselIndex] ===
+                                    item
+                                        ? "Black"
+                                        : "White"
+                                }
+                            >
+                                {item}
+                            </DefaultButton>
+                        );
+                    })}
+                </div>
+            )}
             {/* Page Contents */}
             <motion.div
-                animate={{ height: `${parentHeight + 16}px` }}
-                initial={{ height: `${parentHeight + 16}px` }}
+                animate={{ height: `${parentHeight}px` }}
+                initial={{ height: `${parentHeight}px` }}
                 className={style.carouselParent}
             >
                 {filteredChildren.map((item, index) => (
@@ -119,20 +142,22 @@ export function ContentCarouselParent({
                 ))}
             </motion.div>
             {/* Page Buttons - Selecting Page content */}
-            <div className={style.pageBtnsContainer}>
-                {selectedCarouselIndex > 0 && (
-                    <DefaultButton handler={() => pageBtnHandler(-1)}>
-                        <HiChevronLeft />
-                        {filteredPageNames[selectedCarouselIndex - 1]}
-                    </DefaultButton>
-                )}
-                {selectedCarouselIndex < filteredPageNames.length - 1 && (
-                    <DefaultButton handler={() => pageBtnHandler(1)}>
-                        {filteredPageNames[selectedCarouselIndex + 1]}
-                        <HiChevronRight />
-                    </DefaultButton>
-                )}
-            </div>
+            {btnType === "sideToSideBtm" && (
+                <div className={style.pageBtnsContainer}>
+                    {selectedCarouselIndex > 0 && (
+                        <DefaultButton handler={() => pageBtnHandler(-1)}>
+                            <HiChevronLeft />
+                            {filteredPageNames[selectedCarouselIndex - 1]}
+                        </DefaultButton>
+                    )}
+                    {selectedCarouselIndex < filteredPageNames.length - 1 && (
+                        <DefaultButton handler={() => pageBtnHandler(1)}>
+                            {filteredPageNames[selectedCarouselIndex + 1]}
+                            <HiChevronRight />
+                        </DefaultButton>
+                    )}
+                </div>
+            )}
         </section>
     );
 }

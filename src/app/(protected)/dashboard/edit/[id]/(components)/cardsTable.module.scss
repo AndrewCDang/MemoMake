@@ -1,7 +1,12 @@
-@import "../../../../styles/colours.scss";
-@import "../../../../_components/categoryInput/categoryInput.module.scss";
-@import "../../../../styles/mixins";
+@import "../../../../../styles/colours.scss";
+@import "../../../../../_components/categoryInput/categoryInput.module.scss";
+@import "../../../../../styles/mixins";
 
+.editPageContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 3.5rem - 6rem);
+}
 .tableContainerWrapper {
     position: relative;
     // overflow-x: hidden;
@@ -10,6 +15,12 @@
 }
 .overflowWrapper {
     // overflow-x: scroll;
+}
+.loadingWrapper {
+    flex: 1;
+    width: 100%;
+    display: grid;
+    place-items: center;
 }
 
 .tableContainer {
@@ -23,8 +34,7 @@
     box-shadow: $box-shadow-sm;
     overflow-x: scroll;
     overflow-y: scroll;
-    max-height: calc(100vh - 336px);
-    min-height: 400px;
+    max-height: calc(100vh - 23rem);
     * {
         color: $col-black;
     }
@@ -256,13 +266,12 @@
     background-color: $col-white;
     visibility: visible !important;
 }
-
 .itemInputEdit {
     position: absolute;
-    border-radius: 0.5rem;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    border-radius: 0.5rem;
     z-index: 10;
     min-width: 120%;
     width: fit-content;
@@ -311,6 +320,8 @@
             position: relative;
             .popButtonHoverLabel {
                 @include hoverLabel;
+                left: -1rem;
+                transform: translate(0%, -100%);
             }
             &:hover svg {
                 fill: $col-black;
@@ -365,6 +376,7 @@
 .popoverTagContainer {
     & > section {
         @include categoryItemCSS;
+        overflow: unset;
         gap: 0.5rem;
         width: fit-content;
     }
@@ -379,6 +391,16 @@
         }
     }
 }
+
+.tableRow:first-of-type .itemInputEdit {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+.tbody {
+    min-height: 10rem;
+}
+
 .itemTag {
     width: fit-content;
 }
@@ -630,6 +652,7 @@
         button {
             position: relative;
             border: 2px solid $col-blue-select;
+            background-color: rgba($col-white, 0.5);
             padding: 0.25rem 0.75rem;
             border-radius: 0.5rem;
             z-index: 10;
@@ -669,4 +692,11 @@
             z-index: 0;
         }
     }
+}
+
+.noFlashCards {
+    width: 100%;
+    padding: 0.5rem;
+    text-align: center;
+    color: $col-grey;
 }

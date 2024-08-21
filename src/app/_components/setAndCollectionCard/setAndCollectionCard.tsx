@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import style from "./setAndColelctionCard.module.scss";
-import childStyle from "./generalComponents/bannerStrip/bannerStrip.module.scss";
 import { AccountWithLikes, Flashcard_set } from "@/app/_types/types";
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import CollectionSets from "./collectionComponents/collectionSetsV2";
@@ -92,8 +91,15 @@ function SetAndCollectionCard({
         );
     };
 
+    // Deleteing State
+    const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
     return (
-        <motion.article key={set.id} className={style.setContainer}>
+        <motion.article
+            key={set.id}
+            className={style.setContainer}
+            animate={{ opacity: isDeleting ? 0.5 : 1 }}
+        >
             <BannerStrip
                 setIsFavourited={setIsFavourited}
                 setIsLiked={setIsliked}
@@ -114,6 +120,7 @@ function SetAndCollectionCard({
                 className={style.bannerBtns}
             >
                 <BannerBtns
+                    setIsDeleting={setIsDeleting}
                     publicCard={publicCard}
                     contentType={contentType}
                     setIsFavourited={setIsFavourited}

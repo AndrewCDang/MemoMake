@@ -47,7 +47,7 @@ function TextInput({
                     placeholder=""
                     id={id}
                     className={style.input}
-                    value={inputValue}
+                    value={inputValue || ""}
                     onChange={(e) => handler(e)}
                     onKeyDown={(e) => (
                         keyDownHandler && keyDownHandler(e),

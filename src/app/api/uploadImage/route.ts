@@ -20,6 +20,7 @@ export async function POST(
         const buffer = new Uint8Array(arrayBuffer);
 
         let url: string = "";
+        let publicId: string = "";
         await new Promise((resolve, reject) => {
             cloudinary.uploader
                 .upload_stream(
@@ -33,6 +34,7 @@ export async function POST(
                             return;
                         }
                         url = result?.url || "";
+                        publicId = result?.public_id || "";
                         resolve(result);
                     }
                 )
@@ -41,9 +43,9 @@ export async function POST(
 
         console.log(url);
         if (url) {
-            return NextResponse.json({ url: url });
+            return NextResponse.json({ url: url, image_id: publicId });
         } else {
-            return NextResponse.json({ url: null });
+            return NextResponse.json({ url: null, image_id: null });
         }
     } catch (error: unknown) {
         if (error instanceof Error) {

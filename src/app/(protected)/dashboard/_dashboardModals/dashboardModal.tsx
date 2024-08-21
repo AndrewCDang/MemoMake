@@ -14,7 +14,7 @@ function DashboardModal({
     collectionSet: Flashcard_set_with_count[];
     userId: string;
 }) {
-    const { isCreateCollectionModalOn, hideCreateCollectionModal } =
+    const { isCreateCollectionModalOn, hideCreateCollectionModal, isEdit } =
         useCreateCollectionModal();
 
     const { isCreateSetModalOn, hideCreateSetModal } = useCreateSetModal();
@@ -24,7 +24,7 @@ function DashboardModal({
             <Modal
                 modalOn={isCreateCollectionModalOn}
                 closeHandler={hideCreateCollectionModal}
-                modalTitle="Create Collection"
+                modalTitle={isEdit ? "Edit Collection" : "Create Collection"}
             >
                 <CreateCollectionModal
                     collectionSet={collectionSet}

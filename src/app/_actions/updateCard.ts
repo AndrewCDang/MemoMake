@@ -1,7 +1,7 @@
 "use server";
 import { db } from "../_lib/db";
-import { revalidatePath } from "next/cache";
-import { ColumnName } from "../(protected)/dashboard/edit/[id]/cardTableTypes";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { ColumnName } from "../(protected)/dashboard/edit/[id]/(components)/cardTableTypes";
 
 export type UpdateCardTypes = {
     id: string;
@@ -21,7 +21,6 @@ export const updateCard = async ({
             SET ${db(object)} = ${value || null}, last_modified = ${new Date()}
             WHERE id = ${id}
             `;
-            revalidatePath("dashboard/flashcard");
             return { status: 200, message: "Success: Item updated" };
         } catch (error) {
             console.log(error);
@@ -37,7 +36,6 @@ export const updateCard = async ({
             SET difficulty = ${value || null}, last_modified = ${new Date()}
             WHERE id = ${id}
             `;
-                revalidatePath("dashboard/flashcard");
                 return { status: 200, message: "Success: Item updated" };
             } catch (error) {
                 console.log(error);
@@ -66,5 +64,8 @@ export const updateCard = async ({
             }
         }
     }
+    revalidateTag("dashboardSet");
+    revalidateTag("dashboardCollection");
+    revalidateTag(id);
     return { status: 400, message: "Error: Unable to update item" };
 };

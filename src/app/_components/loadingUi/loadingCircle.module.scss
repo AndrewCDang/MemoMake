@@ -1,0 +1,18 @@
+@import "../../styles/colours.scss";
+
+.loaderContainer {
+    display: grid;
+    place-items: center;
+    svg {
+        fill: $col-yellow;
+        stroke: $col-yellow;
+    }
+}
+.loadingContain {
+    height: 3rem;
+    width: 3rem;
+}
+.loadingCover {
+    height: 100%;
+    width: 100%;
+}

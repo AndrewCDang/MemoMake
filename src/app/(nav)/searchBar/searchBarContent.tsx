@@ -28,33 +28,37 @@ function SearchBarContent({ listSet, listCollection }: SearchBarContentTypes) {
                         initial={{ y: 16, opacity: 0, filter: "blur(2px)" }}
                     >
                         <SearchNav
-                            handler={() =>
-                                setSearchActive((prevState) => !prevState)
-                            }
+                            handler={() => setSearchActive((prevState) => true)}
                         />
                     </motion.div>
                 )}
             </AnimatePresence>
-            <AnimatePresence>
-                {searchActive && (
-                    <motion.div
-                        exit={{ opacity: 0 }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className={style.searchActiveWrap}
-                    >
-                        <SearchActive
-                            searchType={searchType}
-                            setSearchType={setSearchType}
-                            listSet={listSet}
-                            listCollection={listCollection}
-                            handler={() =>
-                                setSearchActive((prevState) => !prevState)
-                            }
-                        />
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <div
+                style={{
+                    pointerEvents: searchActive ? "auto" : "none",
+                }}
+            >
+                <AnimatePresence>
+                    {searchActive && (
+                        <motion.div
+                            exit={{ opacity: 0 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className={style.searchActiveWrap}
+                        >
+                            <SearchActive
+                                searchType={searchType}
+                                setSearchType={setSearchType}
+                                listSet={listSet}
+                                listCollection={listCollection}
+                                handler={() =>
+                                    setSearchActive((prevState) => false)
+                                }
+                            />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
     );
 }

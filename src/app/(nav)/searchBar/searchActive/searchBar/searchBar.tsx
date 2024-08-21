@@ -39,6 +39,12 @@ function InputSearchBar({
 
     const searchSettingslist = ["All", "Sets", "Collection", "User"];
 
+    useEffect(() => {
+        if (searchBarRef.current) {
+            searchBarRef.current.focus();
+        }
+    }, [searchBarRef]);
+
     const searchBarSubmitHandler = () => {
         if (searchBarRef.current) {
             const searchQuery = searchBarRef.current.value;

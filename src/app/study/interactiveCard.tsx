@@ -69,8 +69,8 @@ function InteractiveCard({
         const xClient = e.clientX;
         const yClient = e.clientY;
         const xWidth =
-            cardRef.current[index].current.getBoundingClientRect().width;
-        const yHeight = cardRef.current[index].current.offsetHeight;
+            cardRef.current[index].current!.getBoundingClientRect().width;
+        const yHeight = cardRef.current[index].current!.offsetHeight;
 
         const xCenter = xWidth / 2;
         const yCenter = yHeight / 2;
@@ -319,17 +319,19 @@ function InteractiveCard({
                                                             style.cardContent
                                                         }
                                                     >
-                                                        <div
-                                                            className={
-                                                                style.imageContainer
-                                                            }
-                                                        >
-                                                            <img
-                                                                src={
-                                                                    item.question_img
+                                                        {item.question_img && (
+                                                            <div
+                                                                className={
+                                                                    style.imageContainer
                                                                 }
-                                                            />
-                                                        </div>
+                                                            >
+                                                                <img
+                                                                    src={
+                                                                        item.question_img
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        )}
                                                         <span>
                                                             {item.item_question}
                                                         </span>
@@ -348,17 +350,19 @@ function InteractiveCard({
                                                             style.cardContent
                                                         }
                                                     >
-                                                        <div
-                                                            className={
-                                                                style.imageContainer
-                                                            }
-                                                        >
-                                                            <img
-                                                                src={
-                                                                    item.question_img
+                                                        {item.answer_img && (
+                                                            <div
+                                                                className={
+                                                                    style.imageContainer
                                                                 }
-                                                            />
-                                                        </div>
+                                                            >
+                                                                <img
+                                                                    src={
+                                                                        item.answer_img
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        )}
                                                         <span>
                                                             {item.item_answer}
                                                         </span>

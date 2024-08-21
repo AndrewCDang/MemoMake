@@ -1,6 +1,5 @@
 "use client";
 import { toastNotify } from "@/app/(toast)/toast";
-import { updateFlashSetSetting } from "@/app/_actions/updateFlashSetSetting";
 import LabelInput from "@/app/_components/categoryInput/labelInput";
 import FormInputField from "@/app/_components/input/formInputField";
 import { Flashcard_set } from "@/app/_types/types";
@@ -10,7 +9,14 @@ import {
     UpdateSetOptionsTypes,
 } from "@/schema/updateSetScehma";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { FormEvent, useEffect, useRef, useState } from "react";
+import React, {
+    Dispatch,
+    FormEvent,
+    SetStateAction,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import style from "./editSet.module.scss";
 import DefaultButton from "@/app/_components/(buttons)/defaultButton";
@@ -18,6 +24,10 @@ import { HiChevronRight } from "react-icons/hi2";
 import Button from "@/app/_components/(buttons)/styledButton";
 import SubmitMessage from "@/app/(auth)/_components/submitResults/submitMessage";
 import PublicAccessBtn from "../../../(components)/publicAccessBtn";
+import UploadImage, {
+    uploadImageHandler,
+} from "@/app/_components/uploadImage/uploadImage";
+import { updateSet } from "@/app/_actions/updateSet";
 
 type EditSetTypes = {
     set: Flashcard_set;
@@ -36,31 +46,23 @@ function EditSet({ set }: EditSetTypes) {
         resolver: zodResolver(UpdateSetSchema),
         mode: "onChange",
     });
-
+    const [publicAccess, setPublicAccess] = useState(
+        set.public_access || false
+    );
     const [categories, setCategoires] = useState<string[]>(
         set.set_categories || []
     );
+    const [image, setImage] = useState<File | null | undefined>(null);
+
+    useEffect(() => {
+        console.log(image);
+    }, [image]);
+
     const formRef = useRef<HTMLFormElement>(null);
     const [typedCategory, setTypedCategory] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const categoryHandler = (categories: string[]) => {
         setValue("set_categories", categories as [string, ...string[]]);
-    };
-
-    // Update Set
-    const updateCard = async (data: UpdateSetTypes) => {
-        setIsLoading(true);
-        const updateSet = await updateFlashSetSetting({
-            id: set.id,
-            set_name: data.set_name,
-            set_categories: data.set_categories,
-            description: data.description,
-        });
-        console.log(updateSet.message);
-        if (updateSet.success) {
-            toastNotify(updateSet.message);
-        }
-        setIsLoading(false);
     };
 
     const errorSubmit = (error: any) => {
@@ -78,35 +80,87 @@ function EditSet({ set }: EditSetTypes) {
         handleSubmit(updateCard, errorSubmit)();
     };
 
-    const touched = () => {
-        const defaultItems = [
-            set.set_name,
-            set.set_categories.join("-"),
-            set.description,
-        ];
-        const editedItems = [
-            watch().set_name,
-            categories.join("-"),
-            watch().description,
-        ];
+    // Touched = if any input fields have been changed
+    const defaultItems = [
+        set.set_name,
+        set.set_categories.join("-"),
+        set.description,
+    ];
+    const editedItems = [
+        watch("set_name") || set.set_name,
+        categories.join("-"),
+        watch("description") || set.description,
+    ];
 
-        const condition = editedItems.some(
-            (item, index) => item !== defaultItems[index]
-        );
+    const touched = editedItems.some(
+        (item, index) => item !== defaultItems[index]
+    );
 
-        return condition;
+    // Update Set
+    const updateCard = async (data: UpdateSetTypes) => {
+        setIsLoading(true);
+        if (touched) {
+            const updatedSet = await updateSet({
+                setId: set.id,
+                name: data.set_name,
+                categories: data.set_categories,
+                description: data.description,
+            });
+            if (updatedSet) {
+                toastNotify(updatedSet.message);
+            }
+        }
+        if (image) {
+            // Deletes Existing image
+            if (set.image_id) {
+                const deleteImage = await fetch(
+                    `/api/deleteImage?imageId=${set.image_id}`,
+                    {
+                        method: "DELETE",
+                    }
+                );
+                if (deleteImage.ok) {
+                    console.log("Exisitng Image Deleted");
+                }
+            }
+            // Uploads and updates image
+            const uploadedImage = await uploadImageHandler(image);
+            if (uploadedImage) {
+                const image_id = uploadedImage.image_id;
+                const imageUrl = uploadedImage.url;
+                const updateImage = await updateSet({
+                    setId: set.id,
+                    image: imageUrl,
+                    image_id: image_id,
+                });
+                if (updateImage) {
+                    console.log(updateImage.message);
+                }
+            }
+            setImage(null);
+        }
+        setIsLoading(false);
     };
-
     return (
         <div className={style.modalWrap}>
-            <PublicAccessBtn flashcard_set={set} />
+            <PublicAccessBtn
+                flashcard_set={set}
+                publicAccess={publicAccess}
+                setPublicAccess={setPublicAccess}
+            />
             <form
                 onSubmit={preSubmitHandler}
                 ref={formRef}
                 className={style.editModal}
             >
+                <UploadImage
+                    image={image}
+                    setImage={setImage}
+                    exisitingImage={set.image}
+                />
                 <FormInputField<UpdateSetOptionsTypes>
                     id="set_name"
+                    object="set_name"
                     type="text"
                     register={register}
                     defaultValue={set.set_name || ""}
@@ -114,6 +168,7 @@ function EditSet({ set }: EditSetTypes) {
                 <FormInputField<UpdateSetOptionsTypes>
                     textarea={true}
                     id="description"
+                    object="description"
                     type="text"
                     register={register}
                     defaultValue={set.description || ""}
@@ -126,7 +181,7 @@ function EditSet({ set }: EditSetTypes) {
                     setTypedCategory={setTypedCategory}
                 />
                 <Button
-                    disabled={!touched()}
+                    disabled={!touched && image == null}
                     loading={isLoading}
                     text="Make Changes"
                 />

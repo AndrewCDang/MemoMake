@@ -6,7 +6,7 @@ import { fetchPublicFlashCollections } from "../_lib/fetch/fetchPublicFlashColle
 import SectionTemplate from "../_components/setCollectionContentSection/sectionTemplate";
 import { capitaliseFirstChar } from "../_functions/capitaliseFirstChar";
 
-async function page({ searchParams }: { searchParams: any }) {
+async function Page({ searchParams }: { searchParams: any }) {
     const searchQuery = searchParams.search as string;
     const searchType = searchParams.type;
     const session = await auth();
@@ -75,4 +75,4 @@ async function page({ searchParams }: { searchParams: any }) {
     );
 }
 
-export default page;
+export default Page;

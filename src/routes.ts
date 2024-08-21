@@ -14,6 +14,7 @@ export const apiPublicRoutes = [
     "/search",
     "/auth/verify",
     "/auth/resetPassword",
+    "/study",
 ];
 
 /**

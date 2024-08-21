@@ -75,7 +75,7 @@ function ToDoList({
             colour: "white",
         };
         setNotes((prevState) => [...prevState, newNote]);
-        insertNewUserNote(newNote);
+        await insertNewUserNote(newNote);
         setTimeout(() => {
             if (notesContainerRef.current) {
                 notesContainerRef.current.scrollTo({
@@ -134,7 +134,7 @@ function ToDoList({
             }
         });
         const updatedItem = reorderedItem[0];
-        updateUserNoteSequence(updatedItem);
+        await updateUserNoteSequence(updatedItem);
     }, []);
 
     // Create the debounced function
@@ -189,10 +189,11 @@ function ToDoList({
     const isFocused = focusedNote || focusedColour;
 
     return (
-        <section className={style.asideContainer}>
+        <section className={`${style.asideContainer} ${style.toDoHeight}`}>
             <div className={style.asideAbsolute}>
-                <h6>To-do / Notes</h6>
                 <div className={style.notesContainerWrap}>
+                    <div></div>
+                    <h6>To-do / Notes</h6>
                     <div
                         ref={notesContainerRef}
                         className={style.notesContainer}

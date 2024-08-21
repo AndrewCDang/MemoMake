@@ -14,11 +14,13 @@
     }
     .delBannerContainer {
         position: relative;
+        z-index: 100;
     }
 }
 .bannerIcon {
     display: flex;
     position: relative;
+    height: fit-content;
 
     cursor: pointer;
     &:hover svg {
@@ -52,13 +54,20 @@
         transform: translate(-50%, -100%);
         left: 50%;
     }
+    .hoverLabelRight {
+        @include hoverLabelMixin();
+        top: 50%;
+        right: -0.5rem;
+        transform: translate(100%, -50%);
+    }
     .hoverLabelLeft {
         @include hoverLabelMixin();
         top: 50%;
-        left: 100%;
-        transform: translate(0.5rem, -50%);
+        left: -0.5rem;
+        transform: translate(-100%, -50%);
     }
     &:hover .hoverLabel,
+    &:hover .hoverLabelRight,
     &:hover .hoverLabelLeft {
         opacity: 1;
     }

@@ -34,7 +34,7 @@ const PinIcon = ({
         >
             <AiFillPushpin
                 style={{
-                    fill: favourited ? colours.black() : colours.black(0.4),
+                    fill: favourited ? colours.blueSelect() : colours.grey(),
                 }}
             />
         </div>

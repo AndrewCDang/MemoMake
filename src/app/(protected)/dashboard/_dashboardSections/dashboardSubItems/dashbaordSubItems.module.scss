@@ -1,0 +1,29 @@
+@import "../../../../styles/colours.scss";
+@import "../../../../styles/mixins";
+
+.dashboardSubItemsContainer {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: rgba($col-white, 0.5);
+    box-shadow: $box-shadow-sm;
+    .btnContainer {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .subItemContainer {
+        align-items: center;
+        display: flex;
+        height: 100%;
+    }
+}
+.loadingWrap {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+}

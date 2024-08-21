@@ -18,6 +18,7 @@ type TableHeaderTypes = {
     columns: ColumnName[];
     setColumns: Dispatch<SetStateAction<ColumnName[]>>;
     colsWidth: ColsWidthType;
+    setColWidths: Dispatch<React.SetStateAction<ColsWidthType>>;
     targetSlideHeading: MutableRefObject<ColumnName | null>;
     tagArray: string[];
     filteredTags: string[];
@@ -35,6 +36,7 @@ function TableHeader({
     columns,
     setColumns,
     colsWidth,
+    setColWidths,
     targetSlideHeading,
     tagArray,
     filteredTags,
@@ -46,6 +48,9 @@ function TableHeader({
     setHiddenColumns,
     hiddenColumns,
 }: TableHeaderTypes) {
+    const isMouseDownRef = useRef<boolean>(false);
+    const initialXRef = useRef<number | null>(null);
+
     // const inputRefs = useRef<Refs<HTMLInputElement>>({});
     const headingRefs = useRef<Refs<HTMLElement>>({});
     const filterContainerRefs = useRef<Refs<HTMLElement>>({});
@@ -84,7 +89,7 @@ function TableHeader({
             if (
                 object &&
                 filterContainerRefs.current[object] &&
-                !filterContainerRefs.current[object].contains(target)
+                !filterContainerRefs.current[object]!.contains(target)
             ) {
                 setObjPopOver(null);
                 handleXpos.current = null;
@@ -97,11 +102,11 @@ function TableHeader({
         if (headingRefs.current) {
             Object.keys(headingRefs.current).forEach((obj, index) => {
                 if (headingRefs.current[obj]) {
-                    headingRefs.current[obj].addEventListener(
+                    headingRefs.current[obj]!.addEventListener(
                         "mousedown",
                         (e) => handleDown(e, obj)
                     );
-                    headingRefs.current[obj].addEventListener(
+                    headingRefs.current[obj]!.addEventListener(
                         "mouseup",
                         handleUp
                     );
@@ -110,11 +115,11 @@ function TableHeader({
 
                     return () => {
                         if (headingRefs.current[obj]) {
-                            headingRefs.current[obj].removeEventListener(
+                            headingRefs.current[obj]!.removeEventListener(
                                 "mousedown",
                                 (e) => handleDown(e, obj)
                             );
-                            headingRefs.current[obj].removeEventListener(
+                            headingRefs.current[obj]!.removeEventListener(
                                 "mouseup",
                                 handleUp
                             );
@@ -128,6 +133,63 @@ function TableHeader({
             });
         }
     }, [headingRefs, objPopOver]);
+
+    // 1) Tracks initial x position and allows movemouse logic
+    const headingDownHandler = (e: MouseEvent) => {
+        e.preventDefault();
+        setTimeout(() => {
+            isMouseDownRef.current = true;
+            initialXRef.current = e.clientX;
+        }, 0);
+    };
+
+    // 2) whilst mousemove is allowed, it continually updates the state of the colwidth with respect with the x-direction cursor movement
+    const headingMoveHandler = (e: MouseEvent) => {
+        if (
+            isMouseDownRef.current === true &&
+            initialXRef.current &&
+            targetSlideHeading.current !== null
+        ) {
+            const differenceX = e.clientX - initialXRef.current;
+            const targetHeading = targetSlideHeading.current as ColumnName;
+            setColWidths((prevState) => {
+                return {
+                    ...prevState,
+                    [targetHeading]:
+                        (prevState[targetHeading] as number) + differenceX,
+                };
+            });
+            initialXRef.current = e.clientX;
+        }
+    };
+
+    // 3) Resets fields
+
+    const headingUpHandler = (e: MouseEvent) => {
+        isMouseDownRef.current = false;
+        targetSlideHeading.current = null;
+        initialXRef.current = null;
+    };
+
+    useEffect(() => {
+        const headingElement = headingRef.current;
+        if (headingElement) {
+            const handleMouseDown = (e: MouseEvent) => headingDownHandler(e);
+
+            headingElement.addEventListener("mousedown", handleMouseDown);
+            document.addEventListener("mousemove", headingMoveHandler);
+            document.addEventListener("mouseup", headingUpHandler);
+
+            return () => {
+                headingElement.removeEventListener(
+                    "mousedown",
+                    handleMouseDown
+                );
+                document.removeEventListener("mousemove", headingMoveHandler);
+                document.removeEventListener("mouseup", headingUpHandler);
+            };
+        }
+    }, [headingRef]);
 
     return (
         <thead className={style.headingContainer} ref={headingRef}>

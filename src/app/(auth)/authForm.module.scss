@@ -12,10 +12,12 @@
     }
 }
 
+.modalContainer {
+    width: 100%;
+}
 .form {
     display: flex;
     flex-direction: column;
-    width: clamp(344px, calc(280px + 3vw), 420px);
     gap: 0.5rem;
     margin-top: 1rem;
     // & > button {
@@ -31,9 +33,6 @@
 }
 
 .formContainer {
-    position: absolute;
-    inset: 0;
-    margin: auto;
     width: fit-content;
     height: fit-content;
     padding: 1rem;

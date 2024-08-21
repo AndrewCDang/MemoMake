@@ -5,10 +5,10 @@ import DashboardModal from "./_dashboardModals/dashboardModal";
 import { fetchCollectionSetCount } from "@/app/_lib/fetch/fetchCollectionSetCount";
 import { notFound } from "next/navigation";
 
-async function page() {
+async function Page() {
     const session = await auth();
-    console.log(session);
     if (!session) notFound();
+
     const collectionSet = await fetchCollectionSetCount({
         userId: session.user.id,
     });
@@ -26,4 +26,4 @@ async function page() {
     );
 }
 
-export default page;
+export default Page;

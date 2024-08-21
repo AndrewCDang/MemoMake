@@ -1,5 +1,6 @@
 import { db } from "../db";
 import { Flashcard_set_with_count } from "../../_types/types";
+import { unstable_cache } from "next/cache";
 
 type FetchCollectionSetCount = {
     userId: string;
@@ -10,29 +11,37 @@ export async function fetchCollectionSetCount({
     userId,
     setNotEmpty = true,
 }: FetchCollectionSetCount): Promise<Flashcard_set_with_count[] | undefined> {
-    try {
-        if (setNotEmpty) {
-            const fetch: Flashcard_set_with_count[] = await db`
-            SELECT fs.*, COUNT(fi.id) as item_count
-            FROM flashcard_set fs
-            LEFT JOIN flashcard_item fi ON fs.id = fi.set_id
-            WHERE fs.user_id = ${userId}
-            GROUP BY fs.id
-            `;
-            return fetch;
-        } else {
-            const fetch: Flashcard_set_with_count[] = await db`
-            SELECT fs.*, COUNT(fi.id) as item_count
-            FROM flashcard_item fi
-            LEFT JOIN flashcard_set fs ON fi.set_id = fs.id
-            WHERE fs.user_id = ${userId}
-            GROUP BY fs.id
-            `;
-            return fetch;
-        }
-    } catch (error: unknown) {
-        if (error instanceof Error) {
-            console.log(error);
-        }
-    }
+    const cacheDashboardSet = unstable_cache(
+        async () => {
+            try {
+                if (setNotEmpty) {
+                    const fetch: Flashcard_set_with_count[] = await db`
+                    SELECT fs.*, COUNT(fi.id) as item_count
+                    FROM flashcard_set fs
+                    LEFT JOIN flashcard_item fi ON fs.id = fi.set_id
+                    WHERE fs.user_id = ${userId}
+                    GROUP BY fs.id
+                    `;
+                    return fetch;
+                } else {
+                    const fetch: Flashcard_set_with_count[] = await db`
+                    SELECT fs.*, COUNT(fi.id) as item_count
+                    FROM flashcard_item fi
+                    LEFT JOIN flashcard_set fs ON fi.set_id = fs.id
+                    WHERE fs.user_id = ${userId}
+                    GROUP BY fs.id
+                    `;
+                    return fetch;
+                }
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    console.log(error);
+                }
+            }
+        },
+        [userId],
+        { tags: ["dashboardSet"], revalidate: 60 * 60 }
+    );
+
+    return cacheDashboardSet();
 }

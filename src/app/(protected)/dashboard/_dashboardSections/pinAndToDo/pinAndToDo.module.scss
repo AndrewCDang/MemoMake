@@ -1,6 +1,14 @@
 @import "../../../../styles/colours.scss";
 @import "../../../../styles/mixins";
-
+.toDoHeight {
+    min-height: 20rem;
+    .asideAbsolute {
+        width: 100%;
+    }
+    .notesContainerWrap {
+        background-color: rgba($col-white, 0.5) !important;
+    }
+}
 .asideContainer {
     width: 100%;
     display: flex;
@@ -21,13 +29,13 @@
         border-radius: 1rem;
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
     }
     .pinItemsContainerWrap {
         @include itemsContainer();
         max-height: calc(100% - 2rem);
         .pinMargin {
             margin: 0.5rem;
+            max-height: 20rem;
         }
         .pinItemsContainer {
             display: flex;
@@ -51,6 +59,12 @@
                     display: flex;
                     gap: 0.5rem;
                     align-items: center;
+                    .creatorImg {
+                        width: 2rem;
+                        height: 2rem;
+                        border-radius: 2rem;
+                        object-fit: cover;
+                    }
                     button span {
                         left: -0.25rem;
                         transform: translate(0%, -1rem);
@@ -92,15 +106,19 @@
         @include customScrollbar(".pinItemsContainer");
     }
     .notesContainerWrap {
+        flex: 1;
         @include itemsContainer();
         overflow: scroll;
         .newNoteItem {
+            margin-top: 0.5rem;
             display: flex;
             width: 100%;
             gap: 0.5rem;
             align-items: center;
             fieldset {
                 flex: 1;
+                background-color: $col-white;
+                box-shadow: $box-shadow-sm;
             }
         }
         .notesContainer {

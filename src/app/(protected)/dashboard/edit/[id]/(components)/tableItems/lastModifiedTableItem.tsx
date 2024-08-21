@@ -1,7 +1,7 @@
 import React from "react";
-import { ColumnName } from "../../cardTableTypes";
+import { ColumnName } from "../cardTableTypes";
 import { Flashcard_item } from "@/app/_types/types";
-import style from "../../cardsTable.module.scss";
+import style from "../cardsTable.module.scss";
 import { formatDate } from "@/app/_functions/formatDate";
 
 type GenericField = {
@@ -10,7 +10,7 @@ type GenericField = {
 };
 
 function LastModifiedTableItem({ item, card }: GenericField) {
-    const formattedDate = formatDate(card.last_modified);
+    const formattedDate = formatDate(new Date(card.last_modified));
     return (
         <>
             {/* Table item - LastModifed */}

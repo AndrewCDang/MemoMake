@@ -1,5 +1,5 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { db } from "../_lib/db";
 import { ContentType } from "../_types/types";
 
@@ -40,7 +40,12 @@ export const delSetOrCollection = async ({
         }
 
         // Ensure the revalidatePath is properly configured
-        revalidatePath("dashboard");
+        if (contentType === "collection") {
+            revalidateTag("dashboardCollection");
+        }
+        if (contentType === "set") {
+            revalidateTag("dashboardSet");
+        }
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.log(error.message);

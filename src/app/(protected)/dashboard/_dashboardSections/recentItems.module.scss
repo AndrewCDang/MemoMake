@@ -1,5 +1,6 @@
 @import "../../../styles/colours.scss";
 @import "../../../styles/mixins";
+@import "../../../styles/breakpoints.scss";
 
 $box-shadow-up: 0px -2px 2px rgba($col-grey, 0.5);
 
@@ -11,24 +12,30 @@ $box-shadow-up: 0px -2px 2px rgba($col-grey, 0.5);
     gap: 1rem;
     padding-top: 1.5rem;
     .dashboardBody {
-        grid-column: 2/4;
+        grid-column: 2/-1;
         grid-row: 1/-1;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
+        @include breakpoint-tablet {
+            grid-column: 1/-1;
+        }
+
         .recentAndLikedContainer {
             display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 1rem;
-            grid-template-columns: repeat(2, 1fr);
         }
     }
     .welcomeSection {
         display: flex;
         gap: 0.5rem;
-
+        flex-wrap: wrap;
         height: fit-content;
+        justify-content: center;
         .iconAndTitle {
             flex: 1;
+            min-width: 10rem;
             background-color: $col-white;
             padding: 2rem;
             border-radius: 1rem;
@@ -38,11 +45,29 @@ $box-shadow-up: 0px -2px 2px rgba($col-grey, 0.5);
             overflow: hidden;
             box-shadow: $box-shadow-sm;
 
-            h4 {
+            .nameAndImageContainer {
                 position: relative;
-                z-index: 1;
+                display: flex;
+                gap: 0.5rem;
+                z-index: 10;
+                img {
+                    width: 2rem;
+                    height: 2rem;
+                    border-radius: 2rem;
+                    background-color: $col-yellow;
+                    background: $col-yellow;
+                }
+                h4 {
+                    position: relative;
+                    z-index: 1;
+                    font-weight: 500;
+                    // font-size: clamp(2rem, calc(1.5rem + 3vw), 5rem);
+                    // line-height: clamp(2rem, calc(1.5rem + 3vw), 5rem);
+                    // font-weight: 500;
+                }
             }
             .welcomeGifContainer {
+                filter: blur(2rem);
                 position: absolute;
                 height: 100%;
                 width: 100%;
@@ -78,42 +103,45 @@ $box-shadow-up: 0px -2px 2px rgba($col-grey, 0.5);
         grid-row: 1/-1;
         position: relative;
         height: 100%;
-    }
-    .pinnedTodoSection {
-        grid-column: 4/-1;
-        grid-row: 1/-1;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        position: relative;
-        height: 100%;
-        .likedToDoWrap {
-            height: 100%;
-            top: 0;
-            left: 0;
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            & > section:first-child {
-                min-height: 200px;
-                max-height: 60%;
-                flex-shrink: 1;
-            }
-            & > section:nth-child(2) {
-                min-height: 200px;
-                flex: 1;
-                & > h6 {
-                    flex-shrink: 0;
-                }
-
-                & > div {
-                    overflow: hidden;
-                    overflow-y: scroll;
-                }
-            }
+        @include breakpoint-tablet {
+            display: none;
         }
     }
+    // .pinnedTodoSection {
+    //     grid-column: 4/-1;
+    //     grid-row: 1/-1;
+    //     display: flex;
+    //     flex-direction: column;
+    //     gap: 1rem;
+    //     position: relative;
+    //     height: 100%;
+    //     .likedToDoWrap {
+    //         height: 100%;
+    //         top: 0;
+    //         left: 0;
+    //         position: absolute;
+    //         display: flex;
+    //         flex-direction: column;
+    //         gap: 0.5rem;
+    //         & > section:first-child {
+    //             min-height: 200px;
+    //             max-height: 60%;
+    //             flex-shrink: 1;
+    //         }
+    //         & > section:nth-child(2) {
+    //             min-height: 200px;
+    //             flex: 1;
+    //             & > h6 {
+    //                 flex-shrink: 0;
+    //             }
+
+    //             & > div {
+    //                 overflow: hidden;
+    //                 overflow-y: scroll;
+    //             }
+    //         }
+    //     }
+    // }
     .recentItemsWrap {
         grid-column: 2/3;
         grid-row: 2/-1;
@@ -199,10 +227,6 @@ $box-shadow-up: 0px -2px 2px rgba($col-grey, 0.5);
         border-radius: 1rem;
         margin: 0.5rem;
 
-        &:hover {
-            box-shadow: 0px 1px 3px rgba($col-black, 0.4);
-        }
-
         .labelBody {
             background-color: $col-white;
             flex: 1;
@@ -217,10 +241,12 @@ $box-shadow-up: 0px -2px 2px rgba($col-grey, 0.5);
 
             .bodyInfo {
                 display: flex;
+                flex-wrap: wrap;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.5rem;
                 .titleSection {
                     display: flex;
+
                     flex-direction: column;
                     gap: 0.5rem;
                     .resultsContainer {
@@ -308,6 +334,7 @@ $box-shadow-up: 0px -2px 2px rgba($col-grey, 0.5);
         height: 100%;
     }
     .settingsContainer {
+        min-width: 15rem;
         flex: 1;
         padding: 0.5rem;
         border-radius: 0.5rem;

@@ -55,7 +55,7 @@ function ResetPasswordForm({ token }: { token: string }) {
                         id="resetPassword"
                         type="password"
                         object="password"
-                        placeholder="New password"
+                        labelText="New password"
                         error={errors.password ? true : false}
                         errorMessage={errors.password && "Invalid Password"}
                         register={register}

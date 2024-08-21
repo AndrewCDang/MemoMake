@@ -13,7 +13,10 @@ function ColourSwatchPicker({
 }) {
     const colourArray = [
         ...Object.keys(colours).filter(
-            (item) => !["black", "grey", "lightGrey", "white"].includes(item)
+            (item) =>
+                !["black", "grey", "lightGrey", "white", "blueSelect"].includes(
+                    item
+                )
         ),
         "white",
     ] as coloursType[];

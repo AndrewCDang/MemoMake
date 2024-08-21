@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "../_lib/db";
 import { coloursType } from "../styles/colours";
+import { ThemeColour } from "../_types/types";
 
 export const insertCollection = async ({
     name,
@@ -9,17 +10,21 @@ export const insertCollection = async ({
     id,
     categories,
     colours,
+    image,
 }: {
     name: string;
     setIds: string[];
     id: string;
     categories: string[];
-    colours: coloursType;
+    colours: coloursType | ThemeColour;
+    image: string | null;
 }) => {
     try {
         await db`
-            INSERT INTO flashcard_collection(collection_name,ids,user_id,set_categories,theme_colour )
-            VALUES(${name},${setIds}, ${id}, ${categories}, ${colours})
+            INSERT INTO flashcard_collection(collection_name,ids,user_id,set_categories,theme_colour, image )
+            VALUES(${name},${setIds}, ${id}, ${categories}, ${colours},${
+            image || null
+        })
         `;
 
         revalidatePath("/dashboard");

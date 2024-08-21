@@ -25,7 +25,6 @@ function RecentItemsSection({ recentItems }: RecentItemsSectionTypes) {
                     scrollRef.current.scrollLeft / scrollRef.current.offsetWidth
                 ).toFixed(0)
             );
-            console.log("Current Scroll Item:", currentScrollItem);
             setCurrentImage((prevState) => {
                 if (prevState !== currentScrollItem) {
                     return currentScrollItem;
@@ -45,7 +44,6 @@ function RecentItemsSection({ recentItems }: RecentItemsSectionTypes) {
         return (...args: Parameters<T>) => {
             staggerRef.current = staggerRef.current + 1;
             if (staggerRef.current % wait == 0) {
-                console.log(staggerRef.current);
                 func(...args);
             }
         };
@@ -57,7 +55,7 @@ function RecentItemsSection({ recentItems }: RecentItemsSectionTypes) {
     );
 
     useEffect(() => {
-        if (scrollRef.current) {
+        if (typeof window !== "undefined" && scrollRef.current) {
             scrollRef.current.addEventListener(
                 "scroll",
                 debouncedScrollHandler
@@ -88,47 +86,40 @@ function RecentItemsSection({ recentItems }: RecentItemsSectionTypes) {
             <div className={style.recentItemsContainer}>
                 <div ref={scrollRef} className={style.flexRecentItems}>
                     {recentItems &&
-                        // Mapping all recent items into RecentItemsCard
-                        recentItems.map((historyItem, index) => {
-                            return (
-                                <div
-                                    key={index}
-                                    className={style.recentItemCardWrap}
-                                >
-                                    <RecentItemsCard
-                                        historyItem={historyItem}
-                                    />
-                                </div>
-                            );
-                        })}
+                        recentItems.map((historyItem, index) => (
+                            <div
+                                key={index}
+                                className={style.recentItemCardWrap}
+                            >
+                                <RecentItemsCard historyItem={historyItem} />
+                            </div>
+                        ))}
                 </div>
                 <div className={style.orderDotsContainer}>
                     {recentItems &&
-                        recentItems.map((item, index) => {
-                            return (
+                        recentItems.map((item, index) => (
+                            <div
+                                onClick={() => scrollToItem(index)}
+                                key={`dot-${index}`}
+                                className={style.imageDotOrderItem}
+                            >
                                 <div
-                                    onClick={() => scrollToItem(index)}
-                                    key={`dot-${index}`}
-                                    className={style.imageDotOrderItem}
-                                >
-                                    <div
-                                        style={{
-                                            backgroundColor:
-                                                index == currentImage
-                                                    ? colours.black()
-                                                    : colours.grey(),
-                                        }}
-                                    ></div>
-                                </div>
-                            );
-                        })}
+                                    style={{
+                                        backgroundColor:
+                                            index == currentImage
+                                                ? colours.black()
+                                                : colours.grey(),
+                                    }}
+                                ></div>
+                            </div>
+                        ))}
                 </div>
-                <div className={style.linkContainer}>
+                {/* <div className={style.linkContainer}>
                     <LinkText
                         link="/dashboard/history"
                         text="View all History"
                     ></LinkText>
-                </div>
+                </div> */}
             </div>
         </div>
     );

@@ -12,6 +12,7 @@ import InteractiveCard from "./interactiveCard";
 import { ContentType, Difficulty, Flashcard_item } from "../_types/types";
 import { updateUserHistory } from "./components/userHistory/userHistory";
 import { fetchFlashCards } from "./functions/fetchFlashCards";
+import LoadingCircle from "../_components/loadingUi/loadingCircle";
 
 type FlashCardItemsTest<T> = T & {
     correct: boolean | null;
@@ -57,17 +58,21 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
     >([...initialTestCards(questions)]);
 
     useEffect(() => {
-        if (questions.length === 0) {
-            fetchFlashCards({
-                ids: ids,
-                contentType: contentType,
-                tags: tags,
-                difficulties: difficulties,
-                setSubTitles: setSubTitles,
-                setFlashCardItemsTest: setFlashCardItemsTest,
-                setTitles: setTitles,
-            });
-        }
+        const debounceFetch = setTimeout(() => {
+            if (questions.length === 0) {
+                fetchFlashCards({
+                    ids: ids,
+                    contentType: contentType,
+                    tags: tags,
+                    difficulties: difficulties,
+                    setSubTitles: setSubTitles,
+                    setFlashCardItemsTest: setFlashCardItemsTest,
+                    setTitles: setTitles,
+                });
+            }
+        }, 100);
+
+        return () => clearTimeout(debounceFetch);
     }, [questions]);
 
     // States for FlashCard transformations
@@ -174,28 +179,34 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
                     <h6>{}</h6>
                 )}
             </section>
-            <AnimatePresence>
-                {currentCard < chosenQuestions.length ? (
-                    <InteractiveCard
-                        flashCardItemsTest={chosenQuestions}
-                        currentCard={currentCard}
-                        xSet={xSet}
-                        isFlipped={isFlipped}
-                        answerHandler={answerHandler}
-                        flipCard={flipCard}
-                        topLighting={topLighting}
-                        setTopLighting={setTopLighting}
-                    />
-                ) : (
-                    // Displays Results when all questions have been answered
-                    <FlashResults
-                        flashCardItemsTest={chosenQuestions}
-                        testIncorrect={testIncorrect}
-                        setTestIncorrect={setTestIncorrect}
-                        setIncorrectQuestions={setIncorrectQuestions}
-                    />
-                )}
-            </AnimatePresence>
+            {chosenQuestions.length > 0 ? (
+                <AnimatePresence>
+                    {currentCard < chosenQuestions.length ? (
+                        <InteractiveCard
+                            flashCardItemsTest={chosenQuestions}
+                            currentCard={currentCard}
+                            xSet={xSet}
+                            isFlipped={isFlipped}
+                            answerHandler={answerHandler}
+                            flipCard={flipCard}
+                            topLighting={topLighting}
+                            setTopLighting={setTopLighting}
+                        />
+                    ) : (
+                        // Displays Results when all questions have been answered
+                        <FlashResults
+                            flashCardItemsTest={chosenQuestions}
+                            testIncorrect={testIncorrect}
+                            setTestIncorrect={setTestIncorrect}
+                            setIncorrectQuestions={setIncorrectQuestions}
+                        />
+                    )}
+                </AnimatePresence>
+            ) : (
+                <div className={style.loadingWrap}>
+                    <LoadingCircle variant="contain" />
+                </div>
+            )}
             {/* Interactive Buttons at bottom */}
             <section className={style.interationButtonsContainer}>
                 <div>

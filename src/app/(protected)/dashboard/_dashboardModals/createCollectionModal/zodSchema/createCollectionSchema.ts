@@ -16,4 +16,5 @@ export const createCollectionSchema = z.object({
             message: "Collection name must have less than 255 characters",
         }),
     categories: z.array(z.string()),
+    image: z.string().nullable().optional(),
 });

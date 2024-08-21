@@ -40,39 +40,28 @@ function ForgotPassword() {
     };
 
     return (
-        <section className={style.formContainer}>
-            <div className={style.authTop}>
-                <h4>Recover account</h4>
-                <CloseForgotPassword>
-                    <CloseButton />
-                </CloseForgotPassword>
-            </div>
-            <form
-                onSubmit={handleSubmit(forgotPasswordSubmit)}
-                className={style.form}
-            >
-                {!validated && (
-                    <>
-                        <FormInputField
-                            id="forgot-email"
-                            type="email"
-                            placeholder="Email"
-                            object="email"
-                            error={errors.email ? true : false}
-                            errorMessage={errors.email && errors.email.message}
-                            register={register}
-                        />
-                        <Button text="Submit" />
-                    </>
-                )}
-                {validated !== null && (
-                    <SubmitMessage
-                        validated={validated}
-                        message={errorMessage}
+        <form
+            onSubmit={handleSubmit(forgotPasswordSubmit)}
+            className={style.form}
+        >
+            {!validated && (
+                <>
+                    <FormInputField
+                        id="forgot-email"
+                        type="email"
+                        labelText="Email"
+                        object="email"
+                        error={errors.email ? true : false}
+                        errorMessage={errors.email && errors.email.message}
+                        register={register}
                     />
-                )}
-            </form>
-        </section>
+                    <Button text="Submit" />
+                </>
+            )}
+            {validated !== null && (
+                <SubmitMessage validated={validated} message={errorMessage} />
+            )}
+        </form>
     );
 }
 

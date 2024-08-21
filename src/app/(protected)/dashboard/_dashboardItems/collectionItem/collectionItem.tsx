@@ -1,6 +1,5 @@
 import React from "react";
 import style from "./collectionItem.module.scss";
-import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import CollectionItemBtn from "./collectionItemBtn";
@@ -30,7 +29,10 @@ function CollectionItem({
                                 {collectionItem.set_items.length <= 3 ? (
                                     collectionItem.set_items.map((setItem) => {
                                         return (
-                                            <div className={style.setName}>
+                                            <div
+                                                className={style.setName}
+                                                key={setItem.id}
+                                            >
                                                 {setItem.set_name}
                                             </div>
                                         );
@@ -45,6 +47,7 @@ function CollectionItem({
                                                         className={
                                                             style.setName
                                                         }
+                                                        key={setItem.id}
                                                     >
                                                         {setItem.set_name}
                                                     </div>

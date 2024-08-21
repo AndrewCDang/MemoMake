@@ -26,9 +26,10 @@ function SetCollectionContainer({
     return (
         <section className={style.setGrid}>
             {content &&
-                content.map((item) => {
+                content.map((item, index) => {
                     return (
                         <SetAndCollectionCard
+                            key={index}
                             set={item}
                             account={account}
                             contentType={contentType}

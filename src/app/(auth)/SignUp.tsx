@@ -22,6 +22,8 @@ import { startTransition } from "react";
 import SubmitMessage from "./_components/submitResults/submitMessage";
 import signInGoogle from "./signInGoogle";
 import PasswordRequirements from "./passwordRequirements";
+import { useLogInModal } from "../_hooks/useLogIn";
+import { useSignUpModal } from "../_hooks/useSignUp";
 
 export interface DataValidationType {
     validated: boolean;
@@ -30,6 +32,9 @@ export interface DataValidationType {
 }
 
 function SignUp() {
+    const { showLogInModal } = useLogInModal();
+    const { removeSignUpModal } = useSignUpModal();
+
     const [validated, setValidated] = useState<boolean | undefined>(undefined);
     const [message, setMessage] = useState<string | undefined>(undefined);
 
@@ -59,97 +64,82 @@ function SignUp() {
         });
     };
 
-    const signUpInstead = () => {};
+    const signUpInstead = () => {
+        showLogInModal();
+        removeSignUpModal();
+    };
 
     return (
-        <section className={style.formContainer}>
-            <section>
-                <div className={style.authTop}>
-                    <h4>Sign Up</h4>
-                    <CloseSignUpModal>
-                        <CloseButton />
-                    </CloseSignUpModal>
+        <section className={style.modalContainer}>
+            <form className={style.form} onSubmit={handleSubmit(submitHandler)}>
+                <FormInputField
+                    id="signUp-id"
+                    type="email"
+                    labelText="Email"
+                    object="email"
+                    error={errors.email ? true : false}
+                    errorMessage={errors.email && errors.email.message}
+                    register={register}
+                />
+                <FormInputField
+                    id="signUp-userName"
+                    type="text"
+                    labelText="User name"
+                    object="userName"
+                    error={errors.userName ? true : false}
+                    errorMessage={errors.userName && errors.userName.message}
+                    register={register}
+                />
+                <FormInputField
+                    id="signUp-password"
+                    type="password"
+                    labelText="Password"
+                    object="password"
+                    error={errors.password ? true : false}
+                    errorMessage={
+                        !errors.password?.message?.includes("Password required")
+                            ? "Invalid password"
+                            : "Password required"
+                    }
+                    register={register}
+                />
+                <FormInputField
+                    id="signUp-repeat-password"
+                    type="password"
+                    labelText="Repeat Password"
+                    object="confirmPassword"
+                    error={errors.confirmPassword ? true : false}
+                    errorMessage={"Password does not match"}
+                    register={register}
+                />
+                <PasswordRequirements
+                    errors={errors}
+                    getValues={getValues}
+                    setError={setError}
+                />
+                {validated != undefined && (
+                    <SubmitMessage validated={validated} message={message} />
+                )}
+                <Button text="Sign Up" />
+            </form>
+            <div className={style.authBorder}>
+                <p>or</p>
+            </div>
+            <aside onClick={() => signInGoogle()}>
+                <div className={style.centerBtn}>
+                    <GenericButton type={"button"}>
+                        <div className={style.authBtn}>
+                            <FcGoogle />
+                            <label>Sign up with Google</label>
+                        </div>
+                    </GenericButton>
                 </div>
-                <form
-                    className={style.form}
-                    onSubmit={handleSubmit(submitHandler)}
-                >
-                    <FormInputField
-                        id="signUp-id"
-                        type="email"
-                        placeholder="Email"
-                        object="email"
-                        error={errors.email ? true : false}
-                        errorMessage={errors.email && errors.email.message}
-                        register={register}
-                    />
-                    <FormInputField
-                        id="signUp-userName"
-                        type="text"
-                        placeholder="User name"
-                        object="userName"
-                        error={errors.userName ? true : false}
-                        errorMessage={
-                            errors.userName && errors.userName.message
-                        }
-                        register={register}
-                    />
-                    <FormInputField
-                        id="signUp-password"
-                        type="password"
-                        placeholder="Password"
-                        object="password"
-                        error={errors.password ? true : false}
-                        errorMessage={
-                            !errors.password?.message?.includes(
-                                "Password required"
-                            )
-                                ? "Invalid password"
-                                : "Password required"
-                        }
-                        register={register}
-                    />
-                    <FormInputField
-                        id="signUp-repeat-password"
-                        type="password"
-                        placeholder="Repeat Password"
-                        object="confirmPassword"
-                        error={errors.confirmPassword ? true : false}
-                        errorMessage={"Password does not match"}
-                        register={register}
-                    />
-                    <PasswordRequirements
-                        errors={errors}
-                        getValues={getValues}
-                        setError={setError}
-                    />
-                    {validated != undefined && (
-                        <SubmitMessage
-                            validated={validated}
-                            message={message}
-                        />
-                    )}
-                    <Button text="Sign Up" />
-                </form>
-                <div className={style.authBorder}>
-                    <p>or</p>
-                </div>
-                <aside onClick={() => signInGoogle()}>
-                    <div className={style.centerBtn}>
-                        <GenericButton type={"button"}>
-                            <div className={style.authBtn}>
-                                <FcGoogle />
-                                <label>Sign up with Google</label>
-                            </div>
-                        </GenericButton>
-                    </div>
-                </aside>
-                <div className={style.authOther}>
-                    <p onClick={signUpInstead}>
-                        Have an account? <strong>Log In</strong> here
-                    </p>
-                </div>
-            </section>
+            </aside>
+            <div className={style.authOther}>
+                <p onClick={signUpInstead}>
+                    Have an account? <strong>Log In</strong> here
+                </p>
+            </div>
         </section>
     );
 }

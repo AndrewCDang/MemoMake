@@ -1,13 +1,13 @@
 "use client";
-import { useSessionServer } from "@/app/_actions/useSessionAction";
+import { getSessionServer } from "@/app/_actions/useSessionAction";
 import { useEffect, useState } from "react";
 import { ExtendedUser } from "@/next-auth";
 
-function page() {
+function Page() {
     const [session, setSession] = useState<ExtendedUser>();
 
     const getSession = async () => {
-        const session = await useSessionServer();
+        const session = await getSessionServer();
         setSession(session);
     };
 
@@ -18,4 +18,4 @@ function page() {
     return <div>{session?.email}</div>;
 }
 
-export default page;
+export default Page;

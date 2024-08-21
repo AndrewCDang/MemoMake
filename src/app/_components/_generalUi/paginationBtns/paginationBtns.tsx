@@ -56,6 +56,7 @@ function PaginationBtns({
                           .map((item, index) => {
                               return (
                                   <Pagbtn
+                                      key={item}
                                       url={url}
                                       currentPagPage={currentPagPage}
                                       pagNum={index + 1}
@@ -74,9 +75,9 @@ function PaginationBtns({
                           totalPagBtns,
                       ]
                           .filter((item) => item !== null)
-                          .map((item) => {
+                          .map((item, index) => {
                               return (
-                                  <>
+                                  <React.Fragment key={item}>
                                       {item == totalPagBtns &&
                                           currentPagPage < totalPagBtns - 3 && (
                                               <div>...</div>
@@ -89,7 +90,7 @@ function PaginationBtns({
                                       {item == 1 && currentPagPage > 4 && (
                                           <div>...</div>
                                       )}
-                                  </>
+                                  </React.Fragment>
                               );
                           })
                     : //Starting pagination with big list - 1,2,3,4...20
@@ -97,7 +98,7 @@ function PaginationBtns({
                     ? [...Array(4).fill("_"), totalPagBtns].map(
                           (item, index) => {
                               return (
-                                  <>
+                                  <React.Fragment key={item}>
                                       {item == totalPagBtns && <div>...</div>}
                                       <Pagbtn
                                           url={url}
@@ -108,7 +109,7 @@ function PaginationBtns({
                                                   : index + 1
                                           }
                                       />
-                                  </>
+                                  </React.Fragment>
                               );
                           }
                       )
@@ -123,9 +124,9 @@ function PaginationBtns({
                               currentPagPage + 2,
                           ].filter((item) => item < totalPagBtns),
                           totalPagBtns,
-                      ].map((item) => {
+                      ].map((item, index) => {
                           return (
-                              <>
+                              <React.Fragment key={item}>
                                   <Pagbtn
                                       url={url}
                                       currentPagPage={currentPagPage}
@@ -138,7 +139,7 @@ function PaginationBtns({
                                   {item == 1 && currentPagPage > 4 && (
                                       <div>...</div>
                                   )}
-                              </>
+                              </React.Fragment>
                           );
                       })}
             </div>

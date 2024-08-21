@@ -47,6 +47,8 @@ export type UserHistory = {
 export type Account = {
     id: string;
     user_id: string;
+    user_name: string;
+    image: string;
     favourites: string[];
     user_history: UserHistory[];
 };
@@ -57,11 +59,7 @@ export type UserLikes = {
     user_id: string;
     item_type: ContentType;
 };
-export type AccountWithLikes = {
-    id: string;
-    user_id: string;
-    favourites: string[];
-    user_history: UserHistory[];
+export type AccountWithLikes = Account & {
     user_likes: UserLikes[];
 };
 // export type Account = {
@@ -102,6 +100,7 @@ export type Flashcard_set = {
     set_categories: string[];
     description: string;
     image: string;
+    image_id: string;
     last_modified: Date;
     public_access: boolean;
     copied_reference: string;
@@ -109,6 +108,7 @@ export type Flashcard_set = {
     theme_colour: ThemeColour;
     creator: BasicUserDetails;
     like_count: number;
+    content_type: "set";
 };
 
 export type Flashcard_collection = {
@@ -120,10 +120,13 @@ export type Flashcard_collection = {
     set_categories: string[];
     description: string;
     image: string;
+    image_id: string;
     public_access: boolean;
     theme_colour: ThemeColour;
     creator: BasicUserDetails;
     like_count: number;
+    last_modified: Date;
+    content_type: "collection";
 };
 
 export type Flashcard_collection_with_type = Flashcard_collection & {
@@ -165,11 +168,13 @@ export enum Difficulty {
 export type Flashcard_item = {
     id: string;
     set_id: string;
-    item_question: string;
-    item_answer: string;
+    item_question: string | undefined;
+    item_answer: string | undefined;
     item_tags: string[];
-    question_img: string;
-    answer_img: string;
+    question_img: string | undefined;
+    question_img_id: string | undefined;
+    answer_img: string | undefined;
+    answer_img_id: string | undefined;
     difficulty: Difficulty;
     last_modified: Date;
 };

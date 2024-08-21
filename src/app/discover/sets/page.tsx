@@ -5,7 +5,7 @@ import { capitaliseFirstChar } from "@/app/_functions/capitaliseFirstChar";
 import { auth } from "@/auth";
 import React from "react";
 
-async function page({ searchParams }: { searchParams: any }) {
+async function Page({ searchParams }: { searchParams: any }) {
     const searchQuery = searchParams.search as string;
     const searchPage = searchParams.page || ("1" as string);
     const session = await auth();
@@ -43,4 +43,4 @@ async function page({ searchParams }: { searchParams: any }) {
     );
 }
 
-export default page;
+export default Page;

@@ -2,7 +2,7 @@
 
 import { Account, ContentType } from "../_types/types";
 import { db } from "../_lib/db";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const addRemoveLike = async ({
     id,
@@ -45,10 +45,9 @@ export const addRemoveLike = async ({
                 }
             }
         }
+        revalidateTag("userAccount");
+        revalidateTag("userLikes");
 
-        if (revalidate) {
-            revalidatePath("dashboard");
-        }
         return { status: 200, message: "Item Updated" };
     } catch (error: unknown) {
         console.log(error);

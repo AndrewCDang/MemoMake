@@ -9,6 +9,9 @@ type DraggableProps = {
 /*
 Allows component to be draggable and preventing click events occuring at the end of the drag
 Allows click events before drags take place
+1)click events fires if it is released before 200ms after mousedown 
+2)On mousedown, timeout created to set dragging status after 200ms
+3) on mouseup, timeout cancelled, and dragging status set to false.
 */
 const Draggable: React.FC<DraggableProps> = ({
     children,
@@ -16,6 +19,7 @@ const Draggable: React.FC<DraggableProps> = ({
     fit = "wrap",
 }) => {
     const draggingRef = useRef<boolean>(false);
+    // timerRef.current: This is a reference to store the ID of the timeout that is returned by setTimeout. This ID is needed to cancel the timeout later.
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     const start = () => {

@@ -1,8 +1,8 @@
 "use client";
 import React, { MutableRefObject, useEffect, useState } from "react";
-import { ColumnName, Refs, InputValues } from "../../cardTableTypes";
+import { ColumnName, Refs, InputValues } from "../cardTableTypes";
 import { UpdateCardTypes } from "@/app/_actions/updateCard";
-import style from "../../cardsTable.module.scss";
+import style from "../cardsTable.module.scss";
 import { Flashcard_item } from "@/app/_types/types";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import PopToggler from "./popToggler";
@@ -63,7 +63,7 @@ function GenericTableItem({
     const defaultText = card[item] || "";
 
     const [text, setText] = useState<string>();
-    const [image, setImage] = useState<File>();
+    const [image, setImage] = useState<File | null>();
     const [uploadImageModal, setUploadImageModal] = useState<boolean>(false);
 
     const uploadImage = async () => {

@@ -25,7 +25,7 @@ function StudyBtn({
 
     const studyHandler = async (id: string) => {
         const promise = await fetchSetsWithItems({
-            fetchObject: { id: id, type: contentType },
+            fetchObject: { userId: set.user_id, id: id, type: contentType },
         });
 
         if (!promise) return;

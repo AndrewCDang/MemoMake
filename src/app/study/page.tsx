@@ -3,7 +3,7 @@ import { Difficulty } from "../_types/types";
 import Study from "./study";
 import { notFound } from "next/navigation";
 
-async function page({ searchParams }: any) {
+async function Page({ searchParams }: any) {
     const session = await auth();
 
     const collectionIds = searchParams.collection?.split("_") || [];
@@ -40,4 +40,4 @@ async function page({ searchParams }: any) {
     );
 }
 
-export default page;
+export default Page;

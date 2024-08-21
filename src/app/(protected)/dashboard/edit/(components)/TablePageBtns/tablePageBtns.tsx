@@ -3,15 +3,13 @@ import React, { ReactNode, useState } from "react";
 import style from "./tablePageBtns.module.scss";
 import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 import { HiViewGridAdd } from "react-icons/hi";
-import CreateCardModal from "../../[id]/createCardModal";
+import CreateCardModal from "../../[id]/(components)/createCardModal";
 import Modal from "@/app/_components/modal/modal";
 import { Flashcard_set, Flashcard_set_with_count } from "@/app/_types/types";
 import { Session } from "next-auth";
 import StudyBtn from "@/app/_components/setAndCollectionCard/generalComponents/previewEditStudyBtns/studyBtn/studyBtn";
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import ReviseModal from "@/app/_components/reviseCollection/reviseModal";
-import insertFlashCard from "@/app/_actions/insertFlashCard";
-import { AuthItemTypes } from "@/schema/itemSchema";
 
 function TablePageBtns({
     set,
@@ -20,7 +18,7 @@ function TablePageBtns({
 }: {
     set: Flashcard_set | Flashcard_collection_set_joined;
     setId: string;
-    collectionSet: Flashcard_set_with_count[];
+    // collectionSet: Flashcard_set_with_count[];
     session: Session;
 }) {
     const [toggleCreate, setToggleCreate] = useState<boolean>(false);

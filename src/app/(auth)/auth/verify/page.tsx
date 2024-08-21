@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import SubmitMessage from "../../_components/submitResults/submitMessage";
 import style from "./verify.module.scss";
 
-function page() {
+function Page() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const verificationRef = useRef<boolean>(false);
@@ -76,4 +76,4 @@ function page() {
     );
 }
 
-export default page;
+export default Page;

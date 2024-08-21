@@ -3,14 +3,14 @@ import style from "./recentItems.module.scss";
 import { Account, Flashcard_set } from "@/app/_types/types";
 import { RecentItemsTypes } from "../_actions/fetchRecentTested";
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
-import ToDoList, { Notes } from "./pinAndToDo/toDoList";
+import { Notes } from "./pinAndToDo/toDoList";
 import { Session } from "next-auth";
 import SideBarSection from "./sideBarSection/sideBarSection";
-import RecentItemsSection from "./recentItemsSection/recentItemsSection";
-import LikedPinnedItems from "./pinAndToDo/pinnedItems";
-import { useRef } from "react";
 import welcomeGif from "@/../../public/animations/flashmu_wave.gif";
 import Image from "next/image";
+import RecentAndLikedContainer from "./recentAndLikedContainer";
+import { Fetch_like_objects } from "../../../api/fetch/fetchUserLikeItems/fetchUserLikeItems";
+import { fetched_pinned_items } from "@/app/_lib/fetch/fetchPinnedItems";
 
 type RecentTypes = {
     session: Session;
@@ -23,6 +23,8 @@ type RecentTypes = {
         contentType: "collection" | "set";
         array: Flashcard_set[] | Flashcard_collection_set_joined[];
     }[];
+    likedItems: Fetch_like_objects[];
+    pinnedItems: fetched_pinned_items;
 };
 
 function DashboardLanding({
@@ -31,17 +33,34 @@ function DashboardLanding({
     recentItems,
     account,
     itemsArray,
+    likedItems,
+    pinnedItems,
 }: RecentTypes) {
-    console.log(session);
+    console.log(account);
 
-    const lottieRef = useRef<any>(null);
+    const reducedLikes = Object.values(likedItems[0])
+        .flat()
+        .filter((item) => item !== null)
+        .sort(
+            (a, b) =>
+                new Date(b.created).getTime() - new Date(a.created).getTime()
+        );
 
     return (
         <section className={style.setGrid}>
             <section className={style.dashboardBody}>
                 <div className={style.welcomeSection}>
                     <div className={style.iconAndTitle}>
-                        <h4>Welcome Back{session?.user?.name || ""}!</h4>
+                        <div className={style.nameAndImageContainer}>
+                            {account.image && (
+                                <img
+                                    className={style.dashboardUserImage}
+                                    src={account.image}
+                                    alt=""
+                                ></img>
+                            )}
+                            <h4>{account.user_name || ""} Dashboard</h4>
+                        </div>
                         <div className={style.welcomeGifContainer}>
                             <Image
                                 src={welcomeGif}
@@ -57,29 +76,18 @@ function DashboardLanding({
                         </div>
                     </div>
                 </div>
-                <div className={style.recentAndLikedContainer}>
-                    <ToDoList session={session} userNotes={userNotes} />
-
-                    <RecentItemsSection recentItems={recentItems} />
-                </div>
+                <RecentAndLikedContainer
+                    session={session}
+                    userNotes={userNotes}
+                    recentItems={recentItems}
+                    account={account}
+                    itemsArray={itemsArray}
+                    likedItems={reducedLikes}
+                    pinnedItems={pinnedItems}
+                />
             </section>
             <section className={style.sideBarSection}>
                 <SideBarSection />
-            </section>
-            <section className={style.pinnedTodoSection}>
-                <div className={style.likedToDoWrap}>
-                    <LikedPinnedItems
-                        itemsArray={itemsArray}
-                        account={account}
-                        title="Pinned Items"
-                    />
-                    <LikedPinnedItems
-                        itemsArray={itemsArray}
-                        account={account}
-                        title="Liked Items"
-                        type="like"
-                    />{" "}
-                </div>
             </section>
         </section>
     );

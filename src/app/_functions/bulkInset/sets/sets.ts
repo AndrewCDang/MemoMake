@@ -1,3 +1,5 @@
+import { AuthItemTypes } from "@/schema/itemSchema";
+
 const politicalPhilosophyFlashcards: AuthItemTypes[] = [
     // Introduction
     {

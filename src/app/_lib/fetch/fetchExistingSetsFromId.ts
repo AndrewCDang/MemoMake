@@ -1,5 +1,6 @@
 import { db } from "../db";
 import { Flashcard_set } from "../../_types/types";
+import { unstable_cache } from "next/cache";
 
 type FetchExistingSetFromIdTypes = {
     userId: string;
@@ -18,13 +19,15 @@ const fetchExistingSetsFromId = async ({
     pageNum = 1,
     itemsPerPage = 12,
 }: FetchExistingSetFromIdTypes): Promise<FetchedFlashcardsTypes | null> => {
-    try {
-        const paginationQuery = db`
+    const cacheDashboardSet = unstable_cache(
+        async () => {
+            try {
+                const paginationQuery = db`
             LIMIT ${itemsPerPage}
             OFFSET ${(pageNum - 1) * itemsPerPage}
         `;
 
-        const existingCards = (await db`
+                const existingCards = (await db`
         WITH fetched_items AS (
             SELECT fs.*, json_build_object(
                     'id', users.id,
@@ -37,7 +40,7 @@ const fetchExistingSetsFromId = async ({
             LEFT JOIN user_likes ul ON ul.item_id = fs.id 
             WHERE fs.user_id = ${userId}
             GROUP BY fs.id, users.id
-            ORDER BY last_modified ASC
+            ORDER BY last_modified DESC
             ${paginate ? paginationQuery : db``}
         ),
         total_count_query AS (
@@ -54,13 +57,18 @@ const fetchExistingSetsFromId = async ({
 
     `) as FetchedFlashcardsTypes[];
 
-        return existingCards[0];
-    } catch (error: unknown) {
-        if (error instanceof Error) {
-            console.log(error.message);
-        }
-        return null;
-    }
+                return existingCards[0];
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    console.log(error.message);
+                }
+                return null;
+            }
+        },
+        [userId],
+        { tags: ["dashboardSet"] }
+    );
+    return cacheDashboardSet();
 };
 
 export default fetchExistingSetsFromId;

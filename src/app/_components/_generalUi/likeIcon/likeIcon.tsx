@@ -44,7 +44,7 @@ const LikeIcon = ({
         >
             <IoMdThumbsUp
                 style={{
-                    fill: likeIcon ? colours.black() : colours.black(0.4),
+                    fill: likeIcon ? colours.blueSelect() : colours.black(0.4),
                 }}
             />
         </div>

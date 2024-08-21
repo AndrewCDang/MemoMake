@@ -12,6 +12,7 @@ import { IoBookOutline } from "react-icons/io5";
 
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Arrows from "../landing/arrows";
 
 type CardObjectType = {
     svg: ReactNode;
@@ -78,11 +79,13 @@ function CrescentCards() {
     const containerRef = useRef<HTMLDivElement>(null);
     const [contentWidth, setContentWidth] = useState(0);
     const [contentHeight, setContentHeight] = useState(0);
+    const [containerLoaded, setContainerLoaded] = useState(false);
 
     useEffect(() => {
         if (containerRef.current) {
             setContentWidth(containerRef.current.clientWidth - 160);
             setContentHeight(containerRef.current.clientHeight);
+            setContainerLoaded(true);
         }
     }, [containerRef]);
 
@@ -205,65 +208,84 @@ function CrescentCards() {
     return (
         <div ref={containerRef} className={style.contentContainer}>
             <div className={style.cardContainer}>
-                {cardsObject.map((card, index, array) => {
-                    const x = xValue(
-                        index,
-                        cards.length,
-                        contentWidth,
-                        contentHeight
-                    );
-                    const y = yValue(
-                        index,
-                        cards.length,
-                        contentWidth,
-                        contentHeight
-                    );
-                    return (
-                        <motion.div key={index} className={style.card}>
-                            <motion.div
-                                className={style.cardBackground}
-                                style={{
-                                    x: x,
-                                    y: y,
-                                    rotate: rotate(x, y),
-                                }}
-                            >
-                                <Link
-                                    href={`/study?set=${card.id}`}
-                                    className={style.cardWrap}
+                {containerLoaded &&
+                    cardsObject.map((card, index) => {
+                        const x = xValue(
+                            index,
+                            cards.length,
+                            contentWidth,
+                            contentHeight
+                        );
+                        const y = yValue(
+                            index,
+                            cards.length,
+                            contentWidth,
+                            contentHeight
+                        );
+                        return (
+                            <motion.div key={card.id} className={style.card}>
+                                <motion.div
+                                    className={style.cardBackground}
+                                    initial={{ opacity: 0 }}
+                                    animate={{
+                                        x: x,
+                                        y: y,
+                                        rotate: rotate(x, y),
+                                        opacity: 1,
+                                    }}
+                                    transition={{
+                                        delay: 0.1 * index,
+                                        opacity: {
+                                            duration: 0.3,
+                                            delay: 0.1 * index,
+                                        },
+                                    }}
                                 >
-                                    <div
-                                        className={style.frontFace}
-                                        style={{
-                                            backgroundColor:
-                                                colours[card.colour](),
-                                        }}
+                                    {(index + 1) % 2 === 0 && (
+                                        <div className={style.arrowContainer}>
+                                            <Arrows index={index} />
+                                        </div>
+                                    )}
+                                    <Link
+                                        href={`/study?set=${card.id}`}
+                                        className={style.cardWrap}
                                     >
                                         <div
-                                            className={style.packLine}
+                                            className={style.frontFace}
                                             style={{
                                                 backgroundColor:
-                                                    card.colour === "white"
-                                                        ? colours.grey()
-                                                        : colours.white(),
+                                                    colours[card.colour](),
                                             }}
-                                        ></div>
-                                        <div className={style.cardContent}>
-                                            <div className={style.svgContainer}>
-                                                {card.svg}
+                                        >
+                                            <div
+                                                className={style.packLine}
+                                                style={{
+                                                    backgroundColor:
+                                                        card.colour === "white"
+                                                            ? colours.grey()
+                                                            : colours.white(),
+                                                }}
+                                            ></div>
+                                            <div className={style.cardContent}>
+                                                <div
+                                                    className={
+                                                        style.svgContainer
+                                                    }
+                                                >
+                                                    {card.svg}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className={style.backFace}>
-                                        <div className={style.cardContent}>
-                                            <h5>{card.name}</h5>
+                                        <div className={style.backFace}>
+                                            <div className={style.cardContent}>
+                                                <h5>{card.name}</h5>
+                                            </div>
                                         </div>
-                                    </div>
-                                </Link>
+                                    </Link>
+                                </motion.div>
                             </motion.div>
-                        </motion.div>
-                    );
-                })}
+                        );
+                    })}
             </div>
         </div>
     );

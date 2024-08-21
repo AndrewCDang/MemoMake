@@ -6,7 +6,7 @@ import style from "./bulkInsert.module.scss";
 import { toastNotify } from "@/app/(toast)/toast";
 import Button from "@/app/_components/(buttons)/styledButton";
 
-function page() {
+function Page() {
     const setId = "1f69995a-5ca6-4680-b45c-3cc69b2d4e2d";
 
     type DataArray = {
@@ -201,4 +201,4 @@ function page() {
     );
 }
 
-export default page;
+export default Page;

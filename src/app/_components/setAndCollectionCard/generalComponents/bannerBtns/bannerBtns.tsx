@@ -21,6 +21,7 @@ type BannerBtnsTypes = {
     account: Account | undefined;
     set: Flashcard_collection_set_joined | Flashcard_set;
     contentType: ContentType;
+    setIsDeleting: Dispatch<SetStateAction<boolean>>;
 };
 
 export const BannerIcon = ({
@@ -32,14 +33,20 @@ export const BannerIcon = ({
     hoverText: string;
     children: ReactNode;
     handler: () => void;
-    hoverPos?: "top" | "left";
+    hoverPos?: "top" | "left" | "right";
 }) => {
     return (
         <button onClick={handler} className={style.bannerIcon}>
             {children}
             <span
                 className={
-                    hoverPos === "top" ? style.hoverLabel : style.hoverLabelLeft
+                    hoverPos === "top"
+                        ? style.hoverLabel
+                        : hoverPos === "right"
+                        ? style.hoverLabelRight
+                        : hoverPos === "left"
+                        ? style.hoverLabelLeft
+                        : ""
                 }
             >
                 {hoverText}
@@ -48,6 +55,7 @@ export const BannerIcon = ({
     );
 };
 function BannerBtns({
+    setIsDeleting,
     publicCard,
     setIsFavourited,
     isFavourited,
@@ -83,7 +91,7 @@ function BannerBtns({
             {/* Always available */}
             {account && (
                 <BannerIcon
-                    hoverText={`Pin ${cardType}`}
+                    hoverText={`${isFavourited ? "Unpin" : "Pin"} ${cardType}`}
                     handler={() => setIsFavourited((prevState) => !prevState)}
                 >
                     <PinIcon
@@ -95,19 +103,24 @@ function BannerBtns({
                 </BannerIcon>
             )}
             {/* Only available if card/collection is set to publically available */}
-            {account && set && set.public_access && (
-                <BannerIcon
-                    hoverText={`Like ${cardType}`}
-                    handler={() => setIsLiked((prevState) => !prevState)}
-                >
-                    <LikeIcon
-                        contentType={contentType}
-                        isLiked={isLiked}
-                        userId={account && account.user_id}
-                        setId={set.id}
-                    />
-                </BannerIcon>
-            )}
+            {account &&
+                set &&
+                set.public_access &&
+                account.user_id !== set.user_id && (
+                    <BannerIcon
+                        hoverText={
+                            isLiked ? `Unlike ${cardType}` : `Like ${cardType}`
+                        }
+                        handler={() => setIsLiked((prevState) => !prevState)}
+                    >
+                        <LikeIcon
+                            contentType={contentType}
+                            isLiked={isLiked}
+                            userId={account && account.user_id}
+                            setId={set.id}
+                        />
+                    </BannerIcon>
+                )}
             {/* If Card Belongs to user */}
             {account && account.user_id === set.user_id && (
                 <div className={style.delBannerContainer}>
@@ -122,11 +135,13 @@ function BannerBtns({
                         isOn={delConfirmation}
                     >
                         <DeleteConfirmation
+                            setIsDeleting={setIsDeleting}
                             account={account}
                             isOn={delConfirmation}
                             setIsOn={setDelConfirmation}
                             contentType={contentType}
                             id={set.id}
+                            imageId={set.image_id}
                         />
                     </PopOverContent>
                 </div>

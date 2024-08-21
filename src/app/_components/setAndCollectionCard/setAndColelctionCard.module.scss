@@ -106,3 +106,23 @@
 .setContainer:hover .viewSet svg {
     transform: translateX(0.5rem);
 }
+
+.loadingBody {
+    padding-top: 1rem;
+
+    & > span {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        justify-content: space-between;
+        br {
+            display: none;
+        }
+    }
+}
+.loadingCollectionBody {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}

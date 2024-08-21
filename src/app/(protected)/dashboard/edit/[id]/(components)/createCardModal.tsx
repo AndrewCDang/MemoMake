@@ -12,6 +12,9 @@ import RadioSelect from "@/app/_components/radioSelect/radioSelect";
 import { toastNotify } from "@/app/(toast)/toast";
 import insertFlashCard from "@/app/_actions/insertFlashCard";
 import LabelInput from "@/app/_components/categoryInput/labelInput";
+import { v4 as uuidV4 } from "uuid";
+import { useInsertFlashItem } from "./hooks/useInsertFlashItem";
+import { Flashcard_item } from "@/app/_types/types";
 
 type CreateCardTypes = {
     setId: string;
@@ -24,6 +27,7 @@ function CreateCardModal({ setId }: CreateCardTypes) {
     const modalRef = useRef<HTMLElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [typedCategory, setTypedCategory] = useState<string>("");
+    const { useFlashcard, setFlashCards } = useInsertFlashItem();
 
     // Form BoilerPlate
     const {
@@ -38,15 +42,30 @@ function CreateCardModal({ setId }: CreateCardTypes) {
     });
 
     const submitCard = async (data: AuthItemTypes) => {
+        const insertData = { ...data, id: uuidV4() };
+        const insertTime = new Date();
+        const clientInsertData = { ...insertData };
+        setFlashCards({
+            ...clientInsertData,
+            answer_img: undefined,
+            question_img: undefined,
+            set_id: setId,
+            last_modified: insertTime,
+        } as Flashcard_item);
+
         setIsLoading(true);
-        const insertDb = await insertFlashCard({ setId: setId, data: data });
-        if (insertDb.success) {
+        const insertDb = await insertFlashCard({
+            setId: setId,
+            data: insertData,
+        });
+        if (insertDb) {
             reset();
             setCategoires([]);
             setValue("difficulty", "NA");
             setValue("item_tags", []);
         }
-        toastNotify(insertDb.message);
+        console.log(insertDb);
+        toastNotify("Inserted new flashcard");
         setIsLoading(false);
     };
 

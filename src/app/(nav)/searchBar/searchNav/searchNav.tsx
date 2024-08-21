@@ -2,7 +2,6 @@
 import React from "react";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import style from "./searchNav.module.scss";
-import { motion } from "framer-motion";
 
 function SearchNav({ handler }: { handler: () => void }) {
     return (

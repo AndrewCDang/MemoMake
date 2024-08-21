@@ -7,12 +7,14 @@ import { LuUser } from "react-icons/lu";
 import ClipHoverBtn from "@/app/_components/(buttons)/clipHoverBtn/clipHoverBtn";
 import { HiUser } from "react-icons/hi2";
 import { HiOutlineArrowRightOnRectangle } from "react-icons/hi2";
-import { AnimatePresence } from "framer-motion";
-import { motion } from "framer-motion";
 import PopOverContent from "@/app/_components/_generalUi/popOverContent/popOverContent";
 import Link from "next/link";
 import { useLogInModal } from "@/app/_hooks/useLogIn";
 import { useSignUpModal } from "@/app/_hooks/useSignUp";
+import FlipBtn from "@/app/_components/(buttons)/flipBtn/flipBtn";
+import { FiUser } from "react-icons/fi";
+import { FiUserPlus } from "react-icons/fi";
+import { FiUserMinus } from "react-icons/fi";
 
 function NavLoggedIn({ session }: { session: Session | null }) {
     const [openDropdown, setOpenDropdown] = useState<boolean>(false);
@@ -56,14 +58,11 @@ function NavLoggedIn({ session }: { session: Session | null }) {
     return (
         <section className={style.navBtnWrap}>
             {!session?.user && (
-                <button
-                    onClick={showSignUpModal}
-                    className={style.createAccountBtn}
-                >
-                    <span className={style.textWidth}>Create Account</span>
-                    <span className={style.baseText}>Create Account</span>
-                    <span className={style.hoverText}>Create Account</span>
-                </button>
+                <FlipBtn
+                    baseText="Create Account"
+                    hoverText="Create Account"
+                    handler={showSignUpModal}
+                />
             )}
             <div className={style.navBtn}>
                 <button
@@ -110,7 +109,7 @@ function NavLoggedIn({ session }: { session: Session | null }) {
                             <DropdownItem handler={signOutHandler}>
                                 <>
                                     <span>Sign Out</span>
-                                    <HiOutlineArrowRightOnRectangle />
+                                    <FiUserMinus />
                                 </>
                             </DropdownItem>
                         </div>
@@ -119,9 +118,19 @@ function NavLoggedIn({ session }: { session: Session | null }) {
                             <DropdownItem>
                                 <>
                                     <span onClick={() => showLogInModal()}>
-                                        Sign In
+                                        Log In
                                     </span>
-                                    <HiOutlineArrowRightOnRectangle />
+                                    <div style={{ paddingRight: "0.125rem" }}>
+                                        <FiUser />
+                                    </div>
+                                </>
+                            </DropdownItem>
+                            <DropdownItem>
+                                <>
+                                    <span onClick={() => showLogInModal()}>
+                                        Sign Up
+                                    </span>
+                                    <FiUserPlus />
                                 </>
                             </DropdownItem>
                         </div>

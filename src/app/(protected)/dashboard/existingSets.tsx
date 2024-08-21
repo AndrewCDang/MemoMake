@@ -9,6 +9,9 @@ import DashboardLanding from "./_dashboardSections/dashboardLanding";
 import { fetchUserNotes } from "./_dashboardSections/pinAndToDo/_actions/fetchUserNotes";
 import SectionTemplate from "@/app/_components/setCollectionContentSection/sectionTemplate";
 import LoadingSetAndCollectionCard from "@/app/_components/setAndCollectionCard/loadingSetAndCollectionCard/loadingSetAndCollectionCard";
+import LoadingSectionTemplate from "@/app/_components/setCollectionContentSection/loadingSetCollectionTemplate";
+import { fetchUserLikeItems } from "@/app/api/fetch/fetchUserLikeItems/fetchUserLikeItems";
+import { fetchPinnedItem } from "@/app/_lib/fetch/fetchPinnedItems";
 
 // Helper function to introduce a delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -35,19 +38,34 @@ async function ExistingSets({ session }: { session: Session | null }) {
     if (!account) return notFound();
 
     const favArray = account.favourites;
+
     const favouriteSets =
         searchExistingSets?.fetched_items.filter((item) =>
             favArray.includes(item.id)
         ) || [];
     const favouriteCollections = collectionWithSets
-        ? collectionWithSets.filter((item) => favArray.includes(item.id))
+        ? collectionWithSets.fetched_items.filter((item) =>
+              favArray.includes(item.id)
+          )
         : [];
 
+    // Fetches Pinned Items
+    const pinnedItems =
+        (await fetchPinnedItem({ userId: session.user.id, limit: 12 })) || [];
+    console.log("poootch");
+    console.log(pinnedItems);
     // Fetch Recently tested
     const fetchHistory = await fetchRecentTested({ userId: session.user.id });
 
     // Fetch User Notes
     const userNotes = (await fetchUserNotes(session.user.id)) || [];
+
+    // Fetch like items
+    const fetchLliked =
+        (await fetchUserLikeItems({
+            userId: session.user.id,
+            limit: 12,
+        })) || [];
 
     return (
         <section>
@@ -58,6 +76,7 @@ async function ExistingSets({ session }: { session: Session | null }) {
                     session={session}
                     recentItems={fetchHistory}
                     account={account}
+                    likedItems={fetchLliked}
                     itemsArray={[
                         { contentType: "set", array: favouriteSets },
                         {
@@ -65,8 +84,10 @@ async function ExistingSets({ session }: { session: Session | null }) {
                             array: favouriteCollections,
                         },
                     ]}
+                    pinnedItems={pinnedItems}
                 />
             </section>
+
             {/* Sets Selection */}
             {searchExistingSets &&
             searchExistingSets.fetched_items.length &&
@@ -93,7 +114,7 @@ async function ExistingSets({ session }: { session: Session | null }) {
                     id={"dashboard_collection"}
                     filter={false}
                     title="Flash Card Collection"
-                    content={collectionWithSets || []}
+                    content={collectionWithSets.fetched_items || []}
                     contentType="collection"
                     account={account}
                     href="/dashboard/collections"

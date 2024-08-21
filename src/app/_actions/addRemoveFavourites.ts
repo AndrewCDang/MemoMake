@@ -2,7 +2,7 @@
 
 import { Account } from "../_types/types";
 import { db } from "../_lib/db";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const addRemoveFavourites = async ({
     id,
@@ -43,9 +43,9 @@ export const addRemoveFavourites = async ({
                 WHERE user_id = ${id}
             `;
         }
-        if (revalidate) {
-            revalidatePath("dashboard");
-        }
+        revalidateTag("userAccount");
+        revalidateTag("pinnedItems");
+
         return { status: 200, message: "Item Updated" };
     } catch (error: unknown) {
         console.log(error);

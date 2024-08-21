@@ -15,7 +15,7 @@ const NoteIconComponent = () => {
         <BannerIcon
             hoverText={"Click for menu \n Drag to reorder"}
             handler={() => null}
-            hoverPos="left"
+            hoverPos="right"
         >
             <HiMiniSquares2X2 />
         </BannerIcon>

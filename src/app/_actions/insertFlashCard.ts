@@ -1,14 +1,18 @@
 "use server";
 import { AuthItemTypes } from "@/schema/itemSchema";
 import { db } from "../_lib/db";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { Flashcard_item } from "../_types/types";
 
 export type InsertFlashCardTypes = {
     data: AuthItemTypes;
     setId: string;
 };
 
-const insertFlashCard = async ({ data, setId }: InsertFlashCardTypes) => {
+const insertFlashCard = async ({
+    data,
+    setId,
+}: InsertFlashCardTypes): Promise<Flashcard_item | undefined> => {
     try {
         // Getting sequence value
         const sequenceResult = await db`
@@ -20,23 +24,22 @@ const insertFlashCard = async ({ data, setId }: InsertFlashCardTypes) => {
 
         // Inserting card into db
 
-        await db`
-                INSERT INTO flashcard_item (set_id, item_question, item_answer, item_tags, difficulty, last_modified, sequence)
+        const insertedItem: Flashcard_item[] = await db`
+                INSERT INTO flashcard_item set_id, item_question, item_answer, item_tags, difficulty, last_modified, sequence)
                 VALUES(${setId}, ${data.item_question || null}, ${
             data.item_answer || null
         }, ${data.item_tags || null}, ${
             data.difficulty
         }, ${new Date()}, ${nextSequence}
-        )
+                )
+                RETURNING *
             `;
-        revalidatePath("/dashboard/flashcard");
-        return { success: true, message: "Created new flash card!" };
+        // revalidatePath("/dashboard/edit");
+        revalidateTag(setId);
+        revalidateTag("dashboardSet");
+        return insertedItem[0];
     } catch (error) {
         console.log(error);
-        return {
-            success: false,
-            message: "Error: Could not create flash card",
-        };
     }
 };
 

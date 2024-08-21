@@ -13,15 +13,19 @@ type DeleteConfirmationTypes = {
     id: string;
     contentType: ContentType;
     isOn: boolean;
+    setIsDeleting: Dispatch<SetStateAction<boolean>>;
     setIsOn: Dispatch<SetStateAction<boolean>>;
+    imageId?: string | null;
 };
 
 function DeleteConfirmation({
+    setIsDeleting,
     account,
     id,
     contentType,
     isOn,
     setIsOn,
+    imageId,
 }: DeleteConfirmationTypes) {
     const ref = useRef<HTMLDivElement>(null);
     const isMountedRef = useRef(false);
@@ -57,7 +61,12 @@ function DeleteConfirmation({
             contentType,
             userId: account.user_id,
         });
-        console.log(del);
+        if (imageId) {
+            console.log(`deleting ${imageId}`);
+            await fetch(`/api/deleteImage?imageId=${imageId}`, {
+                method: "DELETE",
+            });
+        }
     };
 
     return (
@@ -69,7 +78,9 @@ function DeleteConfirmation({
             <div className={style.delBtns}>
                 <DefaultButton handler={() => setIsOn(false)}>No</DefaultButton>
                 <DefaultButton
-                    handler={() => (setIsOn(false), delHandler())}
+                    handler={() => (
+                        setIsDeleting(true), setIsOn(false), delHandler()
+                    )}
                     variant="red"
                 >
                     Yes

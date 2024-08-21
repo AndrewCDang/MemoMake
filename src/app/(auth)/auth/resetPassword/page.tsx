@@ -3,13 +3,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import { useSearchParams } from "next/navigation";
 import resetPasswordRequest from "@/app/_actions/resetPasswordRequest";
-import { useRouter } from "next/navigation";
 import SubmitMessage from "../../_components/submitResults/submitMessage";
 import style from "./resetPassword.module.scss";
 import ResetPasswordForm from "./resetPasswordForm";
 
-function page() {
-    const router = useRouter();
+function Page() {
     const searchParams = useSearchParams();
     const verificationRef = useRef<boolean>(false);
 
@@ -67,4 +65,4 @@ function page() {
     );
 }
 
-export default page;
+export default Page;

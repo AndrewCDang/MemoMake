@@ -16,13 +16,14 @@ type UploadImageTypes = {
     insertOnUpload?: boolean;
     onUploadHandler?: () => void;
     showImage?: boolean;
-    image: File | undefined;
-    setImage: Dispatch<SetStateAction<File | undefined>>;
+    image: File | null | undefined;
+    exisitingImage?: string | null;
+    setImage: Dispatch<SetStateAction<File | null | undefined>>;
 };
 
 export const uploadImageHandler = async (
-    image: File
-): Promise<{ url: string } | null | undefined> => {
+    image: File | null
+): Promise<{ url: string; image_id: string } | null | undefined> => {
     if (image) {
         const formData = new FormData();
         formData.append("image", image);
@@ -51,6 +52,7 @@ function UploadImage({
     insertOnUpload = false,
     onUploadHandler = () => null,
     showImage = true,
+    exisitingImage,
     image,
     setImage,
 }: UploadImageTypes) {
@@ -109,6 +111,13 @@ function UploadImage({
 
     return (
         <div className={style.imageformUploadContainer}>
+            {exisitingImage && !image && (
+                <img
+                    className={style.uploadedImagePreview}
+                    src={exisitingImage}
+                    alt={"existing_collection_image"}
+                />
+            )}
             {showImage && image && (
                 <>
                     <img

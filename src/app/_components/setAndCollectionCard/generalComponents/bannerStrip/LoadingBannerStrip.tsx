@@ -1,5 +1,9 @@
+"use client";
 import style from "./bannerStrip.module.scss";
 import { colours } from "@/app/styles/colours";
+import { PropsWithChildren, ReactNode } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function LoadingBannerStrip({
     contentType,
@@ -7,7 +11,7 @@ function LoadingBannerStrip({
     contentType: "collection" | "set";
 }) {
     const bannerRadius = 20;
-    const pathValue = 40;
+    const pathValue = 22;
     const pathGapBtm = pathValue + bannerRadius;
     const pathGapEnd = pathValue + 2 * bannerRadius;
 
@@ -34,52 +38,73 @@ function LoadingBannerStrip({
         }
         return null;
     };
+    const IconWrapper = ({ children }: PropsWithChildren<unknown>) => {
+        return (
+            <div
+                className={`${style.bannerIcon} `}
+                style={{
+                    boxShadow: iconBoxShadows,
+                }}
+            >
+                {children}
+            </div>
+        );
+    };
+
+    const skeletonIcon = <Skeleton wrapper={IconWrapper} count={1} />;
+
+    const BannerStripWrapper = ({ children }: PropsWithChildren<unknown>) => {
+        return (
+            <div className={`${style.backgroundContainerWrap}`}>
+                <div
+                    style={{
+                        clipPath: newPathD,
+                    }}
+                    className={style.backgroundContainer}
+                >
+                    {contentType === "collection" ? (
+                        <div> {children}</div>
+                    ) : null}
+                    {contentType === "set" && (
+                        <div
+                            style={{
+                                position: "absolute",
+                                top: "0",
+                                marginTop: "unset",
+                                height: "100%",
+                            }}
+                            className={style.foregroundContainerWrap}
+                        >
+                            <div className={style.foregroundContainer}></div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    const bannerStripIcon = (
+        <Skeleton
+            wrapper={BannerStripWrapper}
+            height={"100%"}
+            style={{ position: "absolute" }}
+            count={1}
+        />
+    );
 
     return (
         <>
             <div className={style.bannerContainer}>
                 <div className={style.bannerInternal}>
                     <section className={style.iconContainer}>
-                        {contentType && (
-                            <div
-                                className={`${style.bannerIcon} foregroundContainer2`}
-                                style={{
-                                    backgroundColor: colours.lightGrey(),
-                                    boxShadow: iconBoxShadows,
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        backgroundColor: colours.lightGrey(),
-                                        height: "1.5rem",
-                                        width: "1.5rem",
-                                    }}
-                                ></div>
-                            </div>
-                        )}
+                        {contentType && skeletonIcon}
                     </section>
                 </div>
             </div>
             {/* Bg for collection item */}
             {contentType === "collection" && <ForegroundContainer />}
             {/* Bg for set/collection item */}
-            <div
-                className={`${style.backgroundContainerWrap} foregroundContainer`}
-            >
-                <div
-                    style={{
-                        clipPath: newPathD,
-                        backgroundColor: colours.lightGrey(),
-                    }}
-                    className={style.backgroundContainer}
-                >
-                    {contentType === "set" && (
-                        <div className={style.foregroundContainerWrap}>
-                            <div className={style.foregroundContainer}></div>
-                        </div>
-                    )}
-                </div>
-            </div>
+            {bannerStripIcon}
         </>
     );
 }

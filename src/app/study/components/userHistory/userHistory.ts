@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/app/_lib/db";
 import { ContentType, Difficulty, UserHistory } from "@/app/_types/types";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const updateUserHistory = async ({
     item,
@@ -93,7 +93,7 @@ export const updateUserHistory = async ({
                 WHERE user_id = ${userId}
             `;
 
-        revalidatePath("dashboard");
+        revalidateTag("userHistory");
         return { status: 200, message: "updated history" };
     } catch (error: unknown) {
         if (error instanceof Error) {

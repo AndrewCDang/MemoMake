@@ -1,6 +1,7 @@
 .carouselWrapOverflowOffset {
-    transform: translateX(-0.5rem);
-    width: calc(100% + 1rem);
+    // transform: translateX(-0.5rem);
+    width: calc(100%);
+    height: 100%;
 }
 .carouselParent {
     position: relative;
@@ -25,4 +26,8 @@
     svg {
         stroke-width: 1;
     }
+}
+.btnContainer {
+    display: flex;
+    gap: 0.5rem;
 }

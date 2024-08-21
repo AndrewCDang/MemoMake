@@ -3,6 +3,7 @@ import React, {
     ReactNode,
     SetStateAction,
     useEffect,
+    useMemo,
     useState,
 } from "react";
 import style from "./bannerStrip.module.scss";
@@ -118,12 +119,19 @@ function BannerStrip({
     const bannerRadius = 20;
     const defaultBannerSpacing = () => {
         const iconSize = 40;
-        let conditions = 0;
+        let conditions = 1;
 
         if (isFavourited) conditions += 1;
-        if (set.public_access === true) conditions += 1;
+        if (
+            set.public_access === true &&
+            account &&
+            account.user_id !== set.user_id
+        )
+            conditions += 1;
+        // if (account && account.user_id !== set.user_id) conditions += 1;
 
-        return bannerRadius + conditions * iconSize;
+        console.log(conditions * iconSize);
+        return conditions * iconSize - bannerRadius;
     };
     const pathValue = useMotionValue(defaultBannerSpacing());
     const pathGap = useSpring(pathValue, spring);
@@ -187,7 +195,13 @@ function BannerStrip({
                     iconBoxShadows={iconBoxShadows}
                     themeColour={"white"}
                 >
-                    <AiFillPushpin />
+                    <AiFillPushpin
+                        style={{
+                            fill: isFavourited
+                                ? colours.blueSelect()
+                                : colours.grey(),
+                        }}
+                    />
                 </MotionIconContainer>
             );
         }
@@ -205,9 +219,9 @@ function BannerStrip({
         }
     };
 
-    const [initialLiked, setInitialLiked] = useState<boolean>(isLiked);
+    const initialLiked = useMemo(() => isLiked, []);
 
-    const getLikeCount = () => {
+    const getLikeCount = useMemo(() => {
         if (isLiked === initialLiked) return set.like_count;
         if (isLiked !== initialLiked) {
             if (initialLiked) {
@@ -217,10 +231,10 @@ function BannerStrip({
             }
         }
         return undefined;
-    };
+    }, [isLiked]);
 
     const getLikeIcon = () => {
-        if (set.public_access) {
+        if (account && set.public_access && account.user_id !== set.user_id) {
             return (
                 <MotionIconContainer
                     handler={likeHandler}
@@ -234,7 +248,7 @@ function BannerStrip({
                             isLiked && style.isLiked
                         }`}
                     >
-                        <span>{getLikeCount()}</span>
+                        <span>{getLikeCount}</span>
                         <IoMdThumbsUp />
                     </div>
                 </MotionIconContainer>

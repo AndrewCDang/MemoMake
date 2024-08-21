@@ -126,3 +126,13 @@
         height: 2rem;
     }
 }
+.loadingSectionBtnGroup {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    height: 2rem;
+    width: 6rem;
+    & > span {
+        display: flex;
+        height: 100%;
+    }
+}

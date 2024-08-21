@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
             tags: tagsArray,
             difficulties: difficultiesArray,
         });
+        console.log(data);
         return Response.json({ data });
     } catch (error: unknown) {
         if (error instanceof Error) {

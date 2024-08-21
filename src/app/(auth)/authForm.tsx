@@ -7,29 +7,36 @@ import { useLogInModal } from "../_hooks/useLogIn";
 import { useSignUpModal } from "../_hooks/useSignUp";
 import { useForgotModal } from "../_hooks/useForgot";
 import ForgotPassword from "./forgotPassword";
+import Modal from "../_components/modal/modal";
 
 function AuthForm() {
-    const { logInModal } = useLogInModal();
-    const { signUpModal } = useSignUpModal();
-    const { forgotModalisOpen } = useForgotModal();
+    const { logInModal, removeLogInModal } = useLogInModal();
+    const { signUpModal, removeSignUpModal } = useSignUpModal();
+    const { forgotModalisOpen, closeForgotModal } = useForgotModal();
     return (
-        <section
-            style={{
-                zIndex:
-                    logInModal || signUpModal || forgotModalisOpen ? 100 : -1,
-                backgroundColor:
-                    logInModal || signUpModal || forgotModalisOpen
-                        ? "rgba(0,0,0,0.3)"
-                        : "unset",
-            }}
-            className={style.authContainer}
-        >
-            <section>
-                {logInModal && <LogIn />}
-                {signUpModal && <SignUp />}
-                {forgotModalisOpen && <ForgotPassword />}
-            </section>
-        </section>
+        <>
+            <Modal
+                modalOn={logInModal}
+                modalTitle="Log In"
+                setModal={removeLogInModal}
+            >
+                <LogIn />
+            </Modal>
+            <Modal
+                modalOn={signUpModal}
+                modalTitle="Sign Up"
+                setModal={removeSignUpModal}
+            >
+                <SignUp />
+            </Modal>
+            <Modal
+                modalOn={forgotModalisOpen}
+                modalTitle="Reset Password"
+                setModal={closeForgotModal}
+            >
+                <ForgotPassword />
+            </Modal>
+        </>
     );
 }
 

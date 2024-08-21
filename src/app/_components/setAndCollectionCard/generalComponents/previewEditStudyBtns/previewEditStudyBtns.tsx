@@ -9,6 +9,8 @@ import { usePreviewModal } from "@/app/_components/previewModal/usePreviewModal"
 import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
 import Link from "next/link";
 import StudyBtn from "./studyBtn/studyBtn";
+import { useCreateSetModal } from "@/app/(protected)/dashboard/_dashboardModals/createSetModal/useCreateSetModal";
+import { useCreateCollectionModal } from "@/app/(protected)/dashboard/_dashboardModals/createCollectionModal/useCreateCollection";
 
 type PreviewEditStudyBtns = {
     publicCard: boolean;
@@ -39,13 +41,14 @@ function PreviewEditStudyBtns({
         showUsePreviewModal();
     };
 
+    const { showEditCollectionModal } = useCreateCollectionModal();
+
     // Edit Btn Handler
     const editHandler = (id: string) => {
         if (contentType === "set") {
         }
     };
 
-    console.log(publicCard);
     return (
         <div className={style.buttonContainer}>
             {/* {isRecentTested ||
@@ -56,7 +59,7 @@ function PreviewEditStudyBtns({
                     </DefaultButton>
                 ))} */}
             {!publicCard && contentType === "set" && (
-                <Link href={`dashboard/edit/${set.id}`}>
+                <Link href={`/dashboard/edit/${set.id}`}>
                     <DefaultButton>
                         <span>Edit</span>
                         <LuFileCog />
@@ -64,7 +67,13 @@ function PreviewEditStudyBtns({
                 </Link>
             )}
             {!publicCard && contentType === "collection" && (
-                <DefaultButton handler={() => editHandler(set.id)}>
+                <DefaultButton
+                    handler={() =>
+                        showEditCollectionModal(
+                            set as Flashcard_collection_set_joined
+                        )
+                    }
+                >
                     <span>Edit</span>
                     <HiMiniSquaresPlus />
                 </DefaultButton>

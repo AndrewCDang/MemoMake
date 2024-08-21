@@ -12,6 +12,7 @@ import CollectionSets from "@/app/_components/setAndCollectionCard/collectionCom
 import { capitaliseFirstChar } from "@/app/_functions/capitaliseFirstChar";
 import { HiChevronRight } from "react-icons/hi2";
 import ExpandHeightToggler from "@/app/_components/expandHeightToggler/expandHeightToggler";
+import MultipleCollections from "@/app/_components/setAndCollectionCard/collectionComponents/multipleCollections";
 
 type RecentItemsCardTypes = {
     historyItem: {
@@ -50,8 +51,10 @@ function RecentItemsCard({ historyItem }: RecentItemsCardTypes) {
             key={`recent-collection-group}`}
         >
             <section className={style.overlaidCarsContainer}>
-                {(historyItem.content as Flashcard_collection_set_joined[]).map(
-                    (item) => {
+                {historyItem.content.length === 1 &&
+                    (
+                        historyItem.content as Flashcard_collection_set_joined[]
+                    ).map((item) => {
                         const backgroundColour = item.theme_colour
                             ? colours[item.theme_colour]()
                             : colours.grey();
@@ -61,12 +64,12 @@ function RecentItemsCard({ historyItem }: RecentItemsCardTypes) {
                                 className={style.contentContainer}
                             >
                                 <section className={style.contentItem}>
-                                    <div
+                                    {/* <div
                                         className={style.contentItemBackground}
                                         style={{
                                             backgroundColor: backgroundColour,
                                         }}
-                                    ></div>
+                                    ></div> */}
                                     <div
                                         className={style.iconContainer}
                                         style={{
@@ -101,8 +104,7 @@ function RecentItemsCard({ historyItem }: RecentItemsCardTypes) {
                                 </section>
                             </section>
                         );
-                    }
-                )}
+                    })}
             </section>
             <section
                 className={`${style.labelBody} ${
@@ -134,6 +136,12 @@ function RecentItemsCard({ historyItem }: RecentItemsCardTypes) {
                                     }
                                 />
                             )}
+                        {historyItem.content.length > 1 && (
+                            <MultipleCollections
+                                collectionItem={historyItem.content}
+                                contentType={historyItem.content_type}
+                            />
+                        )}
                     </div>
                     <section
                         style={{ backgroundColor: settingBgCol }}

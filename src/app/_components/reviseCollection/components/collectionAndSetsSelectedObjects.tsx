@@ -9,6 +9,7 @@ import {
     Flashcard_collection_preview,
     Flashcard_set,
     Flashcard_set_with_cards,
+    Flashcard_set_with_count,
 } from "@/app/_types/types";
 
 export const DotIconsSetCollection = ({

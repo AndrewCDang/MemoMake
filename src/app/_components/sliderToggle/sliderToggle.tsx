@@ -11,18 +11,15 @@ type SliderToggleTypes = {
 };
 
 function SliderToggle({
-    name,
     checked,
-    setChecked,
+    name,
     handler,
     variant = "normal",
 }: SliderToggleTypes) {
-    const [isChecked, setIsChecked] = useState(checked);
-
     return (
         <section
             className={`${style.sliderToggleContainer} ${
-                variant === "coloured" && isChecked && style.colouredVariant
+                variant === "coloured" && checked && style.colouredVariant
             }`}
         >
             <label htmlFor={name}></label>
@@ -30,13 +27,8 @@ function SliderToggle({
                 className={style.sliderInput}
                 type="checkbox"
                 id={name}
-                checked={isChecked}
-                onChange={() => (
-                    handler(),
-                    setIsChecked((prevState) => {
-                        return !prevState;
-                    })
-                )}
+                checked={checked}
+                onChange={() => handler()}
             ></input>
             <div className={style.sliderBall}></div>
         </section>

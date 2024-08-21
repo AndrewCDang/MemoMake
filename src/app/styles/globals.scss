@@ -51,6 +51,10 @@ label {
     color: $col-grey;
 }
 
+.cursive {
+    font-family: var(--font-caveat) !important;
+}
+
 h1,
 h2,
 h3,
@@ -70,6 +74,7 @@ h6 {
     font-family: var(--font-outfit);
 }
 
+section,
 button,
 div,
 p,
