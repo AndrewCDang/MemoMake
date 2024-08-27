@@ -14,8 +14,7 @@ type SetAndCollectionCardTypes = {
     set: Flashcard_set | Flashcard_collection_set_joined;
     account: AccountWithLikesAndPins | undefined;
     contentType: "collection" | "set";
-    originalId?: string | null;
-    publicPage: boolean;
+    publicPage?: boolean;
     setInitialContent: Dispatch<
         SetStateAction<Flashcard_collection_set_joined[] | Flashcard_set[]>
     >;
@@ -25,8 +24,7 @@ function SetAndCollectionCard({
     set,
     account,
     contentType,
-    originalId = null,
-    publicPage,
+    publicPage = false,
     setInitialContent,
 }: SetAndCollectionCardTypes) {
     // Card not created by user

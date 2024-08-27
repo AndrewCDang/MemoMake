@@ -1,12 +1,12 @@
-"use client";
-import React, { useState } from "react";
 import { bulkInsert } from "@/app/_functions/bulkInset/bulkInsert";
-import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 import style from "./bulkInsert.module.scss";
-import { toastNotify } from "@/app/(toast)/toast";
 import Button from "@/app/_components/(buttons)/styledButton";
+import { auth } from "@/auth";
+import { notFound } from "next/navigation";
 
-function Page() {
+async function Page() {
+    const session = await auth();
+    if (!session) return notFound();
     const setId = "1f69995a-5ca6-4680-b45c-3cc69b2d4e2d";
 
     type DataArray = {
@@ -165,13 +165,13 @@ function Page() {
         },
     ];
 
-    const [loading, setLoading] = useState<boolean>(false);
     const insertBulkHandler = async () => {
         try {
-            setLoading(true);
-            await bulkInsert({ dataArray: dataArray, setId: setId });
-            toastNotify("inserted");
-            setLoading(false);
+            await bulkInsert({
+                dataArray: dataArray,
+                setId: setId,
+                userId: session.user.id,
+            });
         } catch (error) {
             console.log(error);
         }
@@ -193,7 +193,6 @@ function Page() {
             </div>
             <Button
                 text="Bulk Insert"
-                loading={loading}
                 variant="black"
                 handler={insertBulkHandler}
             ></Button>

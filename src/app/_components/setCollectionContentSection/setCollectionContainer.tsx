@@ -6,6 +6,7 @@ import {
     Flashcard_set,
 } from "@/app/_types/types";
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
+import { useState } from "react";
 
 type SetCollectionContainerType = {
     account: AccountWithLikesAndPins | undefined;
@@ -23,12 +24,16 @@ function SetCollectionContainer({
     content,
     contentType,
 }: SetCollectionContainerType) {
+    const [initialContent, setInitialContent] = useState<
+        Flashcard_collection_set_joined[] | Flashcard_set[]
+    >(content);
     return (
         <section className={style.setGrid}>
             {content &&
                 content.map((item, index) => {
                     return (
                         <SetAndCollectionCard
+                            setInitialContent={setInitialContent}
                             key={index}
                             set={item}
                             account={account}

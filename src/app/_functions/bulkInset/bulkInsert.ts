@@ -4,13 +4,19 @@ import insertFlashCard from "../../_actions/insertFlashCard";
 type BulkInsertTypes = {
     setId: string;
     dataArray: AuthItemTypes[];
+    userId: string;
 };
 
-export const bulkInsert = async ({ setId, dataArray }: BulkInsertTypes) => {
+export const bulkInsert = async ({
+    setId,
+    dataArray,
+    userId,
+}: BulkInsertTypes) => {
     if (!dataArray) return;
     try {
         for (const item of dataArray) {
             const fetch = await insertFlashCard({
+                userId: userId,
                 setId: setId,
                 data: item,
             });
