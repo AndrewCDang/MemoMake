@@ -2,7 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import { useSearchParams } from "next/navigation";
-import resetPasswordRequest from "@/app/_actions/resetPasswordRequest";
+import resetPasswordRequest from "../../../_actions/resetPasswordRequest";
+
 import SubmitMessage from "../../_components/submitResults/submitMessage";
 import style from "./resetPassword.module.scss";
 import ResetPasswordForm from "./resetPasswordForm";
