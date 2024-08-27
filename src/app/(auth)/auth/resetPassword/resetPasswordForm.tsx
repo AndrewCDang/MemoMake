@@ -11,7 +11,6 @@ import SubmitMessage from "../../_components/submitResults/submitMessage";
 import { useState } from "react";
 import Link from "next/link";
 import style from "./resetPassword.module.scss";
-import LoadingCircle from "@/app/_components/loadingUi/loadingCircle";
 
 type ResetPasswordTypes = {
     success: boolean;
