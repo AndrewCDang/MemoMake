@@ -7,6 +7,7 @@ import React, {
     useRef,
     useEffect,
     useState,
+    useLayoutEffect,
 } from "react";
 import { motion } from "framer-motion";
 import DefaultButton from "../(buttons)/defaultButton";
@@ -27,10 +28,12 @@ export function ContentCarouselParent({
     children,
     updateValues = [],
     btnType = "sideToSideBtm",
+    refreshOnLoad = true,
 }: {
     children: ReactNode;
     updateValues?: any[];
     btnType?: "allInLine" | "sideToSideBtm";
+    refreshOnLoad?: boolean;
 }) {
     // Converting children to an array
     const childrenArray = React.Children.toArray(children);
@@ -135,6 +138,7 @@ export function ContentCarouselParent({
                             }%`,
                         }}
                         initial={{ left: `${index * 100}%` }}
+                        style={{ top: 0 }}
                         key={index}
                     >
                         {item}

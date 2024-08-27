@@ -15,6 +15,8 @@ export const apiPublicRoutes = [
     "/auth/verify",
     "/auth/resetPassword",
     "/study",
+    "/discover",
+    "/api/fetch/fetchStudyFlashCards",
 ];
 
 /**

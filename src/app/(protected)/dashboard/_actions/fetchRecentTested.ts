@@ -92,8 +92,8 @@ export const fetchRecentTested = async ({
                 }
             }
         },
-        [userId],
-        { tags: ["userHistory"] }
+        [],
+        { tags: [`userHistory-${userId}`] }
     );
 
     return cachedHistory();

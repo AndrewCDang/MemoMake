@@ -103,10 +103,12 @@ type SetCollectionCardTypes = {
     initialSetItems: Flashcard_set_with_cards[];
     initialCollectionItems: Flashcard_collection_preview[];
     reviseModalType: ContentType;
+    index: number;
 };
 
 const SetCollectionCard = ({
     item,
+    index,
     removeFromSet,
     removeFromCollection,
     initialSetItems,
@@ -115,25 +117,27 @@ const SetCollectionCard = ({
 }: SetCollectionCardTypes) => {
     return (
         <div className={style.setCard}>
-            <div className={style.setCardBanner}>
-                <CornerClose
-                    type="circleCorner"
-                    cornerSpace="tight"
-                    handler={() =>
-                        reviseModalType === "set"
-                            ? removeFromSet({
-                                  id: item.id,
-                                  existingItems: initialSetItems,
-                              })
-                            : reviseModalType === "collection"
-                            ? removeFromCollection({
-                                  id: item.id,
-                                  existingItems: initialCollectionItems,
-                              })
-                            : null
-                    }
-                />
-            </div>
+            {index !== 0 && (
+                <div className={style.setCardBanner}>
+                    <CornerClose
+                        type="circleCorner"
+                        cornerSpace="tight"
+                        handler={() =>
+                            reviseModalType === "set"
+                                ? removeFromSet({
+                                      id: item.id,
+                                      existingItems: initialSetItems,
+                                  })
+                                : reviseModalType === "collection"
+                                ? removeFromCollection({
+                                      id: item.id,
+                                      existingItems: initialCollectionItems,
+                                  })
+                                : null
+                        }
+                    />
+                </div>
+            )}
             <div className={style.cardBody}>
                 <div className={style.cardNameWrap}>
                     <DotIconsSetCollection
@@ -166,11 +170,12 @@ function CollectionAndSetsSelectedObjects() {
         <>
             {initialCollectionItems &&
                 reviseModalType === "collection" &&
-                initialCollectionItems.map((item) => {
+                initialCollectionItems.map((item, index) => {
                     return (
                         <SetCollectionCard
                             key={`${item.id}-revise-modal`}
                             item={item}
+                            index={index}
                             removeFromSet={removeFromSet}
                             removeFromCollection={removeFromCollection}
                             initialCollectionItems={initialCollectionItems}
@@ -181,11 +186,12 @@ function CollectionAndSetsSelectedObjects() {
                 })}
             {initialSetItems &&
                 reviseModalType === "set" &&
-                initialSetItems.map((item) => {
+                initialSetItems.map((item, index) => {
                     return (
                         <SetCollectionCard
                             key={`${item.id}-revise-modal`}
                             item={item}
+                            index={index}
                             removeFromSet={removeFromSet}
                             removeFromCollection={removeFromCollection}
                             initialCollectionItems={initialCollectionItems}

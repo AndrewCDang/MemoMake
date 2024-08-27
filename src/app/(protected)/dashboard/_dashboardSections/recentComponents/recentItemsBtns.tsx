@@ -5,6 +5,7 @@ import React from "react";
 import { usePreviewModal } from "@/app/_components/previewModal/usePreviewModal";
 import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
 import {
+    Account,
     ContentType,
     Flashcard_collection_preview,
     Flashcard_set,
@@ -16,23 +17,24 @@ import { HiArrowSmallRight, HiMiniMagnifyingGlass } from "react-icons/hi2";
 type RecentItemsBtnsTypes = {
     contentType: ContentType;
     id: string | string[];
+    account: Account;
 };
 
-function RecentItemsBtns({ contentType, id }: RecentItemsBtnsTypes) {
+function RecentItemsBtns({ account, contentType, id }: RecentItemsBtnsTypes) {
     // Preview Handler | Modal
     const { setPreviewCollectionItems, showUsePreviewModal } =
         usePreviewModal();
 
     const previewHandler = async (id: string | string[]) => {
+        showUsePreviewModal();
         const promise = await fetchSetsWithItems({
-            fetchObject: { id: id, type: contentType },
+            fetchObject: { userId: account.id, id, type: contentType },
         });
         if (!promise) return;
         setPreviewCollectionItems({
             type: contentType,
             content: promise,
         });
-        showUsePreviewModal();
     };
 
     // Study Handler | Modal
@@ -40,8 +42,10 @@ function RecentItemsBtns({ contentType, id }: RecentItemsBtnsTypes) {
         useReviseModal();
 
     const studyHandler = async (id: string | string[]) => {
+        showReviseModal();
+
         const promise = await fetchSetsWithItems({
-            fetchObject: { id: id, type: contentType },
+            fetchObject: { userId: account.id, id: id, type: contentType },
         });
 
         if (!promise) return;
@@ -54,8 +58,6 @@ function RecentItemsBtns({ contentType, id }: RecentItemsBtnsTypes) {
                     | Flashcard_collection_preview[],
             });
         }
-
-        showReviseModal();
     };
 
     return (

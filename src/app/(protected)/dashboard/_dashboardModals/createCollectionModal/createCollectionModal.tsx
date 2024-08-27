@@ -90,6 +90,7 @@ function CreateCollectionModal({
         coloursType | ThemeColour
     >(isEdit ? (editedItem ? editedItem.theme_colour : "white") : "white");
     const [image, setImage] = useState<File | null>();
+    const [isLoadingNewItems, setIsLoadingNewItems] = useState<boolean>(false);
 
     const filteredList = collectionSet
         .filter((item) =>

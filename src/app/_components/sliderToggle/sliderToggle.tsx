@@ -12,6 +12,7 @@ type SliderToggleTypes = {
 
 function SliderToggle({
     checked,
+    setChecked,
     name,
     handler,
     variant = "normal",

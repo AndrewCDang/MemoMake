@@ -1,0 +1,17 @@
+@import "../../../styles/colours.scss";
+@import "../../../styles/mixins";
+
+.textInputWrap {
+    padding: 0.5rem;
+    background-color: $col-white;
+    border-radius: 1rem;
+    box-shadow: $box-shadow-sm;
+    margin-bottom: 1rem;
+    fieldset {
+        background-color: $col-white;
+        border: unset;
+    }
+    input {
+        border: unset;
+    }
+}

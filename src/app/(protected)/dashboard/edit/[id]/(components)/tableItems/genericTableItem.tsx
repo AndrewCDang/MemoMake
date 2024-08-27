@@ -75,6 +75,7 @@ function GenericTableItem({
                         type: (item as "item_question") || "item_answer",
                         image: imageUpload.url,
                         id: card.id,
+                        setId: card.set_id,
                     });
                     console.log(updateImgDb);
                 }

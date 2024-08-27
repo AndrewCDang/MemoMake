@@ -1,0 +1,43 @@
+@import "../../../_components/categoryInput/categoryInput.module.scss";
+@import "../../../styles/mixins";
+@import "../../../styles/colours.scss";
+
+@mixin labelStyle {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+.difficultyBtns {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+    .labelWrap {
+        min-width: 2rem !important;
+        div {
+            margin: 0 auto;
+        }
+    }
+}
+.otherDiffSelection {
+    display: flex;
+    gap: 0.5rem;
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(0%, -50%);
+    background-color: $col-white;
+    z-index: 10;
+    padding: 0.5rem;
+    box-shadow: $box-shadow-default;
+    border-radius: 0.5rem;
+}
+.difficultyLabelValue {
+    width: fit-content;
+    @include labelStyle;
+    position: relative;
+    display: flex;
+    & > div {
+        @include removeCategoryCSS;
+    }
+    max-width: 100%;
+}

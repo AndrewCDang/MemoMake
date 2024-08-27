@@ -18,6 +18,7 @@ import {
 import { searchByOptions, subjects } from "./webpageContent/webpageContent";
 import InputSearchBar from "./searchBar/searchBar";
 import { removeDuplicates } from "@/app/_functions/removeDuplicates";
+import Link from "next/link";
 
 type SearchActiveTypes = {
     searchType: string;
@@ -112,10 +113,10 @@ function SearchActive({
             />
             <section className={style.subjectsContainer}>
                 <div className={style.subjectGroup}>
-                    {searchByOptions.map((item) => {
+                    {searchByOptions.map((item, index) => {
                         return (
                             <DefaultButton
-                                key={`${item}-search`}
+                                key={`${item}-search-${index}`}
                                 outline={false}
                             >
                                 {item}
@@ -127,14 +128,19 @@ function SearchActive({
                     <label className={style.subheading}>
                         Topics of the day
                     </label>
-                    {subjects.map((item) => {
+                    {subjects.map((item, index) => {
                         return (
-                            <DefaultButton
-                                outline={false}
-                                key={`${item}-search-suggestion`}
+                            <Link
+                                href={`/discover?search=${item}`}
+                                key={`${item}-search-suggestion-${index}`}
                             >
-                                {item}
-                            </DefaultButton>
+                                <DefaultButton
+                                    handler={handler}
+                                    outline={false}
+                                >
+                                    {item}
+                                </DefaultButton>
+                            </Link>
                         );
                     })}
                 </div>

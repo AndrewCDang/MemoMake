@@ -13,6 +13,7 @@ import { IoBookOutline } from "react-icons/io5";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Arrows from "../landing/arrows";
+import { debounce } from "@/app/_functions/debounce";
 
 type CardObjectType = {
     svg: ReactNode;
@@ -81,11 +82,23 @@ function CrescentCards() {
     const [contentHeight, setContentHeight] = useState(0);
     const [containerLoaded, setContainerLoaded] = useState(false);
 
+    const handleResize = () => {
+        if (containerRef.current) {
+            setContentWidth(containerRef.current.clientWidth - 160);
+            setContentHeight(containerRef.current.clientHeight);
+        }
+    };
+    const handleResizeDebounced = debounce(handleResize, 100);
+
     useEffect(() => {
         if (containerRef.current) {
             setContentWidth(containerRef.current.clientWidth - 160);
             setContentHeight(containerRef.current.clientHeight);
             setContainerLoaded(true);
+
+            window.addEventListener("resize", handleResizeDebounced);
+            return () =>
+                window.removeEventListener("resize", handleResizeDebounced);
         }
     }, [containerRef]);
 

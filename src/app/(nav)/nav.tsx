@@ -17,7 +17,7 @@ async function Nav() {
 
     return (
         <nav className={style.nav}>
-            <FlashmuLogo />
+            <FlashmuLogo isLoggedIn={session !== null} />
             <SearchBar />
             <section className={style.navButtons}>
                 <NavUser session={session} />

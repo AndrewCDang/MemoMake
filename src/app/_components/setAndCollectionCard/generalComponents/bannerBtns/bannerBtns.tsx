@@ -22,6 +22,9 @@ type BannerBtnsTypes = {
     set: Flashcard_collection_set_joined | Flashcard_set;
     contentType: ContentType;
     setIsDeleting: Dispatch<SetStateAction<boolean>>;
+    setInitialContent: Dispatch<
+        SetStateAction<Flashcard_collection_set_joined[] | Flashcard_set[]>
+    >;
 };
 
 export const BannerIcon = ({
@@ -55,6 +58,7 @@ export const BannerIcon = ({
     );
 };
 function BannerBtns({
+    setInitialContent,
     setIsDeleting,
     publicCard,
     setIsFavourited,
@@ -70,15 +74,19 @@ function BannerBtns({
         usePreviewModal();
 
     const previewHandler = async (id: string) => {
+        showUsePreviewModal();
         const promise = await fetchSetsWithItems({
-            fetchObject: { id: id, type: contentType },
+            fetchObject: {
+                userId: (account && account.user_id) || "",
+                id: id,
+                type: contentType,
+            },
         });
         if (!promise) return;
         setPreviewCollectionItems({
             type: contentType,
             content: promise,
         });
-        showUsePreviewModal();
     };
 
     const cardType = contentType[0].toUpperCase() + contentType.slice(1);
@@ -95,6 +103,7 @@ function BannerBtns({
                     handler={() => setIsFavourited((prevState) => !prevState)}
                 >
                     <PinIcon
+                        contentType={contentType}
                         favourited={isFavourited}
                         userId={account && account.user_id}
                         setId={set.id}
@@ -135,6 +144,7 @@ function BannerBtns({
                         isOn={delConfirmation}
                     >
                         <DeleteConfirmation
+                            setInitialContent={setInitialContent}
                             setIsDeleting={setIsDeleting}
                             account={account}
                             isOn={delConfirmation}

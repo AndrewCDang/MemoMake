@@ -1,5 +1,5 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { db } from "../_lib/db";
 import { coloursType } from "../styles/colours";
 import { ThemeColour } from "../_types/types";
@@ -27,7 +27,7 @@ export const insertCollection = async ({
         })
         `;
 
-        revalidatePath("/dashboard");
+        revalidateTag(`dashboard-${id}`);
         return { status: 200, message: "Collection created" };
     } catch (error: unknown) {
         if (error instanceof Error) {

@@ -1,8 +1,8 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { db } from "../_lib/db";
 
-export const delCard = async (ids: string[]) => {
+export const delCard = async (ids: string[], setId: string) => {
     try {
         const promises = ids.map(async (item) => {
             await db`
@@ -11,7 +11,7 @@ export const delCard = async (ids: string[]) => {
             `;
         });
         await Promise.all(promises);
-        revalidatePath("/dashboard/flashcard");
+        revalidateTag(setId);
         return { message: "Success: Item Deleted" };
     } catch (error) {
         console.log("Error: Could not delete item from database");

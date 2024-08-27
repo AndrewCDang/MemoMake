@@ -16,9 +16,15 @@ import AvailableQuestionSection from "./components/availableQuestionsSection";
 import CollectionAndSetsSection from "./components/collectionAndSetsSection";
 import { Session } from "next-auth";
 import useRevisionFlashItems from "@/app/_hooks/useRevisionFlashItems";
+import { motion } from "framer-motion";
+import LoadingCircle from "../loadingUi/loadingCircle";
+import {
+    ContentCarouselChild,
+    ContentCarouselParent,
+} from "../contentCarousel/contentCarousel";
 
 type ReviseCollectionModalContentTypes = {
-    session: Session;
+    session: Session | undefined;
     collectionSet?: Flashcard_set_with_count[];
     contentType: "collection" | "set";
 };
@@ -38,10 +44,10 @@ ReviseCollectionModalContentTypes) {
         initialSetItems,
         reviseModalType,
         hideReviseModal,
+        resetItems,
     } = useReviseModal();
 
     const router = useRouter();
-    const [reviseAll, setReviseAll] = useState<boolean>(true);
     const [allTags, setAllTags] = useState<boolean>(true);
     const [allDiff, setAllDiff] = useState<boolean>(true);
 
@@ -140,15 +146,18 @@ ReviseCollectionModalContentTypes) {
 
     // Filtering Fetched items By Tags and difficulties if applicable
 
-    const filterByTags = allTags
-        ? fetchedItems
-        : fetchedItems.filter(
-              (item) =>
-                  item &&
-                  item.item_tags.some((tagItem) =>
-                      selectedTags.includes(tagItem)
+    const filterByTags =
+        fetchedItems.length > 0
+            ? allTags
+                ? fetchedItems
+                : fetchedItems.filter(
+                      (item) =>
+                          item &&
+                          item.item_tags.some((tagItem) =>
+                              selectedTags.includes(tagItem)
+                          )
                   )
-          ); //Only includes items of matching selected tags
+            : []; //Only includes items of matching selected tags
 
     const filterThenByDifficulties = allDiff
         ? filterByTags
@@ -156,14 +165,17 @@ ReviseCollectionModalContentTypes) {
               (item) => item && selectedDiff.includes(item.difficulty)
           ); //Only includes items of matching selected  diff tags
 
-    const filteredFlashItems = filterThenByDifficulties.filter(
-        (item, index, array) => {
-            const idArray = array.map((item) => item.id);
-            if (idArray.indexOf(item.id) === index) {
-                return item;
-            }
-        }
-    ); //Removes duplicates
+    const filteredFlashItems =
+        filterThenByDifficulties.length > 0 &&
+        fetchedItems.length > 0 &&
+        fetchedItems[0] !== null
+            ? filterThenByDifficulties.filter((item, index, array) => {
+                  const idArray = array.map((item) => item.id);
+                  if (idArray.indexOf(item.id) === index) {
+                      return item;
+                  }
+              })
+            : []; //Removes duplicates
 
     useEffect(() => {
         console.log(filterThenByDifficulties);
@@ -173,18 +185,6 @@ ReviseCollectionModalContentTypes) {
 
     const sliderTagsHandler = () => {
         setAllTags((prevState) => {
-            return !prevState;
-        });
-    };
-
-    const sliderDifficultyHandler = () => {
-        setAllDiff((prevState) => {
-            return !prevState;
-        });
-    };
-
-    const sliderToggleHandler = () => {
-        setReviseAll((prevState) => {
             return !prevState;
         });
     };
@@ -251,52 +251,63 @@ ReviseCollectionModalContentTypes) {
 
             const url = `/study?${collection}${set}${tags}${difficulties}`;
             hideReviseModal();
+            resetItems();
             router.push(url);
         }
     };
 
-    return (
-        <section className={style.cardModal}>
-            <CollectionAndSetsSection
-                session={session}
-                contentType={reviseModalType || "collection"}
-                tagsCollection={tagsCollection}
-                setSelectedSets={setSelectedSets}
-                selectedSets={selectedSets}
-                setSelectedTags={setSelectedTags}
-                setFetchLoading={setFetchLoading}
-            />
-            <TagsModalSection
-                allTags={allTags}
-                selectedTags={selectedTags}
-                setAllTags={setAllTags}
-                sliderTagsHandler={sliderTagsHandler}
-                selectedTagListHandler={selectedTagListHandler}
-                availableTags={availableTags}
-            />
-            <DifficultyModalSection
-                allDiff={allDiff}
-                selectedDiff={selectedDiff}
-                setSelectedDiff={setSelectedDiff}
-                setReviseAll={setReviseAll}
-                reviseAll={reviseAll}
-                sliderDifficultyHandler={sliderDifficultyHandler}
-            />
-            <AvailableQuestionSection
-                selectedSets={selectedSets}
-                filteredFlashItems={filteredFlashItems}
-                allDiff={allDiff}
-                allTags={allTags}
-                fetchLoading={fetchLoading}
-            />
+    if (initialCollectionItems.length === 0 && initialSetItems.length === 0) {
+        return (
+            <section className={style.cardModal}>
+                <div className={style.loadingWrap}>
+                    {<LoadingCircle variant="contain" />}
+                </div>
+            </section>
+        );
+    } else
+        return (
+            <section className={style.cardModal}>
+                <div>
+                    <CollectionAndSetsSection
+                        session={session}
+                        contentType={reviseModalType || "collection"}
+                        tagsCollection={tagsCollection}
+                        setSelectedSets={setSelectedSets}
+                        selectedSets={selectedSets}
+                        setSelectedTags={setSelectedTags}
+                        setFetchLoading={setFetchLoading}
+                    />
+                    <TagsModalSection
+                        allTags={allTags}
+                        selectedTags={selectedTags}
+                        setAllTags={setAllTags}
+                        sliderTagsHandler={sliderTagsHandler}
+                        selectedTagListHandler={selectedTagListHandler}
+                        availableTags={availableTags}
+                    />
+                    <DifficultyModalSection
+                        allDiff={allDiff}
+                        selectedDiff={selectedDiff}
+                        setSelectedDiff={setSelectedDiff}
+                        setAllDiff={setAllDiff}
+                    />
 
-            <Button
-                text="Start"
-                handler={startRevisionHandler}
-                disabled={filteredFlashItems.length > 0 ? false : true}
-            />
-        </section>
-    );
+                    <AvailableQuestionSection
+                        selectedSets={selectedSets}
+                        filteredFlashItems={filteredFlashItems}
+                        allDiff={allDiff}
+                        allTags={allTags}
+                        fetchLoading={fetchLoading}
+                    />
+
+                    <Button
+                        text="Start"
+                        handler={startRevisionHandler}
+                        disabled={filteredFlashItems.length > 0 ? false : true}
+                    />
+                </div>
+            </section>
+        );
 }
 
 export default ReviseCollectionModalContent;

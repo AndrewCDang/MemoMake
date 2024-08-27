@@ -1,0 +1,63 @@
+@import "../../../../styles/colours.scss";
+@import "../../../../styles/mixins";
+@import "../../../../styles/breakpoints.scss";
+
+.randomQuestionFlip {
+    position: relative;
+    &:hover .questionSide {
+        transform: rotateY(180deg);
+    }
+    &:hover .answerSide {
+        transform: rotateY(180deg) scaleX(-1);
+    }
+}
+.randomQuestion {
+    width: 12rem;
+    background-color: $col-white;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    height: fit-content;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    box-shadow: $box-shadow-sm;
+    flex-direction: column;
+    color: $col-white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    .randomTitleLabel,
+    .foundInLabel {
+        border-bottom: 2px solid $col-white;
+        padding-bottom: 0.5rem;
+        font-weight: 600;
+        span {
+            font-size: 0.8rem;
+            font-weight: 400;
+        }
+        margin-bottom: 0.5rem;
+    }
+    .randomQuestionText {
+        display: grid;
+        place-items: center;
+        flex: 1;
+        width: fit-content;
+        margin: 0 auto;
+    }
+}
+.questionSide {
+    position: relative;
+    background: linear-gradient(to left, $col-yellow, $col-red);
+    z-index: 1;
+    backface-visibility: hidden;
+    transition: transform 0.4s $cubicBezier;
+    perspective: 500px;
+}
+.answerSide {
+    background-color: $col-blue;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotateY(0deg) scaleX(-1);
+    transition: transform 0.4s $cubicBezier;
+    perspective: 500px;
+}

@@ -4,6 +4,12 @@ import ExistingSets from "./existingSets";
 import DashboardModal from "./_dashboardModals/dashboardModal";
 import { fetchCollectionSetCount } from "@/app/_lib/fetch/fetchCollectionSetCount";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Flashmu | Dashboard",
+    description: "View all your Flash Sets and Collections here",
+};
 
 async function Page() {
     const session = await auth();

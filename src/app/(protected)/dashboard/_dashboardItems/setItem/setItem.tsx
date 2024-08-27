@@ -25,17 +25,16 @@ export const FlashCardItem = ({
         usePreviewModal();
 
     const handler = async (id: string) => {
+        showUsePreviewModal();
+
         const promise = await fetchSetsWithItems({
-            fetchObject: { id: id, type: "set" },
+            fetchObject: { userId: set.user_id, id: id, type: "set" },
         });
-        console.log(id);
-        console.log(promise);
         if (!promise) return;
         setPreviewCollectionItems({
             type: "set",
             content: promise as Flashcard_set_with_cards[],
         });
-        showUsePreviewModal();
     };
 
     return (
@@ -61,6 +60,7 @@ export const FlashCardItem = ({
             </div>
             <div className={style.favouriteContainer}>
                 <FavouriteIcon
+                    contentType={set.content_type}
                     favourited={
                         account !== undefined
                             ? account.favourites.includes(set.id)

@@ -59,6 +59,7 @@ export const signUp = async (
     const verification = await generateVerificationToken(email);
     if (verification) {
         if (verification.token) {
+            console.log("emailFetch");
             const verifyEmailAddress = await verifyEmail({
                 token: verification.token,
                 userName,

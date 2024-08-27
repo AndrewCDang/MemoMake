@@ -1,12 +1,13 @@
 "use client";
 import style from "./deleteConfirmation.module.scss";
 import DefaultButton from "@/app/_components/(buttons)/defaultButton";
-import { Account, ContentType } from "@/app/_types/types";
+import { Account, ContentType, Flashcard_set } from "@/app/_types/types";
 import { capitaliseFirstChar } from "@/app/_functions/capitaliseFirstChar";
 import { HiMiniTrash } from "react-icons/hi2";
 import PopOverContent from "@/app/_components/_generalUi/popOverContent/popOverContent";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { delSetOrCollection } from "@/app/_actions/delSetOrCollection";
+import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 
 type DeleteConfirmationTypes = {
     account: Account;
@@ -16,6 +17,9 @@ type DeleteConfirmationTypes = {
     setIsDeleting: Dispatch<SetStateAction<boolean>>;
     setIsOn: Dispatch<SetStateAction<boolean>>;
     imageId?: string | null;
+    setInitialContent: Dispatch<
+        SetStateAction<Flashcard_collection_set_joined[] | Flashcard_set[]>
+    >;
 };
 
 function DeleteConfirmation({
@@ -26,6 +30,7 @@ function DeleteConfirmation({
     isOn,
     setIsOn,
     imageId,
+    setInitialContent,
 }: DeleteConfirmationTypes) {
     const ref = useRef<HTMLDivElement>(null);
     const isMountedRef = useRef(false);
@@ -69,6 +74,20 @@ function DeleteConfirmation({
         }
     };
 
+    const deleteItemClient = () => {
+        setTimeout(() => {
+            setInitialContent((prevState) => {
+                const remainingIds = prevState.filter(
+                    (item) => item.id !== id
+                ) as Flashcard_collection_set_joined[] | Flashcard_set[];
+
+                // Return the filtered array, which will match the expected type
+                return remainingIds;
+            });
+            delHandler();
+        }, 500);
+    };
+
     return (
         <div ref={ref} className={style.delConfirmationContainer}>
             <div className={style.delText}>
@@ -79,7 +98,7 @@ function DeleteConfirmation({
                 <DefaultButton handler={() => setIsOn(false)}>No</DefaultButton>
                 <DefaultButton
                     handler={() => (
-                        setIsDeleting(true), setIsOn(false), delHandler()
+                        setIsDeleting(true), deleteItemClient(), setIsOn(false)
                     )}
                     variant="red"
                 >

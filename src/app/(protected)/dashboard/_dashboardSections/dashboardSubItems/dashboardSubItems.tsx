@@ -12,7 +12,10 @@ import {
     ContentCarouselParent,
 } from "@/app/_components/contentCarousel/contentCarousel";
 import LoadingCircle from "@/app/_components/loadingUi/loadingCircle";
-import { fetched_pinned_items } from "@/app/_lib/fetch/fetchPinnedItems";
+import {
+    Fetch_pin_objects,
+    Fetched_pin_array,
+} from "@/app/_lib/fetch/fetchPinnedItemsById";
 
 type SubDashboardType = "Pinned" | "Liked" | "History";
 type DashboardSubItemsTypes = {
@@ -20,16 +23,11 @@ type DashboardSubItemsTypes = {
         | RecentItemsTypes<Flashcard_collection_set_joined[] | Flashcard_set[]>
         | undefined;
     account: Account;
-    itemsArray: {
-        contentType: "collection" | "set";
-        array: Flashcard_set[] | Flashcard_collection_set_joined[];
-    }[];
     likedItems: Fetched_like_array;
-    pinnedItems: fetched_pinned_items;
+    pinnedItems: Fetched_pin_array;
 };
 
 function DashboardSubItems({
-    itemsArray,
     account,
     recentItems,
     likedItems,
@@ -48,24 +46,27 @@ function DashboardSubItems({
                     <ContentCarouselParent btnType="allInLine">
                         <ContentCarouselChild pageName="pinned">
                             <LikedPinnedItems
-                                itemsArray={pinnedItems}
                                 account={account}
                                 title="Liked Items"
                                 type="pin"
                                 pinnedItems={pinnedItems}
+                                likedItems={likedItems}
                             />
                         </ContentCarouselChild>
                         <ContentCarouselChild pageName="liked">
                             <LikedPinnedItems
-                                itemsArray={likedItems}
                                 account={account}
                                 title="like"
                                 type="like"
                                 pinnedItems={pinnedItems}
+                                likedItems={likedItems}
                             />
                         </ContentCarouselChild>
                         <ContentCarouselChild pageName="history">
-                            <RecentItemsSection recentItems={recentItems} />
+                            <RecentItemsSection
+                                account={account}
+                                recentItems={recentItems}
+                            />
                         </ContentCarouselChild>
                     </ContentCarouselParent>
                 </div>

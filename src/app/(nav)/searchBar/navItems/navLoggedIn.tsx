@@ -58,11 +58,13 @@ function NavLoggedIn({ session }: { session: Session | null }) {
     return (
         <section className={style.navBtnWrap}>
             {!session?.user && (
-                <FlipBtn
-                    baseText="Create Account"
-                    hoverText="Create Account"
-                    handler={showSignUpModal}
-                />
+                <div className={style.flipBtnWrap}>
+                    <FlipBtn
+                        baseText="Create Account"
+                        hoverText="Create Account"
+                        handler={showSignUpModal}
+                    />
+                </div>
             )}
             <div className={style.navBtn}>
                 <button

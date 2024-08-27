@@ -10,19 +10,20 @@ import { HiCheck } from "react-icons/hi2";
 import { HiMiniXMark } from "react-icons/hi2";
 import { HiArrowRight } from "react-icons/hi2";
 import { motion } from "framer-motion";
+import { labelColour } from "@/app/_components/_generalUi/difficultyColours/difficultyColours";
+import DifficultyBtns from "./components/difficultyBtns";
 
 type FlashResults = {
     flashCardItemsTest: CombinedType[];
     testIncorrect: boolean;
     setTestIncorrect: Dispatch<SetStateAction<boolean>>;
-    setIncorrectQuestions: Dispatch<SetStateAction<CombinedType[] | undefined>>;
+    userId: string | undefined;
 };
 
 function FlashResults({
     flashCardItemsTest,
     testIncorrect,
-    setTestIncorrect,
-    setIncorrectQuestions,
+    userId,
 }: FlashResults) {
     let emptyObject = {};
     flashCardItemsTest.forEach((item) => {
@@ -72,7 +73,6 @@ function FlashResults({
     };
 
     const sortedArray = sortByCorrect(sortByDiff(flashCardItemsTest));
-
     return (
         <motion.section
             className={style.resultsContainer}
@@ -98,15 +98,7 @@ function FlashResults({
                             className={`${style.resultItem} ${style.resultsBanner}`}
                         >
                             <section className={style.resultsCompact}>
-                                <aside
-                                    style={{
-                                        width:
-                                            item.difficulty !== "NA"
-                                                ? "8rem"
-                                                : "fit-content",
-                                    }}
-                                    className={style.resultInfo}
-                                >
+                                <aside className={style.resultInfo}>
                                     {item.correct ? (
                                         <div className={style.correctSVG}>
                                             {<HiCheck />}
@@ -116,34 +108,12 @@ function FlashResults({
                                             <HiMiniXMark />
                                         </div>
                                     )}
-                                    {item.difficulty !== "NA" && (
-                                        <aside>
-                                            <div
-                                                style={{
-                                                    color: diffColour({
-                                                        diff: item.difficulty,
-                                                    }),
-                                                    borderColor: diffColour({
-                                                        diff: item.difficulty,
-                                                    }),
-                                                    backgroundColor: diffColour(
-                                                        {
-                                                            diff: item.difficulty,
-                                                            alpha: 0.1,
-                                                        }
-                                                    ),
-                                                    borderWidth: "1.5px",
-                                                    borderStyle: "solid",
-                                                }}
-                                                className={style.diffLabel}
-                                            >
-                                                {item.difficulty[0] +
-                                                    item.difficulty
-                                                        .slice(1)
-                                                        .toLocaleLowerCase()}
-                                            </div>
-                                        </aside>
-                                    )}
+                                    {
+                                        <DifficultyBtns
+                                            item={item}
+                                            userId={userId}
+                                        />
+                                    }
                                 </aside>
                                 <div>
                                     <MaxHeightToggler

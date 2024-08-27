@@ -23,7 +23,6 @@ import { Session } from "next-auth";
 import { insertNewUserNote } from "./_actions/insertNewNote";
 import { deleteUserNote } from "./_actions/deleteUserNote";
 import { updateUserNoteColour } from "./_actions/updateUserNoteColour";
-import { array } from "zod";
 import { updateUserNoteSequence } from "./_actions/updateUserNoteSequence";
 
 export type Notes = {
@@ -66,6 +65,7 @@ function ToDoList({
     };
 
     // Inserting new note
+
     const insertNoteHandler = async () => {
         const newNote: Notes = {
             id: uuidV4(),
@@ -74,8 +74,8 @@ function ToDoList({
             sequence: getNextSequence(),
             colour: "white",
         };
+        setInputValue("");
         setNotes((prevState) => [...prevState, newNote]);
-        await insertNewUserNote(newNote);
         setTimeout(() => {
             if (notesContainerRef.current) {
                 notesContainerRef.current.scrollTo({
@@ -83,9 +83,11 @@ function ToDoList({
                     behavior: "smooth",
                 });
             }
-        }, 0);
-        setInputValue("");
+        }, 100);
+        await insertNewUserNote(newNote, session.user.id);
     };
+
+    const debounceInsertNoteHandler = debounce(insertNoteHandler, 500);
 
     // Updating order after drag
 
@@ -134,7 +136,7 @@ function ToDoList({
             }
         });
         const updatedItem = reorderedItem[0];
-        await updateUserNoteSequence(updatedItem);
+        await updateUserNoteSequence(updatedItem, session.user.id);
     }, []);
 
     // Create the debounced function
@@ -174,7 +176,7 @@ function ToDoList({
             const remainingNotes = prevState.filter((item) => item.id !== id);
             return remainingNotes;
         });
-        deleteUserNote(id);
+        deleteUserNote(id, session.user.id);
     };
 
     // UseEffect turns off popover when any secondary popover items are selected
@@ -344,11 +346,11 @@ function ToDoList({
                             type="text"
                             handler={changeHandler}
                             inputValue={inputValue}
-                            enterHandler={insertNoteHandler}
+                            enterHandler={debounceInsertNoteHandler}
                         />
                         <DefaultButton
                             variant="Black"
-                            handler={insertNoteHandler}
+                            handler={debounceInsertNoteHandler}
                         >
                             <HiChevronRight />
                         </DefaultButton>

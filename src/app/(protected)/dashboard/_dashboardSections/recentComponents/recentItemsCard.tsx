@@ -13,8 +13,10 @@ import { capitaliseFirstChar } from "@/app/_functions/capitaliseFirstChar";
 import { HiChevronRight } from "react-icons/hi2";
 import ExpandHeightToggler from "@/app/_components/expandHeightToggler/expandHeightToggler";
 import MultipleCollections from "@/app/_components/setAndCollectionCard/collectionComponents/multipleCollections";
+import { Account } from "@/app/_types/types";
 
 type RecentItemsCardTypes = {
+    account: Account;
     historyItem: {
         content_type: ContentType;
         difficulties: Difficulty[];
@@ -23,7 +25,7 @@ type RecentItemsCardTypes = {
         score: number;
     };
 };
-function RecentItemsCard({ historyItem }: RecentItemsCardTypes) {
+function RecentItemsCard({ account, historyItem }: RecentItemsCardTypes) {
     const getName = (
         item: Flashcard_collection_set_joined | Flashcard_set,
         contentType: ContentType
@@ -219,6 +221,7 @@ function RecentItemsCard({ historyItem }: RecentItemsCardTypes) {
 
                 <section>
                     <RecentItemsBtns
+                        account={account}
                         contentType={historyItem.content_type}
                         id={historyItem.content.flatMap((item) => item.id)}
                     />

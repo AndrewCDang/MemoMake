@@ -2,18 +2,23 @@
 import { db } from "../_lib/db";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { ColumnName } from "../(protected)/dashboard/edit/[id]/(components)/cardTableTypes";
+import { auth } from "@/auth";
 
 export type UpdateCardTypes = {
     id: string;
+    setId: string;
     object: ColumnName;
     value: string | string[] | null;
 };
 
 export const updateCard = async ({
     id,
+    setId,
     object,
     value,
 }: UpdateCardTypes): Promise<{ status: number; message: String }> => {
+    const session = await auth();
+
     if (object == "item_question" || object == "item_answer") {
         try {
             await db`
@@ -64,8 +69,10 @@ export const updateCard = async ({
             }
         }
     }
-    revalidateTag("dashboardSet");
-    revalidateTag("dashboardCollection");
+    if (session?.user) {
+        revalidateTag(`dashboard-${session.user.id}`);
+        revalidateTag(setId);
+    }
     revalidateTag(id);
     return { status: 400, message: "Error: Unable to update item" };
 };

@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import SliderToggle from "../../sliderToggle/sliderToggle";
 import TickValidate from "../../tickValidate/tickValidate";
 import style from "../reviseCards.module.scss";
@@ -12,19 +12,19 @@ type DifficultyModalTypes = {
     allDiff: boolean;
     selectedDiff: diffOptions[];
     setSelectedDiff: Dispatch<SetStateAction<diffOptions[]>>;
-    setReviseAll: Dispatch<SetStateAction<boolean>>;
-    reviseAll: boolean;
-    sliderDifficultyHandler: () => void;
+    setAllDiff: Dispatch<SetStateAction<boolean>>;
 };
 
 const DifficultyModalSection = ({
     allDiff,
     selectedDiff,
     setSelectedDiff,
-    setReviseAll,
-    reviseAll,
-    sliderDifficultyHandler,
+    setAllDiff,
 }: DifficultyModalTypes) => {
+    const sliderDifficultyHandler = () => {
+        setAllDiff((prev) => !prev);
+    };
+
     const diffArray: diffOptions[] = ["NA", "EASY", "MEDIUM", "HARD"];
 
     const selectableDiffArray = diffArray.filter(
@@ -69,8 +69,7 @@ const DifficultyModalSection = ({
             )}
             <SliderToggle
                 name="allDifficulties"
-                setChecked={setReviseAll}
-                checked={reviseAll}
+                checked={allDiff}
                 handler={sliderDifficultyHandler}
                 variant="coloured"
             />

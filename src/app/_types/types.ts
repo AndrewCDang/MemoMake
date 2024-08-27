@@ -58,9 +58,18 @@ export type UserLikes = {
     item_id: string;
     user_id: string;
     item_type: ContentType;
+    created: Date;
 };
-export type AccountWithLikes = Account & {
+export type UserPins = {
+    id: string;
+    item_id: string;
+    user_id: string;
+    item_type: ContentType;
+    created: Date;
+};
+export type AccountWithLikesAndPins = Account & {
     user_likes: UserLikes[];
+    user_pins: UserPins[];
 };
 // export type Account = {
 //     id: string;
@@ -108,6 +117,7 @@ export type Flashcard_set = {
     theme_colour: ThemeColour;
     creator: BasicUserDetails;
     like_count: number;
+    session_count: number;
     content_type: "set";
 };
 
@@ -126,6 +136,7 @@ export type Flashcard_collection = {
     creator: BasicUserDetails;
     like_count: number;
     last_modified: Date;
+    session_count: number;
     content_type: "collection";
 };
 

@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import style from "./setAndColelctionCard.module.scss";
-import { AccountWithLikes, Flashcard_set } from "@/app/_types/types";
+import { AccountWithLikesAndPins, Flashcard_set } from "@/app/_types/types";
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import CollectionSets from "./collectionComponents/collectionSetsV2";
 import BannerStrip from "./generalComponents/bannerStrip/bannerStrip";
@@ -12,9 +12,13 @@ import PreviewEditStudyBtns from "./generalComponents/previewEditStudyBtns/previ
 
 type SetAndCollectionCardTypes = {
     set: Flashcard_set | Flashcard_collection_set_joined;
-    account: AccountWithLikes | undefined;
+    account: AccountWithLikesAndPins | undefined;
     contentType: "collection" | "set";
     originalId?: string | null;
+    publicPage: boolean;
+    setInitialContent: Dispatch<
+        SetStateAction<Flashcard_collection_set_joined[] | Flashcard_set[]>
+    >;
 };
 
 function SetAndCollectionCard({
@@ -22,10 +26,15 @@ function SetAndCollectionCard({
     account,
     contentType,
     originalId = null,
+    publicPage,
+    setInitialContent,
 }: SetAndCollectionCardTypes) {
     // Card not created by user
     const publicCard =
-        account && account.user_id !== set.user_id ? true : false;
+        (account && account.user_id !== set.user_id) ||
+        (set.public_access && account === undefined)
+            ? true
+            : false;
 
     // Card Content
     const getCardtitle = () => {
@@ -101,6 +110,7 @@ function SetAndCollectionCard({
             animate={{ opacity: isDeleting ? 0.5 : 1 }}
         >
             <BannerStrip
+                publicCard={publicCard}
                 setIsFavourited={setIsFavourited}
                 setIsLiked={setIsliked}
                 contentType={contentType}
@@ -120,6 +130,7 @@ function SetAndCollectionCard({
                 className={style.bannerBtns}
             >
                 <BannerBtns
+                    setInitialContent={setInitialContent}
                     setIsDeleting={setIsDeleting}
                     publicCard={publicCard}
                     contentType={contentType}
@@ -143,6 +154,7 @@ function SetAndCollectionCard({
                 publicCard={publicCard}
                 contentType={contentType}
                 set={set}
+                publicPage={publicPage}
             />
         </motion.article>
     );

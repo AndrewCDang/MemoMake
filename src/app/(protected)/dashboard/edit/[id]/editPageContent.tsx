@@ -33,6 +33,7 @@ function EditPageContent({
         return (
             <div className={style.overflowWrapper}>
                 <CardsTable
+                    setId={initialSet.id}
                     cardCollection={cardCollection}
                     tagArray={tagArray}
                 />

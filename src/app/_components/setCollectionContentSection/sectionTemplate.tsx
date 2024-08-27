@@ -1,6 +1,6 @@
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import {
-    AccountWithLikes,
+    AccountWithLikesAndPins,
     ContentType,
     Flashcard_set,
 } from "@/app/_types/types";
@@ -17,8 +17,6 @@ import Link from "next/link";
 import DefaultButton from "../(buttons)/defaultButton";
 import { HiChevronRight } from "react-icons/hi2";
 import SetCollectionContainerNeatly from "./setCollectionContainerNeatly";
-import SetCollectionContainer from "./setCollectionContainer";
-import LoadingSetAndCollectionCard from "../setAndCollectionCard/loadingSetAndCollectionCard/loadingSetAndCollectionCard";
 
 // Section Template
 type SectionTemplateTypes = {
@@ -28,13 +26,14 @@ type SectionTemplateTypes = {
     id: string;
     content: Flashcard_set[] | Flashcard_collection_set_joined[];
     contentType: ContentType;
-    account: AccountWithLikes | undefined;
+    account: AccountWithLikesAndPins | undefined;
     href?: string | undefined;
     viewBtn?: boolean;
     totalPaginationItems?: number | null;
     totalItemsPerPage?: number;
     paginationLink?: string | null;
     currentPagPage?: number | null;
+    publicPage?: boolean;
 };
 
 /**
@@ -57,6 +56,7 @@ export const SectionTemplate = ({
     totalItemsPerPage,
     paginationLink,
     currentPagPage,
+    publicPage = false,
 }: SectionTemplateTypes) => {
     const totalPagBtns =
         totalItemsPerPage && totalPaginationItems
@@ -90,6 +90,7 @@ export const SectionTemplate = ({
                 content={content}
                 contentType={contentType}
                 dynamicNeat={viewBtn ? true : false}
+                publicPage={publicPage}
             />
             {(href && totalPaginationItems && totalPaginationItems > 12) ||
             (viewBtn && href) ? (

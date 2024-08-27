@@ -173,10 +173,10 @@ export const MulitpleSetsIcon = () => {
     );
 };
 
-export const FlashmuLogo = () => {
+export const FlashmuLogo = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     return (
         <div className={styles.logoContainer}>
-            <Link href={"/"}>
+            <Link href={isLoggedIn ? "/dashboard" : "/"}>
                 <svg
                     viewBox="0 0 32 33"
                     fill="none"

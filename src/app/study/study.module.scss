@@ -191,6 +191,7 @@
                             font-weight: 500;
                             padding: 0 2rem;
                             z-index: 10;
+                            text-align: center;
                         }
                         .flashCardAnswer {
                             width: fit-content;
@@ -259,6 +260,9 @@
         & > div {
             width: 100%;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     }
 }

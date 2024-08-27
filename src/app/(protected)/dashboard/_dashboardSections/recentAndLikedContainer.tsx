@@ -6,15 +6,19 @@ import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectio
 import { RecentItemsTypes } from "../_actions/fetchRecentTested";
 import { Account, Flashcard_set } from "@/app/_types/types";
 import DashboardSubItems from "./dashboardSubItems/dashboardSubItems";
-import { Fetched_like_array } from "../../../api/fetch/fetchUserLikeItems/fetchUserLikeItems";
-import { fetched_pinned_items } from "@/app/_lib/fetch/fetchPinnedItems";
+import {
+    Fetched_like_array,
+    Flashcard_collection_liked,
+    Flashcard_set_liked,
+} from "../../../api/fetch/fetchUserLikeItems/fetchUserLikeItems";
+import { Fetched_pin_array } from "@/app/_lib/fetch/fetchPinnedItemsById";
+import { Fetch_pin_objects } from "@/app/_lib/fetch/fetchPinnedItemsById";
 
 function RecentAndLikedContainer({
     session,
     userNotes,
     recentItems,
     account,
-    itemsArray,
     likedItems,
     pinnedItems,
 }: {
@@ -24,18 +28,13 @@ function RecentAndLikedContainer({
         | RecentItemsTypes<Flashcard_collection_set_joined[] | Flashcard_set[]>
         | undefined;
     account: Account;
-    itemsArray: {
-        contentType: "collection" | "set";
-        array: Flashcard_set[] | Flashcard_collection_set_joined[];
-    }[];
-    likedItems: Fetched_like_array;
-    pinnedItems: fetched_pinned_items;
+    likedItems: (Flashcard_collection_liked | Flashcard_set_liked)[];
+    pinnedItems: Fetched_pin_array;
 }) {
     return (
         <div className={style.recentAndLikedContainer}>
             <ToDoList session={session} userNotes={userNotes} />
             <DashboardSubItems
-                itemsArray={itemsArray}
                 account={account}
                 recentItems={recentItems}
                 likedItems={likedItems}

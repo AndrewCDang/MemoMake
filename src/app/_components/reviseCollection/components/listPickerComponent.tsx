@@ -51,11 +51,15 @@ function ListPickerComponent({
         setInitalSet,
     } = useReviseModal();
 
-    const fetchFlashItems = async (latestId: string) => {
+    const fetchFlashItems = async (latestId: string, userId: string) => {
         if (!initialCollectionItems.map((item) => item.id).includes(latestId)) {
             try {
                 const fetchCollection = await fetchSetsWithItems({
-                    fetchObject: { type: contentType, id: latestId },
+                    fetchObject: {
+                        userId: userId,
+                        type: contentType,
+                        id: latestId,
+                    },
                 });
                 if (fetchCollection) {
                     if (contentType === "collection") {
@@ -136,7 +140,10 @@ function ListPickerComponent({
             setSearchSetInput("");
             if (typedList && typedList.length > 0 && typedList[0]) {
                 const suggestedFirstItem = typedList[0];
-                fetchFlashItems(suggestedFirstItem.id);
+                fetchFlashItems(
+                    suggestedFirstItem.id,
+                    suggestedFirstItem.user_id
+                );
             }
         }
     };
@@ -183,7 +190,10 @@ function ListPickerComponent({
                                     <div
                                         onClick={() =>
                                             fetchFlashCards
-                                                ? fetchFlashItems(item.id)
+                                                ? fetchFlashItems(
+                                                      item.id,
+                                                      item.user_id
+                                                  )
                                                 : addFlashitems(item)
                                         }
                                         key={item.id}

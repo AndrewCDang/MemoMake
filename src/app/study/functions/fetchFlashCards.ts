@@ -12,6 +12,7 @@ type FetchFlashCardsTypes = {
     ids: string[];
     tags: string[] | undefined;
     difficulties: string[] | undefined;
+    userId: string | undefined;
     setFlashCardItemsTest: React.Dispatch<React.SetStateAction<CombinedType[]>>;
     setTitles: React.Dispatch<React.SetStateAction<string[]>>;
     setSubTitles: React.Dispatch<React.SetStateAction<string[]>>;
@@ -33,12 +34,12 @@ export const fetchFlashCards = async ({
     ids,
     tags,
     difficulties,
+    userId,
     setFlashCardItemsTest,
     setTitles,
     setSubTitles,
 }: FetchFlashCardsTypes) => {
     try {
-        // Fetching Api handler which fetches collection of sets/collection
         const res = await fetch(
             `/api/fetch/fetchStudyFlashCards?type=${contentType}&ids=${ids.join(
                 "_"
@@ -53,8 +54,15 @@ export const fetchFlashCards = async ({
             }
         );
 
+        console.log("Raw response:", res);
+
         if (res.ok) {
             const responseData = await res.json();
+
+            if (responseData.status === 500) {
+                return { status: 500 };
+            }
+
             const data = responseData.data as
                 | Flashcard_collection_with_cards[]
                 | Flashcard_set_with_cards[];
@@ -65,12 +73,14 @@ export const fetchFlashCards = async ({
                     (item, index, self) =>
                         index === self.findIndex((t) => t.id === item.id)
                 );
-                // Setting Flashcards from response data
+
+                console.log("settting!");
                 setFlashCardItemsTest(
                     shuffleArray<CombinedType>(
                         initialTestCards(uniqueFlashCards)
                     )
                 );
+
                 const collectionTitles = (
                     data as Flashcard_collection_with_cards[]
                 ).map((item) => item.collection_name);
@@ -85,11 +95,16 @@ export const fetchFlashCards = async ({
                             index === self.findIndex((t) => t === item)
                     );
                 setSubTitles(collectionSubtitles);
+
+                return { status: 200, data: uniqueFlashCards };
             }
         } else {
             console.log(res);
+            return { status: 500 };
         }
     } catch (error) {
         console.log(error);
+        console.log("errorrrr");
+        return { status: 500, error };
     }
 };

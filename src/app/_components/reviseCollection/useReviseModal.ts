@@ -40,6 +40,7 @@ type UseReviseModalTypes = {
         id: string;
         existingItems: Flashcard_set_with_cards[];
     }) => void;
+    resetItems: () => void;
 };
 
 export const useReviseModal = create<UseReviseModalTypes>()((set) => ({
@@ -47,6 +48,8 @@ export const useReviseModal = create<UseReviseModalTypes>()((set) => ({
     initialSetItems: [],
     reviseModalType: null,
     isReviseModalOn: false,
+    resetItems: () =>
+        set(() => ({ initialCollectionItems: [], initialSetItems: [] })),
     showReviseModal: () => set(() => ({ isReviseModalOn: true })),
     hideReviseModal: () => set(() => ({ isReviseModalOn: false })),
     setInitialCollectionItems: ({

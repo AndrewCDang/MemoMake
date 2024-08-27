@@ -1,6 +1,8 @@
 @import "/src/app/styles/breakpoints.scss";
 @import "./colours.scss";
 
+$cubicBezier: cubic-bezier(0.075, 0.82, 0.165, 1);
+
 @mixin transition($property) {
     transition: $property 0.12s ease-in-out;
 }

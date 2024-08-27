@@ -15,6 +15,6 @@ export const subjects = [
     "Interview Practice",
     "Languages",
     "Geography",
-    "Science Facts",
+    "Self Improvement",
     "Architecture",
 ];

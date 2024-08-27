@@ -7,6 +7,12 @@ import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
 import { Flashcard_set_with_cards } from "@/app/_types/types";
 import EditPageContent from "./editPageContent";
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Flashmu | Edit Set",
+    description: "Edit your Flash Card Set | Create new cards",
+};
 
 async function Page({ params }: { params: { id: string } }) {
     const setId = params.id;

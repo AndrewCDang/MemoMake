@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "./previewModal.module.scss";
 import { Flashcard_set_with_cards } from "@/app/_types/types";
 import { colours } from "@/app/styles/colours";
@@ -26,6 +26,7 @@ function PreviewModalSet({ previewContent }: PreviewModalSetType) {
     type ToggleType = {
         [key: string]: boolean;
     };
+
     const [toggledSets, setToggledSets] = useState<ToggleType>(defaultToggle);
 
     useEffect(() => {
@@ -46,7 +47,7 @@ function PreviewModalSet({ previewContent }: PreviewModalSetType) {
 
     return (
         <>
-            {previewContent && (
+            {previewContent && previewContent.length > 0 && (
                 <section className={style.setItemsContainer}>
                     {previewContent.map((set) => {
                         return (
@@ -93,7 +94,9 @@ function PreviewModalSet({ previewContent }: PreviewModalSetType) {
                                             </motion.div>
                                         )}
                                 </button>
-                                {set.flashcards && set.flashcards.length > 0 ? (
+                                {set.flashcards &&
+                                set.flashcards.length > 0 &&
+                                set.flashcards[0] !== null ? (
                                     <ExpandHeightToggler
                                         isOn={toggledSets[set.id]}
                                         transition={loaded}
@@ -111,28 +114,38 @@ function PreviewModalSet({ previewContent }: PreviewModalSetType) {
                                                 <div>Question</div>
                                                 <div>Answer</div>
                                             </section>
-                                            {set.flashcards.map((card) => {
-                                                return (
-                                                    <section
-                                                        key={card.id}
-                                                        className={
-                                                            style.flashCardItem
-                                                        }
-                                                    >
-                                                        <div>
-                                                            {card.item_question}
-                                                        </div>
-                                                        <div
-                                                            className={
-                                                                style.flashcardVerticalL
-                                                            }
-                                                        ></div>
-                                                        <div>
-                                                            {card.item_answer}
-                                                        </div>
-                                                    </section>
-                                                );
-                                            })}
+                                            {set.flashcards.length > 0 &&
+                                                set.flashcards.map((card) => {
+                                                    if (
+                                                        card !== null &&
+                                                        card !== undefined
+                                                    ) {
+                                                        return (
+                                                            <section
+                                                                key={card.id}
+                                                                className={
+                                                                    style.flashCardItem
+                                                                }
+                                                            >
+                                                                <div>
+                                                                    {
+                                                                        card.item_question
+                                                                    }
+                                                                </div>
+                                                                <div
+                                                                    className={
+                                                                        style.flashcardVerticalL
+                                                                    }
+                                                                ></div>
+                                                                <div>
+                                                                    {
+                                                                        card.item_answer
+                                                                    }
+                                                                </div>
+                                                            </section>
+                                                        );
+                                                    }
+                                                })}
                                         </section>
                                     </ExpandHeightToggler>
                                 ) : (

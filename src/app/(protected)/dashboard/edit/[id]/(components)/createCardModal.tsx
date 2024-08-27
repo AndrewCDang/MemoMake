@@ -18,9 +18,10 @@ import { Flashcard_item } from "@/app/_types/types";
 
 type CreateCardTypes = {
     setId: string;
+    userId: string;
 };
 
-function CreateCardModal({ setId }: CreateCardTypes) {
+function CreateCardModal({ setId, userId }: CreateCardTypes) {
     const [categories, setCategoires] = useState<string[]>([]);
     const formRef = useRef<HTMLFormElement>(null);
     const containerRef = useRef<HTMLElement>(null);
@@ -56,6 +57,7 @@ function CreateCardModal({ setId }: CreateCardTypes) {
         setIsLoading(true);
         const insertDb = await insertFlashCard({
             setId: setId,
+            userId: userId,
             data: insertData,
         });
         if (insertDb) {

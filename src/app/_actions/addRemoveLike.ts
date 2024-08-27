@@ -7,13 +7,11 @@ import { revalidatePath, revalidateTag } from "next/cache";
 export const addRemoveLike = async ({
     id,
     setId,
-    revalidate = false,
     contentType,
 }: {
     id: string;
     setId: string;
     contentType: ContentType;
-    revalidate?: boolean;
 }) => {
     try {
         const account: Account[] = await db`
@@ -45,8 +43,8 @@ export const addRemoveLike = async ({
                 }
             }
         }
-        revalidateTag("userAccount");
-        revalidateTag("userLikes");
+        revalidateTag(`userAccount-${id}`);
+        revalidateTag(`userLikes-${id}`);
 
         return { status: 200, message: "Item Updated" };
     } catch (error: unknown) {

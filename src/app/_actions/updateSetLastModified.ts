@@ -1,4 +1,5 @@
 "use server";
+import { revalidateTag } from "next/cache";
 import { db } from "../_lib/db";
 
 export const updateSetLastModified = async (setId: string) => {
@@ -9,6 +10,7 @@ export const updateSetLastModified = async (setId: string) => {
                     last_modified = ${new Date()}
             WHERE id=${setId}
         `;
+        revalidateTag(setId);
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.log(error);

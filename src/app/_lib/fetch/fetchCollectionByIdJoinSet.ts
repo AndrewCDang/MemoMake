@@ -78,8 +78,11 @@ export const fetchCollectionByIdJoinSet = async ({
                 return undefined;
             }
         },
-        [id],
-        { tags: ["dashboardCollection"], revalidate: 60 * 60 }
+        [],
+        {
+            tags: [`dashboardCollection-${id}`, `dashboard-${id}`],
+            revalidate: 60 * 60 * 24,
+        }
     );
 
     return cacheDashboardCollection();

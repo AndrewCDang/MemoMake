@@ -100,3 +100,10 @@
 .collectionGroup:last-child {
     margin-bottom: 0.5rem;
 }
+
+.loadingWrap {
+    height: 10rem;
+    width: 100%;
+    display: grid;
+    place-items: center;
+}

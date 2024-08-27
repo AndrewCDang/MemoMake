@@ -20,8 +20,14 @@ function Page() {
         const verifyAccount = await newVerification({ token });
         if (verifyAccount?.success) {
             setVerificationStatus(true);
+            setTimeout(() => {
+                router.push("/dashboard");
+            }, 1000);
         } else {
             setVerificationStatus(false);
+            setTimeout(() => {
+                router.push("/");
+            }, 1000);
         }
     };
 

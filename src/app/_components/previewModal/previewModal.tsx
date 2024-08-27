@@ -12,10 +12,15 @@ import {
 import { setRevisionModal } from "./_hooks/setRevisionModal";
 import PreviewModalSet from "./previewModalSet";
 import { CollectionIcon } from "../svgs/svgs";
+import LoadingCircle from "../loadingUi/loadingCircle";
 
 const PreviewModal = () => {
-    const { isUsePreviewModalOn, previewCollectionItems, hideUsePreviewModal } =
-        usePreviewModal();
+    const {
+        isUsePreviewModalOn,
+        previewCollectionItems,
+        hideUsePreviewModal,
+        resetPreviewModal,
+    } = usePreviewModal();
 
     const { showReviseModal, setInitialCollectionItems, setInitalSet } =
         useReviseModal();
@@ -52,6 +57,8 @@ const PreviewModal = () => {
     };
 
     const studyHandler = async () => {
+        showReviseModal();
+
         if (previewCollectionItems.type === "set") {
             setInitalSet({
                 item: previewContent as Flashcard_set_with_cards[],
@@ -63,8 +70,6 @@ const PreviewModal = () => {
                     | Flashcard_collection_preview[],
             });
         }
-
-        showReviseModal();
     };
 
     const Buttons = () => {
@@ -116,7 +121,7 @@ const PreviewModal = () => {
     return (
         <Modal
             modalOn={isUsePreviewModalOn}
-            closeHandler={() => hideUsePreviewModal()}
+            closeHandler={() => (hideUsePreviewModal(), resetPreviewModal())}
             modalTitle={previewTitle() || "Preview"}
             footer={<Buttons />}
             widthFit="wide"
@@ -145,7 +150,11 @@ const PreviewModal = () => {
                         );
                     }
                 )
-            ) : null}
+            ) : (
+                <div className={style.loadingWrap}>
+                    <LoadingCircle variant="contain" />
+                </div>
+            )}
         </Modal>
     );
 };

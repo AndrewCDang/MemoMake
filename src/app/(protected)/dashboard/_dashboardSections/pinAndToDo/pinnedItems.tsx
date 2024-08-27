@@ -9,7 +9,6 @@ import {
     Flashcard_set,
     Flashcard_set_with_cards,
 } from "@/app/_types/types";
-import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import { BannerIcon } from "@/app/_components/setAndCollectionCard/generalComponents/bannerBtns/bannerBtns";
 import PinIcon from "@/app/_components/_generalUi/pinIcon/pinIcon";
 import { HiChevronRight } from "react-icons/hi2";
@@ -18,27 +17,24 @@ import Link from "next/link";
 import { Fetched_like_array } from "../../../../api/fetch/fetchUserLikeItems/fetchUserLikeItems";
 import { addRemoveLike } from "@/app/_actions/addRemoveLike";
 import { colours } from "@/app/styles/colours";
-import { fetched_pinned_items } from "@/app/_lib/fetch/fetchPinnedItems";
+import {
+    Fetch_pin_objects,
+    Fetched_pin_array,
+} from "@/app/_lib/fetch/fetchPinnedItemsById";
 import { useReviseModal } from "@/app/_components/reviseCollection/useReviseModal";
+import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
 
 type LikedPinnedItemsTypes = {
-    itemsArray:
-        | (
-              | Flashcard_collection
-              | Flashcard_set
-              | Flashcard_collection_set_joined
-          )[]
-        | Fetched_like_array;
+    likedItems: Fetched_like_array;
     account: Account;
     title: string;
     type?: "like" | "pin";
-    pinnedItems: fetched_pinned_items;
+    pinnedItems: Fetched_pin_array;
 };
 
 function LikedPinnedItems({
-    itemsArray,
+    likedItems,
     account,
-    title,
     type = "pin",
     pinnedItems,
 }: LikedPinnedItemsTypes) {
@@ -47,7 +43,7 @@ function LikedPinnedItems({
         type === "pin"
             ? account?.favourites
             : type === "like"
-            ? itemsArray.map((item) => item.id)
+            ? likedItems.map((item) => item.id)
             : []
     );
 
@@ -73,16 +69,17 @@ function LikedPinnedItems({
             const update = await addRemoveLike({
                 id: account.user_id,
                 setId: likeId,
-                revalidate: false,
                 contentType: contentType,
             });
         }
     };
 
     const PinIconComponent = ({
+        contentType,
         id,
         hoverPos,
     }: {
+        contentType: ContentType;
         id: string;
         hoverPos: "top" | "left";
     }) => {
@@ -93,6 +90,7 @@ function LikedPinnedItems({
                 hoverPos={hoverPos}
             >
                 <PinIcon
+                    contentType={contentType}
                     favourited={pinOrLikeItems.includes(id)}
                     userId={account && account.user_id}
                     setId={id}
@@ -131,16 +129,18 @@ function LikedPinnedItems({
         );
     };
 
-    const likeOrPinnedItems = type === "pin" ? pinnedItems : itemsArray;
+    const likeOrPinnedItems = type === "pin" ? pinnedItems : likedItems;
 
     // Study Handler:
     // Study Handler | Modal
     const { setInitialCollectionItems, setInitalSet, showReviseModal } =
         useReviseModal();
 
-    const studyHandler = async (id: string) => {
+    const studyHandler = async (id: string, contentType: ContentType) => {
+        showReviseModal();
+
         const promise = await fetchSetsWithItems({
-            fetchObject: { userId: set.user_id, id: id, type: contentType },
+            fetchObject: { userId: account.user_id, id: id, type: contentType },
         });
 
         if (!promise) return;
@@ -151,8 +151,6 @@ function LikedPinnedItems({
                 item: promise as Flashcard_collection_preview,
             });
         }
-
-        showReviseModal();
     };
 
     return (
@@ -173,6 +171,7 @@ function LikedPinnedItems({
                                     <div className={style.leftSection}>
                                         {type === "pin" ? (
                                             <PinIconComponent
+                                                contentType={objectType}
                                                 hoverPos={
                                                     index === 0 ? "left" : "top"
                                                 }
@@ -221,7 +220,12 @@ function LikedPinnedItems({
                                     ) : (
                                         <div
                                             className={style.clickWrap}
-                                            onClick={() => alert("study")}
+                                            onClick={() =>
+                                                studyHandler(
+                                                    item.id,
+                                                    item.content_type
+                                                )
+                                            }
                                         ></div>
                                     )}
                                 </div>

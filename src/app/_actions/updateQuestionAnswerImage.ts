@@ -1,15 +1,18 @@
 "use server";
+import { revalidateTag } from "next/cache";
 import { db } from "../_lib/db";
 
 type UpdateQuestionAnswerImageType = {
     id: string;
     type: "item_question" | "item_answer";
     image: string;
+    setId: string;
 };
 export const updateQuestionAnswerImageUrl = async ({
     id,
     type,
     image,
+    setId,
 }: UpdateQuestionAnswerImageType) => {
     try {
         if (type === "item_question") {
@@ -19,7 +22,6 @@ export const updateQuestionAnswerImageUrl = async ({
                 WHERE id = ${id}
                 RETURNING question_img
             `;
-
             return { message: "success", url: updateUrl };
         }
         if (type === "item_answer") {
@@ -31,6 +33,7 @@ export const updateQuestionAnswerImageUrl = async ({
             `;
             return { message: "success", url: updateUrl };
         }
+        revalidateTag(setId);
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.log(error.message);

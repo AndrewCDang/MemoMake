@@ -9,9 +9,9 @@ import DashboardLanding from "./_dashboardSections/dashboardLanding";
 import { fetchUserNotes } from "./_dashboardSections/pinAndToDo/_actions/fetchUserNotes";
 import SectionTemplate from "@/app/_components/setCollectionContentSection/sectionTemplate";
 import LoadingSetAndCollectionCard from "@/app/_components/setAndCollectionCard/loadingSetAndCollectionCard/loadingSetAndCollectionCard";
-import LoadingSectionTemplate from "@/app/_components/setCollectionContentSection/loadingSetCollectionTemplate";
 import { fetchUserLikeItems } from "@/app/api/fetch/fetchUserLikeItems/fetchUserLikeItems";
-import { fetchPinnedItem } from "@/app/_lib/fetch/fetchPinnedItems";
+import { fetchUserPinItems } from "@/app/_lib/fetch/fetchPinnedItemsById";
+import { randomQuestion } from "./_dashboardSections/randomQuestion/fetchRandomQuestion";
 
 // Helper function to introduce a delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -26,7 +26,6 @@ async function ExistingSets({ session }: { session: Session | null }) {
         (await fetchExistingSetsFromId({
             userId: session.user.id,
         })) || null;
-
     // Fetch Collection
     const collectionWithSets = await fetchCollectionByIdJoinSet({
         id: session.user.id,
@@ -37,23 +36,13 @@ async function ExistingSets({ session }: { session: Session | null }) {
         (await fetchAccountFromUserId({ id: session.user.id })) || null;
     if (!account) return notFound();
 
-    const favArray = account.favourites;
-
-    const favouriteSets =
-        searchExistingSets?.fetched_items.filter((item) =>
-            favArray.includes(item.id)
-        ) || [];
-    const favouriteCollections = collectionWithSets
-        ? collectionWithSets.fetched_items.filter((item) =>
-              favArray.includes(item.id)
-          )
-        : [];
-
     // Fetches Pinned Items
     const pinnedItems =
-        (await fetchPinnedItem({ userId: session.user.id, limit: 12 })) || [];
-    console.log("poootch");
-    console.log(pinnedItems);
+        (await fetchUserPinItems({
+            userId: session.user.id,
+            limit: 12,
+        })) || [];
+
     // Fetch Recently tested
     const fetchHistory = await fetchRecentTested({ userId: session.user.id });
 
@@ -67,6 +56,9 @@ async function ExistingSets({ session }: { session: Session | null }) {
             limit: 12,
         })) || [];
 
+    // Fetches Random Question
+    const ranQuestion = await randomQuestion({ userId: session.user.id });
+
     return (
         <section>
             {/* Recent sets/collection Selection */}
@@ -77,14 +69,8 @@ async function ExistingSets({ session }: { session: Session | null }) {
                     recentItems={fetchHistory}
                     account={account}
                     likedItems={fetchLliked}
-                    itemsArray={[
-                        { contentType: "set", array: favouriteSets },
-                        {
-                            contentType: "collection",
-                            array: favouriteCollections,
-                        },
-                    ]}
                     pinnedItems={pinnedItems}
+                    randomQuestion={ranQuestion}
                 />
             </section>
 

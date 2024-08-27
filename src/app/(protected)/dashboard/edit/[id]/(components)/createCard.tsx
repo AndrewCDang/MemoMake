@@ -17,7 +17,7 @@ function CreateCard({ setId }: CreateCardTypes) {
     return (
         <div>
             <Button handler={modalHandler} text="Create new card" />
-            {modalOn && <CreateCardModal setId={setId} />}
+            {modalOn && <CreateCardModal userId="" setId={setId} />}
         </div>
     );
 }

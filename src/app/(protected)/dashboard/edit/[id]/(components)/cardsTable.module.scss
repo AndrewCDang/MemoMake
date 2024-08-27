@@ -367,6 +367,8 @@
     z-index: 20;
 }
 .tagContainer {
+    user-select: none;
+    pointer-events: none;
     @include categoryItemCSS;
     gap: 0.5rem;
     overflow: hidden;

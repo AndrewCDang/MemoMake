@@ -1,7 +1,6 @@
 "use client";
 import style from "./PinIcon.module.scss";
 import { useState } from "react";
-import { addRemoveFavourites } from "@/app/_actions/addRemoveFavourites";
 import { colours } from "@/app/styles/colours";
 import { IoMdThumbsUp } from "react-icons/io";
 import { addRemoveLike } from "@/app/_actions/addRemoveLike";
@@ -31,7 +30,6 @@ const LikeIcon = ({
         const favouriteDb = await addRemoveLike({
             id: userId,
             setId: setId,
-            revalidate: false,
             contentType: contentType,
         });
     };

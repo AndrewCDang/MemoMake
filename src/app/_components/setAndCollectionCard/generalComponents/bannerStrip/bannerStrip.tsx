@@ -101,6 +101,7 @@ function BannerStrip({
     setIsLiked,
     isLiked,
     themeColour,
+    publicCard,
 }: {
     contentType: "collection" | "set";
     account: Account | undefined;
@@ -110,11 +111,8 @@ function BannerStrip({
     setIsLiked: Dispatch<SetStateAction<boolean>>;
     isLiked: boolean;
     themeColour: string;
+    publicCard: boolean;
 }) {
-    // Card not created by user
-    const publicCard =
-        account && account.user_id !== set.user_id ? true : false;
-
     // Controls gap per number of icons on top left banner
     const bannerRadius = 20;
     const defaultBannerSpacing = () => {
@@ -130,7 +128,6 @@ function BannerStrip({
             conditions += 1;
         // if (account && account.user_id !== set.user_id) conditions += 1;
 
-        console.log(conditions * iconSize);
         return conditions * iconSize - bannerRadius;
     };
     const pathValue = useMotionValue(defaultBannerSpacing());
@@ -175,12 +172,13 @@ function BannerStrip({
     };
 
     const pinHandler = async () => {
+        console.log(set);
         setIsFavourited(false);
         if (account) {
             const favouriteDb = await addRemoveFavourites({
+                contentType: contentType,
                 id: account.user_id,
                 setId: set.id,
-                revalidate: false,
             });
         }
     };
@@ -213,7 +211,6 @@ function BannerStrip({
             const favouriteDb = await addRemoveLike({
                 id: account.user_id,
                 setId: set.id,
-                revalidate: false,
                 contentType: contentType,
             });
         }

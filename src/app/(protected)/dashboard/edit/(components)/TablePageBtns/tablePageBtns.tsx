@@ -5,7 +5,7 @@ import DefaultButton from "@/app/_components/(buttons)/defaultButton";
 import { HiViewGridAdd } from "react-icons/hi";
 import CreateCardModal from "../../[id]/(components)/createCardModal";
 import Modal from "@/app/_components/modal/modal";
-import { Flashcard_set, Flashcard_set_with_count } from "@/app/_types/types";
+import { Flashcard_set } from "@/app/_types/types";
 import { Session } from "next-auth";
 import StudyBtn from "@/app/_components/setAndCollectionCard/generalComponents/previewEditStudyBtns/studyBtn/studyBtn";
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
@@ -49,7 +49,7 @@ function TablePageBtns({
                 closeHandler={() => setToggleCreate(false)}
                 modalTitle="New Flash Card"
             >
-                <CreateCardModal setId={setId} />
+                <CreateCardModal setId={setId} userId={session.user.id} />
             </Modal>
             <ReviseModal session={session} contentType={"set"} />
         </>

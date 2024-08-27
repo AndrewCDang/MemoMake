@@ -13,6 +13,9 @@ import { ContentType, Difficulty, Flashcard_item } from "../_types/types";
 import { updateUserHistory } from "./components/userHistory/userHistory";
 import { fetchFlashCards } from "./functions/fetchFlashCards";
 import LoadingCircle from "../_components/loadingUi/loadingCircle";
+import { useRouter } from "next/navigation";
+import TextInput from "../_components/textInput/inputField";
+import StudyTextInput from "./components/textInput/studyTextInput";
 
 type FlashCardItemsTest<T> = T & {
     correct: boolean | null;
@@ -30,6 +33,8 @@ type StudyTypes = {
 };
 
 function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
+    const router = useRouter();
+
     const { collectionItems, questions } = useRevisionFlashItems();
     // States for titles/subtitles
     const [titles, setTitles] = useState<string[]>(
@@ -58,17 +63,30 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
     >([...initialTestCards(questions)]);
 
     useEffect(() => {
+        console.log(flashCardItemsTest);
+    }, [flashCardItemsTest]);
+
+    const fetchData = async () => {
+        console.log("fetching");
+        const data = await fetchFlashCards({
+            ids: ids,
+            contentType: contentType,
+            tags: tags,
+            difficulties: difficulties,
+            userId: userId,
+            setSubTitles: setSubTitles,
+            setFlashCardItemsTest: setFlashCardItemsTest,
+            setTitles: setTitles,
+        });
+        if (!data || data.status === 500) {
+            router.push("/dashboard");
+        }
+    };
+
+    useEffect(() => {
         const debounceFetch = setTimeout(() => {
             if (questions.length === 0) {
-                fetchFlashCards({
-                    ids: ids,
-                    contentType: contentType,
-                    tags: tags,
-                    difficulties: difficulties,
-                    setSubTitles: setSubTitles,
-                    setFlashCardItemsTest: setFlashCardItemsTest,
-                    setTitles: setTitles,
-                });
+                fetchData();
             }
         }, 100);
 
@@ -113,10 +131,8 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
         }
 
         setTimeout(() => {
-            if (isFlipped) {
-                setIsFlipped(false);
-                xSet.set(0);
-            }
+            setIsFlipped(false);
+            xSet.set(0);
 
             setTimeout(() => {
                 setTopLighting(true);
@@ -160,7 +176,6 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
                 item: newItem,
                 userId: userId,
             });
-            console.log(fetch);
         }
     };
 
@@ -195,10 +210,10 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
                     ) : (
                         // Displays Results when all questions have been answered
                         <FlashResults
+                            userId={userId}
                             flashCardItemsTest={chosenQuestions}
                             testIncorrect={testIncorrect}
                             setTestIncorrect={setTestIncorrect}
-                            setIncorrectQuestions={setIncorrectQuestions}
                         />
                     )}
                 </AnimatePresence>
@@ -235,6 +250,14 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
                                         <p>out of {chosenQuestions.length}</p>
                                     </motion.section>
                                 )}
+                                {/* Text Input */}
+                                <StudyTextInput
+                                    flipCard={flipCard}
+                                    currentCard={currentCard}
+                                    chosenQuestions={chosenQuestions}
+                                    answerHandler={answerHandler}
+                                />
+                                {/* Study Navigation Buttons */}
                                 <InteractButtons
                                     setIsFlipped={setIsFlipped}
                                     flipCard={flipCard}

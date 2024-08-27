@@ -49,48 +49,52 @@ function Modal({
     }, [modalRef, containerRef, modalOn]);
 
     return (
-        <AnimatePresence>
-            {modalOn && (
-                <motion.section
-                    exit={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    initial={{ opacity: 0 }}
-                    transition={{ duration: 0.12 }}
-                    ref={containerRef}
-                    className={style.cardModalContainer}
-                >
+        <div style={{ pointerEvents: modalOn ? "auto" : "none" }}>
+            <AnimatePresence>
+                {modalOn && (
                     <motion.section
-                        exit={{ y: 40 }}
-                        initial={{ y: 40 }}
-                        animate={{ y: 0 }}
-                        transition={{
-                            type: "spring",
-                            duration: 0.15,
-                            stiffness: 200,
-                        }}
-                        ref={modalRef}
-                        className={` ${
-                            widthFit === "wide" && style.widthWide
-                        } ${style.cardModal}`}
+                        exit={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        initial={{ opacity: 0 }}
+                        transition={{ duration: 0.12 }}
+                        ref={containerRef}
+                        className={style.cardModalContainer}
                     >
-                        <CornerClose
-                            handler={() =>
-                                closeHandler
-                                    ? closeHandler()
-                                    : setModal && setModal(false)
-                            }
-                        />
-                        <h3>{modalTitle}</h3>
-                        <section className={style.overflowY}>
-                            {children}
-                        </section>
-                        {footer && (
-                            <section className={style.footer}>{footer}</section>
-                        )}
+                        <motion.section
+                            exit={{ y: 40 }}
+                            initial={{ y: 40 }}
+                            animate={{ y: 0 }}
+                            transition={{
+                                type: "spring",
+                                duration: 0.15,
+                                stiffness: 200,
+                            }}
+                            ref={modalRef}
+                            className={` ${
+                                widthFit === "wide" && style.widthWide
+                            } ${style.cardModal}`}
+                        >
+                            <CornerClose
+                                handler={() =>
+                                    closeHandler
+                                        ? closeHandler()
+                                        : setModal && setModal(false)
+                                }
+                            />
+                            <h3>{modalTitle}</h3>
+                            <section className={style.overflowY}>
+                                {children}
+                            </section>
+                            {footer && (
+                                <section className={style.footer}>
+                                    {footer}
+                                </section>
+                            )}
+                        </motion.section>
                     </motion.section>
-                </motion.section>
-            )}
-        </AnimatePresence>
+                )}
+            </AnimatePresence>
+        </div>
     );
 }
 

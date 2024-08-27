@@ -15,7 +15,7 @@ type InputRef = {
     ) => void;
     inputValue: string;
     height?: "normal" | "short";
-    enterHandler?: () => void;
+    enterHandler?: (value: string) => void;
 };
 
 function TextInput({
@@ -35,7 +35,9 @@ function TextInput({
         e: KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
     ) => {
         if (e.key === "Enter") {
-            enterHandler && enterHandler();
+            const target = e.target as HTMLTextAreaElement | HTMLInputElement;
+            const value = target.value;
+            enterHandler && enterHandler(value);
         }
     };
 

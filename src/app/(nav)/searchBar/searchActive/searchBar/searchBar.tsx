@@ -107,7 +107,7 @@ function InputSearchBar({
                         >
                             <ModalAbsolute setModalState={setSearchSetting}>
                                 <ul>
-                                    {searchSettingslist.map((item) => {
+                                    {searchSettingslist.map((item, index) => {
                                         return (
                                             <li
                                                 style={{
@@ -119,7 +119,7 @@ function InputSearchBar({
                                                 onClick={() =>
                                                     setSearchType(item)
                                                 }
-                                                key={`search-setting-${item}`}
+                                                key={`search-setting-${item}-${index}`}
                                             >
                                                 {item}
                                             </li>

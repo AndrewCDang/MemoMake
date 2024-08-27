@@ -23,10 +23,9 @@ function Landing() {
                         <h5>flashcards quizzes.</h5>
                     </div>
                 </div>
-                <TryOrCreate />
-                {/* <div className={style.btnContainer}>
-                    <Arrows />
-                </div> */}
+                <div className={style.createSetBtn}>
+                    <TryOrCreate />
+                </div>
             </div>
             <CrescentCards />
         </section>

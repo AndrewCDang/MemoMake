@@ -1,8 +1,12 @@
 @import "../../styles/colours.scss";
 @import "../../styles/mixins";
+@import "../../styles/breakpoints.scss";
 
 .contentContainer {
     height: 100%;
+    @include breakpoint-mobile {
+        height: 50%;
+    }
     width: calc(80% - 2rem);
     position: absolute;
     display: grid;

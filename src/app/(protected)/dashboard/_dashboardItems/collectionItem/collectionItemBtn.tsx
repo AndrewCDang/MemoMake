@@ -17,15 +17,16 @@ function CollectionItemBtn({
         usePreviewModal();
 
     const handler = async () => {
-        const setIds = collectionItem.set_items.map((item) => {
-            return item.id;
-        });
+        showUsePreviewModal();
         const promise = await fetchSetsWithItems({
-            fetchObject: { id: collectionItem.id, type: "collection" },
+            fetchObject: {
+                userId: collectionItem.user_id,
+                id: collectionItem.id,
+                type: "collection",
+            },
         });
         if (!promise) return;
         setPreviewCollectionItems({ type: "collection", content: promise });
-        showUsePreviewModal();
     };
 
     return (

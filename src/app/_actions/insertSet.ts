@@ -25,7 +25,7 @@ export const insertSet = async ({
         ${new Date()})
         RETURNING *;
         `;
-        revalidateTag("dashboardSet");
+        revalidateTag(`dashboardSet-${id}`);
         return insertedSet[0];
     } catch (error) {
         console.log(error);

@@ -17,6 +17,7 @@ type PreviewEditStudyBtns = {
     contentType: ContentType;
     set: Flashcard_set | Flashcard_collection_set_joined;
     isRecentTested?: boolean;
+    publicPage: boolean;
 };
 
 function PreviewEditStudyBtns({
@@ -24,6 +25,7 @@ function PreviewEditStudyBtns({
     contentType,
     set,
     isRecentTested = false,
+    publicPage,
 }: PreviewEditStudyBtns) {
     // Preview Handler | Modal
     const { setPreviewCollectionItems, showUsePreviewModal } =
@@ -31,7 +33,7 @@ function PreviewEditStudyBtns({
 
     const previewHandler = async (id: string) => {
         const promise = await fetchSetsWithItems({
-            fetchObject: { id: id, type: contentType },
+            fetchObject: { userId: set.user_id, id: id, type: contentType },
         });
         if (!promise) return;
         setPreviewCollectionItems({
@@ -79,6 +81,11 @@ function PreviewEditStudyBtns({
                 </DefaultButton>
             )}
             <StudyBtn set={set} contentType={contentType} />
+            {publicPage && (
+                <div className={style.sessionTestedText}>
+                    <span>{`${set.session_count}`}</span> times tested
+                </div>
+            )}
         </div>
     );
 }

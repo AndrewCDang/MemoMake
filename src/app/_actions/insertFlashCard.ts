@@ -7,11 +7,13 @@ import { Flashcard_item } from "../_types/types";
 export type InsertFlashCardTypes = {
     data: AuthItemTypes;
     setId: string;
+    userId: string;
 };
 
 const insertFlashCard = async ({
     data,
     setId,
+    userId,
 }: InsertFlashCardTypes): Promise<Flashcard_item | undefined> => {
     try {
         // Getting sequence value
@@ -25,18 +27,22 @@ const insertFlashCard = async ({
         // Inserting card into db
 
         const insertedItem: Flashcard_item[] = await db`
-                INSERT INTO flashcard_item set_id, item_question, item_answer, item_tags, difficulty, last_modified, sequence)
-                VALUES(${setId}, ${data.item_question || null}, ${
-            data.item_answer || null
-        }, ${data.item_tags || null}, ${
-            data.difficulty
-        }, ${new Date()}, ${nextSequence}
-                )
-                RETURNING *
+            INSERT INTO flashcard_item 
+            (set_id, item_question, item_answer, item_tags, difficulty, last_modified, sequence)
+            VALUES (
+                ${setId}, 
+                ${data.item_question || null}, 
+                ${data.item_answer || null}, 
+                ${data.item_tags || null}, 
+                ${data.difficulty}, 
+                ${new Date()}, 
+                ${nextSequence}
+            )
+            RETURNING *;
             `;
         // revalidatePath("/dashboard/edit");
+        revalidateTag(`dashboard-${userId}`);
         revalidateTag(setId);
-        revalidateTag("dashboardSet");
         return insertedItem[0];
     } catch (error) {
         console.log(error);

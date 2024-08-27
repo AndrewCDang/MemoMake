@@ -5,6 +5,12 @@ import { fetchAccountFromUserId } from "../_lib/fetch/fetchAccountFromUserId";
 import { fetchPublicFlashCollections } from "../_lib/fetch/fetchPublicFlashCollections";
 import SectionTemplate from "../_components/setCollectionContentSection/sectionTemplate";
 import { capitaliseFirstChar } from "../_functions/capitaliseFirstChar";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Flashmu | Disover",
+    description: "Discover/Search for public Flash Card Sets and Collections",
+};
 
 async function Page({ searchParams }: { searchParams: any }) {
     const searchQuery = searchParams.search as string;
@@ -55,6 +61,7 @@ async function Page({ searchParams }: { searchParams: any }) {
                 account={userAccount}
                 viewBtn={true}
                 totalItemsPerPage={itemsPerPage}
+                publicPage={true}
             />
             <SectionTemplate
                 createBtn={false}
@@ -64,12 +71,13 @@ async function Page({ searchParams }: { searchParams: any }) {
                 )}'`}
                 id="discover-flashcollection"
                 content={fetchCollection?.fetched_items || []}
-                href="/discover/sets"
+                href={`/discover/collections?search=${searchQuery}`}
                 contentType="collection"
                 totalPaginationItems={fetchCollection?.total_count}
                 account={userAccount}
                 viewBtn={true}
                 totalItemsPerPage={itemsPerPage}
+                publicPage={true}
             />
         </main>
     );

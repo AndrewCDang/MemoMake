@@ -2,19 +2,20 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import style from "../recentItems.module.scss";
 import { RecentItemsTypes } from "../../_actions/fetchRecentTested";
-import { Flashcard_set } from "@/app/_types/types";
+import { Account, Flashcard_set } from "@/app/_types/types";
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 import RecentItemsCard from "../recentComponents/recentItemsCard";
 import { colours } from "@/app/styles/colours";
 import LinkText from "@/app/_components/linkText/linkText";
 
 type RecentItemsSectionTypes = {
+    account: Account;
     recentItems:
         | RecentItemsTypes<Flashcard_set[] | Flashcard_collection_set_joined[]>
         | undefined;
 };
 
-function RecentItemsSection({ recentItems }: RecentItemsSectionTypes) {
+function RecentItemsSection({ account, recentItems }: RecentItemsSectionTypes) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [currentImage, setCurrentImage] = useState<number>(0);
 
@@ -91,7 +92,10 @@ function RecentItemsSection({ recentItems }: RecentItemsSectionTypes) {
                                 key={index}
                                 className={style.recentItemCardWrap}
                             >
-                                <RecentItemsCard historyItem={historyItem} />
+                                <RecentItemsCard
+                                    account={account}
+                                    historyItem={historyItem}
+                                />
                             </div>
                         ))}
                 </div>

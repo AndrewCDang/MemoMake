@@ -21,8 +21,8 @@ export const fetchUserNotes = async (
                 }
             }
         },
-        [userId],
-        { tags: ["userNotes"] }
+        [],
+        { tags: [`userNotes-${userId}`] }
     );
     return cachedUserNotes();
 };

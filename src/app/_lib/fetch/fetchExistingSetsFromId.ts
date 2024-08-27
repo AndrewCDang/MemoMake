@@ -65,8 +65,8 @@ const fetchExistingSetsFromId = async ({
                 return null;
             }
         },
-        [userId],
-        { tags: ["dashboardSet"] }
+        [],
+        { tags: [`dashboardSet-${userId}`, `dashboard-${userId}`] }
     );
     return cacheDashboardSet();
 };

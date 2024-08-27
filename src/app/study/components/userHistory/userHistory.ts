@@ -93,7 +93,23 @@ export const updateUserHistory = async ({
                 WHERE user_id = ${userId}
             `;
 
-        revalidateTag("userHistory");
+        // Add +1 to session_count of card/collection item
+        if (item.content_type === "collection") {
+            const updateSessionCount = await db`
+            UPDATE flashcard_collection 
+            SET session_count = session_count + 1
+            WHERE id = ANY(${db.array(item.ids)}::uuid[])
+        `;
+        }
+        if (item.content_type === "set") {
+            const updateSessionCount = await db`
+            UPDATE flashcard_set
+            SET session_count = session_count + 1
+            WHERE id = ANY(${db.array(item.ids)}::uuid[])
+        `;
+        }
+
+        revalidateTag(`userHistory-${userId}`);
         return { status: 200, message: "updated history" };
     } catch (error: unknown) {
         if (error instanceof Error) {

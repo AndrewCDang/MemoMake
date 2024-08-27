@@ -9,8 +9,15 @@ import SideBarSection from "./sideBarSection/sideBarSection";
 import welcomeGif from "@/../../public/animations/flashmu_wave.gif";
 import Image from "next/image";
 import RecentAndLikedContainer from "./recentAndLikedContainer";
-import { Fetch_like_objects } from "../../../api/fetch/fetchUserLikeItems/fetchUserLikeItems";
-import { fetched_pinned_items } from "@/app/_lib/fetch/fetchPinnedItems";
+import {
+    Flashcard_collection_liked,
+    Flashcard_set_liked,
+} from "../../../api/fetch/fetchUserLikeItems/fetchUserLikeItems";
+import { Fetched_pin_array } from "@/app/_lib/fetch/fetchPinnedItemsById";
+import { Flashcard_set_with_random_item } from "./randomQuestion/fetchRandomQuestion";
+import { useReviseModal } from "@/app/_components/reviseCollection/useReviseModal";
+import { fetchSetsWithItems } from "@/app/_lib/fetch/fetchSetsWithItems";
+import RandomQuestion from "./randomQuestion/randomQuestion";
 
 type RecentTypes = {
     session: Session;
@@ -19,12 +26,9 @@ type RecentTypes = {
         | RecentItemsTypes<Flashcard_collection_set_joined[] | Flashcard_set[]>
         | undefined;
     account: Account;
-    itemsArray: {
-        contentType: "collection" | "set";
-        array: Flashcard_set[] | Flashcard_collection_set_joined[];
-    }[];
-    likedItems: Fetch_like_objects[];
-    pinnedItems: fetched_pinned_items;
+    likedItems: (Flashcard_collection_liked | Flashcard_set_liked)[];
+    pinnedItems: Fetched_pin_array;
+    randomQuestion: Flashcard_set_with_random_item | undefined;
 };
 
 function DashboardLanding({
@@ -32,20 +36,10 @@ function DashboardLanding({
     userNotes,
     recentItems,
     account,
-    itemsArray,
     likedItems,
     pinnedItems,
+    randomQuestion,
 }: RecentTypes) {
-    console.log(account);
-
-    const reducedLikes = Object.values(likedItems[0])
-        .flat()
-        .filter((item) => item !== null)
-        .sort(
-            (a, b) =>
-                new Date(b.created).getTime() - new Date(a.created).getTime()
-        );
-
     return (
         <section className={style.setGrid}>
             <section className={style.dashboardBody}>
@@ -70,19 +64,18 @@ function DashboardLanding({
                             ></Image>
                         </div>
                     </div>
-                    <div className={style.randomQuestion}>
-                        <div>
-                            <h6>Random Question of the day</h6>
-                        </div>
-                    </div>
+                    <RandomQuestion
+                        randomQuestion={randomQuestion}
+                        account={account}
+                    />
                 </div>
+
                 <RecentAndLikedContainer
                     session={session}
                     userNotes={userNotes}
                     recentItems={recentItems}
                     account={account}
-                    itemsArray={itemsArray}
-                    likedItems={reducedLikes}
+                    likedItems={likedItems}
                     pinnedItems={pinnedItems}
                 />
             </section>

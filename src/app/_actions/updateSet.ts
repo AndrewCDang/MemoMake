@@ -3,6 +3,7 @@ import { revalidateTag } from "next/cache";
 import { db } from "../_lib/db";
 import { coloursType } from "../styles/colours";
 import { ThemeColour } from "../_types/types";
+import { auth } from "@/auth";
 
 export const updateSet = async ({
     name,
@@ -21,6 +22,7 @@ export const updateSet = async ({
     image?: string | null;
     image_id?: string | null;
 }) => {
+    const session = await auth();
     try {
         await db`
             UPDATE flashcard_set
@@ -36,7 +38,10 @@ export const updateSet = async ({
                 last_modified = ${new Date()}
             WHERE id = ${setId}
         `;
-        revalidateTag("dashboardSet");
+        if (session?.user) {
+            revalidateTag(`dashboard-${session.user.id}`);
+        }
+        revalidateTag(setId);
         return { status: 200, message: "Set updated", data: { setId, image } };
     } catch (error: unknown) {
         if (error instanceof Error) {

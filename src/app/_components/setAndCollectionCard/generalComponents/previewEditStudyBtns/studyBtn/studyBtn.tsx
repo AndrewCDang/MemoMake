@@ -24,6 +24,8 @@ function StudyBtn({
         useReviseModal();
 
     const studyHandler = async (id: string) => {
+        showReviseModal();
+
         const promise = await fetchSetsWithItems({
             fetchObject: { userId: set.user_id, id: id, type: contentType },
         });
@@ -36,8 +38,6 @@ function StudyBtn({
                 item: promise as Flashcard_collection_preview,
             });
         }
-
-        showReviseModal();
     };
     return (
         <DefaultButton variant="Black" handler={() => studyHandler(set.id)}>

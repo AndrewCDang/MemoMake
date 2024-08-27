@@ -9,20 +9,10 @@ import {
     UpdateSetOptionsTypes,
 } from "@/schema/updateSetScehma";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, {
-    Dispatch,
-    FormEvent,
-    SetStateAction,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import style from "./editSet.module.scss";
-import DefaultButton from "@/app/_components/(buttons)/defaultButton";
-import { HiChevronRight } from "react-icons/hi2";
 import Button from "@/app/_components/(buttons)/styledButton";
-import SubmitMessage from "@/app/(auth)/_components/submitResults/submitMessage";
 import PublicAccessBtn from "../../../(components)/publicAccessBtn";
 import UploadImage, {
     uploadImageHandler,

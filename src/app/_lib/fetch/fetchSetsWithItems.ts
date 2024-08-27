@@ -112,19 +112,14 @@ export const fetchSetsWithItems = async ({
             }
         },
         [
-            `${fetchObject.type}-${
-                Array.isArray(fetchObject.id)
-                    ? fetchObject.id.join(",")
-                    : fetchObject.id
-            }`,
+            Array.isArray(fetchObject.id)
+                ? fetchObject.id.join(",")
+                : fetchObject.id,
         ],
         {
-            tags: [
-                Array.isArray(fetchObject.id)
-                    ? fetchObject.id.join(",")
-                    : fetchObject.id,
-            ],
-            revalidate: 60 * 5,
+            tags: Array.isArray(fetchObject.id)
+                ? fetchObject.id
+                : [fetchObject.id],
         }
     );
     return cacheDashboardSet();

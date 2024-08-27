@@ -26,9 +26,10 @@ import { useInsertFlashItem } from "./hooks/useInsertFlashItem";
 type CardTableTypes = {
     cardCollection: Flashcard_item[];
     tagArray: string[];
+    setId: string;
 };
 
-function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
+function CardsTable({ cardCollection, tagArray, setId }: CardTableTypes) {
     const [parent] = useAutoAnimate();
 
     // Global state which shares state of inserted item
@@ -62,40 +63,38 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
     // States for handling hidden columns
     const [hiddenColumns, setHiddenColumns] = useState<ColumnName[]>([]);
 
-    // Filtering Card collection of filtered states present
-    const filterCardCollection = () => {
-        const filterByTag = (collection: Flashcard_item[]) => {
-            return collection.filter((card) => {
-                return card.item_tags.some((tag) => filteredTags.includes(tag));
-            });
-        };
+    // Filtering Card collection based on filtered states
+    const filterCardCollection = (
+        displayCardCollection: Flashcard_item[]
+    ): Flashcard_item[] => {
+        let displayCollection = displayCardCollection;
 
-        const filterByDiff = (collection: Flashcard_item[]) => {
-            return collection.filter((card) => {
-                return filteredDiff.includes(card.difficulty);
-            });
-        };
-
-        let displayCollection = cardCollection;
         if (filteredTags.length > 0) {
-            const filterCollectionByTags = filterByTag(displayCollection);
-            displayCollection = filterCollectionByTags;
+            displayCollection = displayCollection.filter((card) =>
+                card.item_tags.some((tag) => filteredTags.includes(tag))
+            );
         }
+
         if (filteredDiff.length > 0) {
-            const filterCollectionByTags = filterByDiff(displayCollection);
-            displayCollection = filterCollectionByTags;
+            displayCollection = displayCollection.filter((card) =>
+                filteredDiff.includes(card.difficulty)
+            );
         }
+
         return displayCollection;
     };
 
-    const initialCardCollection =
-        filteredTags.length > 0 || filteredDiff.length > 0
-            ? filterCardCollection()
-            : cardCollection;
+    const [displayCardCollection, setDisplayCardCollection] =
+        useState<Flashcard_item[]>(cardCollection);
 
-    const [displayCardCollection, setDisplayCardCollection] = useState<
-        Flashcard_item[]
-    >(initialCardCollection);
+    const displayedCardCollection =
+        filteredTags.length > 0 || filteredDiff.length > 0
+            ? filterCardCollection(displayCardCollection)
+            : displayCardCollection;
+
+    useEffect(() => {
+        console.log(displayCardCollection);
+    });
 
     useEffect(() => {
         if (useFlashcard) {
@@ -319,7 +318,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                     );
                     return remainingArray;
                 });
-                await delCard(selectedItems);
+                await delCard(selectedItems, setId);
             } else {
                 setDisplayCardCollection((prev) => {
                     const remainingArray = prev.filter(
@@ -327,7 +326,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                     );
                     return remainingArray;
                 });
-                await delCard(selItems);
+                await delCard(selItems, setId);
             }
         } catch (error) {
             console.log(error);
@@ -505,6 +504,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                 try {
                     const updateItem = await updateCard({
                         id: id,
+                        setId: setId,
                         object: object,
                         value: value || null,
                     });
@@ -610,7 +610,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                 tableItemRef.current[focusedLabel]!.innerText.trim()
         ) {
             console.log("Card Updating");
-            const updateItem = await updateCard({ id, object, value });
+            const updateItem = await updateCard({ id, object, value, setId });
             console.log(updateItem.message);
         }
     };
@@ -660,7 +660,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                     hiddenColumns={hiddenColumns}
                 />
 
-                {tableLoaded && displayCardCollection.length > 0 && (
+                {tableLoaded && displayedCardCollection.length > 0 && (
                     <>
                         <tbody
                             ref={notesContainerRef}
@@ -670,7 +670,7 @@ function CardsTable({ cardCollection, tagArray }: CardTableTypes) {
                             }}
                         >
                             <tr ref={parent}>
-                                {displayCardCollection.map((card, index) => (
+                                {displayedCardCollection.map((card, index) => (
                                     <td
                                         key={`${card.id}-tr`}
                                         className={style.tableRow}

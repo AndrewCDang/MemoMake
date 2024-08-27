@@ -3,17 +3,18 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import style from "./sectionTemplate.module.scss";
 import SetAndCollectionCard from "../setAndCollectionCard/setAndCollectionCard";
 import {
-    AccountWithLikes,
+    AccountWithLikesAndPins,
     ContentType,
     Flashcard_set,
 } from "@/app/_types/types";
 import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectionByIdJoinSet";
 
 type SetCollectionContainerType = {
-    account: AccountWithLikes | undefined;
+    account: AccountWithLikesAndPins | undefined;
     content: Flashcard_collection_set_joined[] | Flashcard_set[];
     contentType: ContentType;
     dynamicNeat: boolean;
+    publicPage: boolean;
 };
 
 const getGridColumns = (containerWidth: number) => {
@@ -33,7 +34,12 @@ function SetCollectionContainerNeatly({
     content,
     contentType,
     dynamicNeat = false,
+    publicPage,
 }: SetCollectionContainerType) {
+    const [initialContent, setInitialContent] = useState<
+        Flashcard_collection_set_joined[] | Flashcard_set[]
+    >(content);
+
     const gridRef = useRef<HTMLElement>(null);
     const [gridColumns, setGridColumns] = useState<number>(1);
     const [trailingItems, setTrailingItems] = useState<number>(0);
@@ -64,11 +70,11 @@ function SetCollectionContainerNeatly({
 
     return (
         <section ref={gridRef} className={style.setGrid}>
-            {content &&
+            {initialContent &&
                 dynamicNeat &&
-                content.map((item, index) => {
+                initialContent.map((item, index) => {
                     if (
-                        content.length - index > trailingItems ||
+                        initialContent.length - index > trailingItems ||
                         trailingItems > 3 ||
                         index + 1 < gridColumns
                     )
@@ -78,25 +84,29 @@ function SetCollectionContainerNeatly({
                                 set={item}
                                 account={account}
                                 contentType={contentType}
+                                publicPage={publicPage}
+                                setInitialContent={setInitialContent}
                             />
                         );
                 })}
-            {content &&
+            {initialContent &&
                 !dynamicNeat &&
-                content.map((item) => {
+                initialContent.map((item) => {
                     return (
                         <SetAndCollectionCard
                             key={item.id}
                             set={item}
                             account={account}
                             contentType={contentType}
+                            publicPage={publicPage}
+                            setInitialContent={setInitialContent}
                         />
                     );
                 })}
-            {content.length === 1 && gridColumns > 2 && <div></div>}
+            {initialContent.length === 1 && gridColumns > 2 && <div></div>}
             {/* Fills grid from second row, so last row will not have trailing items */}
             {gridColumns - trailingItems < 3 &&
-                content.length > gridColumns &&
+                initialContent.length > gridColumns &&
                 gridColumns > 2 &&
                 Array(gridColumns - trailingItems)
                     .fill(0)

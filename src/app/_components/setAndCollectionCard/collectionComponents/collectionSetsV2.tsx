@@ -61,20 +61,22 @@ function CollectionSets({ collectionItem }: CollectionSetsTypes) {
             <span className={style.setLabel}>Sets inside</span>
             <div className={style.setsCollection}>
                 {sortedSets.map((item) => {
-                    return (
-                        <div className={style.setItem} key={item.id}>
-                            <span>{item.set_name}</span>
-                            <div
-                                style={{
-                                    backgroundColor:
-                                        item.theme_colour !== null
-                                            ? colours[item.theme_colour]()
-                                            : colours.lightGrey(),
-                                }}
-                                className={style.setItemBg}
-                            ></div>
-                        </div>
-                    );
+                    if (item) {
+                        return (
+                            <div className={style.setItem} key={item.id}>
+                                <span>{item.set_name}</span>
+                                <div
+                                    style={{
+                                        backgroundColor:
+                                            item.theme_colour !== null
+                                                ? colours[item.theme_colour]()
+                                                : colours.lightGrey(),
+                                    }}
+                                    className={style.setItemBg}
+                                ></div>
+                            </div>
+                        );
+                    }
                 })}
             </div>
         </section>

@@ -2,10 +2,15 @@ import { auth } from "@/auth";
 import { Difficulty } from "../_types/types";
 import Study from "./study";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Flashmu | Study",
+    description: "Study flashcard set/collection",
+};
 
 async function Page({ searchParams }: any) {
     const session = await auth();
-
     const collectionIds = searchParams.collection?.split("_") || [];
     const setIds = searchParams.set?.split("_") || [];
     const collectionTags = searchParams.tags?.split("_") || [];

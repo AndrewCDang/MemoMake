@@ -42,7 +42,10 @@ function InteractiveCard({
     const cardRef = useRef<Array<RefObject<HTMLDivElement>>>([]);
 
     const ySet = useMotionValue(isFlipped ? 180 : 0);
-    const xSpring = useSpring(xSet, { damping: 20, stiffness: 100 });
+    const xSpring = useSpring(xSet, {
+        damping: 20,
+        stiffness: 250,
+    });
     const ySpring = useSpring(ySet);
 
     const transform = useMotionTemplate`rotateY(${xSpring}deg) rotateX(${ySpring}deg)`;
@@ -154,7 +157,10 @@ function InteractiveCard({
                 y: 0,
                 rotateX: 0,
                 rotateY: 0,
-                transition: { type: "spring", stiffness: 500, damping: 30 },
+                transition: {
+                    duration: 0.3,
+                    ease: [0.075, 0.82, 0.165, 1],
+                },
             })
             .then(() => {
                 setCurrentDragged(null);
@@ -227,7 +233,10 @@ function InteractiveCard({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{
+                    duration: 0.2,
+                    ease: [0.075, 0.82, 0.165, 1],
+                }}
             >
                 {flashCardItemsTest.map((item, index) => {
                     return (

@@ -39,8 +39,10 @@ export async function fetchCollectionSetCount({
                 }
             }
         },
-        [userId],
-        { tags: ["dashboardSet"], revalidate: 60 * 60 }
+        [],
+        {
+            tags: [`dashboardSet-${userId}`, `dashboard-${userId}`],
+        }
     );
 
     return cacheDashboardSet();

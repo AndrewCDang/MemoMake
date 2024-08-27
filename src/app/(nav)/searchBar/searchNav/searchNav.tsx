@@ -22,7 +22,7 @@ function SearchNav({ handler }: { handler: () => void }) {
                     Search <span className={style.desktopText}>Flashcards</span>
                 </span>
                 <span className={style.searchContainerHover}>
-                    Search Flashcards
+                    Search <span className={style.desktopText}>Flashcards</span>
                 </span>
             </div>
         </div>

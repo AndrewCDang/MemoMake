@@ -15,7 +15,7 @@ import ListPickerComponent from "./listPickerComponent";
 import { HiChevronRight } from "react-icons/hi2";
 
 type CollectionAndSetsSection = {
-    session: Session;
+    session: Session | undefined;
     selectedSets: Flashcard_set_with_cards[];
     setSelectedTags: Dispatch<SetStateAction<string[]>>;
     tagsCollection: string[];
@@ -43,6 +43,7 @@ function CollectionAndSetsSection({
 
     const fetchCollectionWithCount = async () => {
         try {
+            if (!session) return;
             const userId = session.user.id;
             const response = await fetch(
                 `/api/fetch/fetchCollectionHandler?type=${contentType}&userId=${userId}`,
@@ -123,7 +124,7 @@ function CollectionAndSetsSection({
     const filteredList = getFilteredLlist();
 
     return (
-        <>
+        <div>
             <div className={style.setCardSection}>
                 {/* Title */}
                 <section className={style.stateCheckValidation}>
@@ -144,35 +145,39 @@ function CollectionAndSetsSection({
                 <div ref={parent} className={style.setCardContainer}>
                     <CollectionAndSetsSelectedObjects />
                     {/* Button which shows selectable sets to add */}
-                    <button
-                        onClick={() =>
-                            setAddSetModal((prevState) => !prevState)
-                        }
-                        className={style.addCardSet}
-                    >
-                        <div>{!addSetModal ? "Add Set" : "Hide Menu"}</div>
-                        <div>
-                            <HiChevronRight
-                                style={{
-                                    transform: !addSetModal
-                                        ? "rotate(0deg)"
-                                        : "rotate(90deg)",
-                                }}
-                            />
-                        </div>
-                    </button>
+                    {session && (
+                        <button
+                            onClick={() =>
+                                setAddSetModal((prevState) => !prevState)
+                            }
+                            className={style.addCardSet}
+                        >
+                            <div>{!addSetModal ? "Add Set" : "Hide Menu"}</div>
+                            <div>
+                                <HiChevronRight
+                                    style={{
+                                        transform: !addSetModal
+                                            ? "rotate(0deg)"
+                                            : "rotate(90deg)",
+                                    }}
+                                />
+                            </div>
+                        </button>
+                    )}
                 </div>
             </div>
             {/* Add Set Modal | Text input | Selectable Set List */}
-            <ListPickerComponent
-                searchList={searchCollection}
-                addSetModal={addSetModal}
-                selectedSets={selectedSets}
-                filteredList={filteredList}
-                contentType={contentType}
-                setFetchLoading={setFetchLoading}
-            />
-        </>
+            {session && (
+                <ListPickerComponent
+                    searchList={searchCollection}
+                    addSetModal={addSetModal}
+                    selectedSets={selectedSets}
+                    filteredList={filteredList}
+                    contentType={contentType}
+                    setFetchLoading={setFetchLoading}
+                />
+            )}
+        </div>
     );
 }
 
