@@ -5,24 +5,24 @@ import { motion } from "framer-motion";
 import { labelColour } from "@/app/_components/_generalUi/difficultyColours/difficultyColours";
 import PopOverContent from "@/app/_components/_generalUi/popOverContent/popOverContent";
 import { updateCard } from "@/app/_actions/updateCard";
+import {
+    Flashcard_collection_with_cards,
+    Flashcard_set_with_cards,
+} from "@/app/_types/types";
 
 function DifficultyBtns({
+    data,
     item,
     userId,
 }: {
+    data: Flashcard_collection_with_cards[] | Flashcard_set_with_cards[];
     item: CombinedType;
     userId: string | undefined;
 }) {
     const [initialDiff, setInitialDiff] = useState<string>(item.difficulty);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const diffArray = ["NA", "EASY", "MEDIUM", "HARD"];
-    const popRef = useRef<HTMLDivElement>(null);
-
-    const handleClickOutside = (e: MouseEvent) => {
-        if (popRef.current && !popRef.current.contains(e.target as Node)) {
-            setIsOpen(false);
-        }
-    };
+    const setId = data[0]?.user_id;
 
     const openHandler = () => {
         setIsOpen((prevState) => !prevState);
@@ -38,16 +38,6 @@ function DifficultyBtns({
         });
     };
 
-    useEffect(() => {
-        if (popRef.current) {
-            window.addEventListener("click", handleClickOutside);
-
-            return () => {
-                window.removeEventListener("click", handleClickOutside);
-            };
-        }
-    }, [popRef]);
-
     return (
         <aside className={style.difficultyBtns}>
             <div className={style.labelWrap}>
@@ -62,30 +52,34 @@ function DifficultyBtns({
                 </div>
             </div>
 
-            <PopOverContent isOn={isOpen} setIsOn={setIsOpen}>
-                <div className={style.otherDiffSelection}>
-                    {diffArray.map((diff, index) => {
-                        if (diff === initialDiff) {
-                            return null;
-                        }
+            {userId === setId && (
+                <PopOverContent isOn={isOpen} setIsOn={setIsOpen}>
+                    <div className={style.otherDiffSelection}>
+                        {diffArray.map((diff, index) => {
+                            if (diff === initialDiff) {
+                                return null;
+                            }
 
-                        return (
-                            <motion.div key={diff} layout="position">
-                                <button
-                                    style={{
-                                        backgroundColor: labelColour(diff),
-                                    }}
-                                    className={style.difficultyLabelValue}
-                                    onClick={() => handleDiffUpdate(diff)}
-                                >
-                                    {diff[0] +
-                                        diff.slice(1).toLocaleLowerCase()}{" "}
-                                </button>
-                            </motion.div>
-                        );
-                    })}
-                </div>
-            </PopOverContent>
+                            return (
+                                <motion.div key={diff} layout="position">
+                                    <button
+                                        style={{
+                                            backgroundColor: labelColour(diff),
+                                        }}
+                                        className={style.difficultyLabelValue}
+                                        onClick={() => handleDiffUpdate(diff)}
+                                    >
+                                        {diff[0] +
+                                            diff
+                                                .slice(1)
+                                                .toLocaleLowerCase()}{" "}
+                                    </button>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </PopOverContent>
+            )}
         </aside>
     );
 }

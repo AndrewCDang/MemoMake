@@ -243,14 +243,18 @@ function InteractiveCard({
                         // Controls drag move in x direction / swiping card left and right
                         <motion.div
                             key={`${item.id}-interactive-card`}
-                            onMouseDown={(e) => holdFlashCard(e, item.id)}
+                            onMouseDown={(
+                                e: React.MouseEvent<HTMLDivElement>
+                            ) => holdFlashCard(e, item.id)}
                             onMouseUp={releaseFlashCard}
-                            onMouseMove={(e) => (
+                            onMouseMove={(
+                                e: React.MouseEvent<HTMLDivElement>
+                            ) => (
                                 cardMoveHandler(e, index), draggingFlashCard(e)
                             )}
-                            onMouseLeave={(e) => (
-                                cardLeaveHandler(e), releaseFlashCard(e)
-                            )}
+                            onMouseLeave={(
+                                e: React.MouseEvent<HTMLDivElement>
+                            ) => (cardLeaveHandler(e), releaseFlashCard(e))}
                             style={{
                                 // x: currentDraged === item.id ? xDrag : 0,
                                 zIndex:

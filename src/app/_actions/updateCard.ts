@@ -19,6 +19,14 @@ export const updateCard = async ({
 }: UpdateCardTypes): Promise<{ status: number; message: String }> => {
     const session = await auth();
 
+    const updateTags = () => {
+        if (session?.user) {
+            revalidateTag(`dashboard-${session.user.id}`);
+        }
+        revalidateTag(setId);
+        revalidateTag(id);
+    };
+
     if (object == "item_question" || object == "item_answer") {
         try {
             await db`
@@ -26,6 +34,7 @@ export const updateCard = async ({
             SET ${db(object)} = ${value || null}, last_modified = ${new Date()}
             WHERE id = ${id}
             `;
+            updateTags();
             return { status: 200, message: "Success: Item updated" };
         } catch (error) {
             console.log(error);
@@ -34,6 +43,7 @@ export const updateCard = async ({
     }
     if (object == "difficulty") {
         const acceptedValues = ["NA", "EASY", "MEDIUM", "HARD"];
+        console.log("UPDATE DIFF");
         if (acceptedValues.includes(value as string)) {
             try {
                 await db`
@@ -41,6 +51,7 @@ export const updateCard = async ({
             SET difficulty = ${value || null}, last_modified = ${new Date()}
             WHERE id = ${id}
             `;
+                updateTags();
                 return { status: 200, message: "Success: Item updated" };
             } catch (error) {
                 console.log(error);
@@ -58,10 +69,12 @@ export const updateCard = async ({
             SET item_tags = ${value || null}, last_modified = ${new Date()}
             WHERE id = ${id}
             `;
-                revalidatePath("dashboard/flashcard");
+                updateTags();
+
                 return { status: 200, message: "Success: Item updated" };
             } catch (error) {
                 console.log(error);
+
                 return {
                     status: 400,
                     message: "Error: Unable to update item",
@@ -69,10 +82,6 @@ export const updateCard = async ({
             }
         }
     }
-    if (session?.user) {
-        revalidateTag(`dashboard-${session.user.id}`);
-        revalidateTag(setId);
-    }
-    revalidateTag(id);
+
     return { status: 400, message: "Error: Unable to update item" };
 };

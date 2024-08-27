@@ -77,8 +77,10 @@ function Study({
               }) as CombinedType[])
             : [];
 
-    const flashCards = data.flatMap((col) => col.flashcards);
-    const uniqueFlashCards = flashCards.filter(
+    const [flashcards, setFlashcards] = useState<Flashcard_item[]>(
+        data.flatMap((col) => col.flashcards)
+    );
+    const uniqueFlashCards = flashcards.filter(
         (item, index, self) => index === self.findIndex((t) => t.id === item.id)
     );
 
@@ -236,6 +238,7 @@ function Study({
                     ) : (
                         // Displays Results when all questions have been answered
                         <FlashResults
+                            data={data}
                             userId={userId}
                             flashCardItemsTest={chosenQuestions}
                             testIncorrect={testIncorrect}

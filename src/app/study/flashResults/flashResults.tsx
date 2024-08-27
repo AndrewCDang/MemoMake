@@ -12,8 +12,13 @@ import { HiArrowRight } from "react-icons/hi2";
 import { motion } from "framer-motion";
 import { labelColour } from "@/app/_components/_generalUi/difficultyColours/difficultyColours";
 import DifficultyBtns from "./components/difficultyBtns";
+import {
+    Flashcard_collection_with_cards,
+    Flashcard_set_with_cards,
+} from "@/app/_types/types";
 
 type FlashResults = {
+    data: Flashcard_collection_with_cards[] | Flashcard_set_with_cards[];
     flashCardItemsTest: CombinedType[];
     testIncorrect: boolean;
     setTestIncorrect: Dispatch<SetStateAction<boolean>>;
@@ -21,6 +26,7 @@ type FlashResults = {
 };
 
 function FlashResults({
+    data,
     flashCardItemsTest,
     testIncorrect,
     userId,
@@ -110,6 +116,7 @@ function FlashResults({
                                     )}
                                     {
                                         <DifficultyBtns
+                                            data={data}
                                             item={item}
                                             userId={userId}
                                         />
