@@ -116,9 +116,11 @@ function SearchActive({
                     {searchByOptions.map((item, index) => {
                         if (index === 0) {
                             return (
-                                <Link href={"/discover/popular"}>
+                                <Link
+                                    key={`${item}-search-${index}`}
+                                    href={"/discover/popular"}
+                                >
                                     <DefaultButton
-                                        key={`${item}-search-${index}`}
                                         outline={false}
                                         handler={handler}
                                     >
