@@ -20,6 +20,8 @@ import signInGoogle from "./signInGoogle";
 import PasswordRequirements from "./passwordRequirements";
 import { useLogInModal } from "../_hooks/useLogIn";
 import { useSignUpModal } from "../_hooks/useSignUp";
+import { set } from "zod";
+import LoadingCircle from "../_components/loadingUi/loadingCircle";
 
 export interface DataValidationType {
     validated: boolean;
@@ -30,6 +32,7 @@ export interface DataValidationType {
 function SignUp() {
     const { showLogInModal } = useLogInModal();
     const { removeSignUpModal } = useSignUpModal();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [validated, setValidated] = useState<boolean | undefined>(undefined);
     const [message, setMessage] = useState<string | undefined>(undefined);
@@ -46,18 +49,25 @@ function SignUp() {
         mode: "onChange",
     });
 
-    const submitHandler = (data: AuthSignUpType) => {
-        startTransition(() => {
-            signUp(data).then((value: DataValidationType) => {
-                setValidated(value.validated);
-                if (value.message) {
-                    setMessage(value.message);
+    const submitHandler = async (data: AuthSignUpType) => {
+        try {
+            setIsLoading(true);
+            const signUpRequest = await signUp(data);
+            if (signUpRequest.validated) {
+                setValidated(signUpRequest.validated);
+                if (signUpRequest.message) {
+                    setMessage(signUpRequest.message);
                 }
-                if (value.validated) {
+                if (signUpRequest.validated) {
                     reset();
                 }
-            });
-        });
+            }
+            setIsLoading(false);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.log(error.message);
+            }
+        }
     };
 
     const signUpInstead = () => {
@@ -116,10 +126,16 @@ function SignUp() {
                 {validated != undefined && (
                     <SubmitMessage validated={validated} message={message} />
                 )}
+                {isLoading && (
+                    <div className={style.loadingWrap}>
+                        <LoadingCircle />
+                    </div>
+                )}
                 <div className={style.btnWrap}>
                     <Button variant="black" text="Sign Up" />
                 </div>
             </form>
+
             <div className={style.authBorder}>
                 <p>or</p>
             </div>

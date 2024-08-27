@@ -16,11 +16,12 @@ export async function verifyEmail({
     token,
     subject,
     purpose,
+    email,
 }: VerifyEmail) {
     try {
         const data = await resend.emails.send({
-            from: "onboarding@resend.dev",
-            to: ["andrew-dang2@hotmail.co.uk"],
+            from: "noreply@quizmu.com",
+            to: [email],
             subject: subject,
             react: EmailTemplate({ userName, token, purpose }),
         });
