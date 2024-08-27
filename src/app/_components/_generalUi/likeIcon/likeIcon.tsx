@@ -1,5 +1,5 @@
 "use client";
-import style from "./PinIcon.module.scss";
+import style from "./pinIcon.module.scss";
 import { useState } from "react";
 import { colours } from "@/app/styles/colours";
 import { IoMdThumbsUp } from "react-icons/io";

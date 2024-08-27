@@ -6,7 +6,7 @@ import { Flashcard_collection_set_joined } from "@/app/_lib/fetch/fetchCollectio
 import { Notes } from "./pinAndToDo/toDoList";
 import { Session } from "next-auth";
 import SideBarSection from "./sideBarSection/sideBarSection";
-import welcomeGif from "@/../../public/animations/flashmu_wave.gif";
+import welcomeGif from "../../../../../public/animations/flashmu_wave.gif";
 import Image from "next/image";
 import RecentAndLikedContainer from "./recentAndLikedContainer";
 import {
