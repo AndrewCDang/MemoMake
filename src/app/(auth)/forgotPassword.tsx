@@ -7,10 +7,7 @@ import { EmailSchema, EmailSchemaType } from "@/schema/authSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../_components/(buttons)/styledButton";
-import CloseButton from "../_components/(buttons)/closeButton";
-import CloseForgotPassword from "./closeForgotPassword";
 import forgotPassword from "../_actions/forgotPassword";
-import { startTransition } from "react";
 import SubmitMessage from "./_components/submitResults/submitMessage";
 import LoadingCircle from "../_components/loadingUi/loadingCircle";
 
