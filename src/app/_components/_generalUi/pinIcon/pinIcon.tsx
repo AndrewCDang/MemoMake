@@ -1,6 +1,6 @@
 "use client";
 import { AiFillPushpin } from "react-icons/ai";
-import style from "./PinIcon.module.scss";
+import style from "./pinIcon.module.scss";
 import { Dispatch, SetStateAction, useState } from "react";
 import { addRemoveFavourites } from "@/app/_actions/addRemoveFavourites";
 import { colours } from "@/app/styles/colours";
