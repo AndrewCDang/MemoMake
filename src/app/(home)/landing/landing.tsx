@@ -14,9 +14,7 @@ function Landing() {
                         <div className={style.flashmuLogo}>
                             <FlashmuLandingLogo />
                         </div>
-                        <h1 className={style.flashmuLandingTextLogo}>
-                            Flashmu
-                        </h1>
+                        <h1 className={style.flashmuLandingTextLogo}>Quizmu</h1>
 
                         <div className={style.landingTextWrap}>
                             <h5 className={style.leadingText}>

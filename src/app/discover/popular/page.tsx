@@ -7,7 +7,7 @@ import { fetchPopularSets } from "./fetch/fetchPopularSets";
 import { fetchPopularCollections } from "./fetch/fetchPopularCollections";
 
 export const metadata: Metadata = {
-    title: "Flashmu | Disover",
+    title: "Quizmu | Disover",
     description: "Discover/Search for public Flash Card Sets and Collections",
 };
 

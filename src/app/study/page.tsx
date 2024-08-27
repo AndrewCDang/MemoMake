@@ -11,7 +11,7 @@ import { fetchStudyDetails } from "../_lib/fetch/fetchStudyDetails";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-    title: "Flashmu | Study",
+    title: "Quizmu | Study",
     description: "Study flashcard set/collection",
 };
 

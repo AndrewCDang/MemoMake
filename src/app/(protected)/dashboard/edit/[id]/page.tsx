@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Flashmu | Edit Set",
+    title: "Quizmu | Edit Set",
     description: "Edit your Flash Card Set | Create new cards",
 };
 
