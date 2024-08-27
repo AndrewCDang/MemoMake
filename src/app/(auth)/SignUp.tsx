@@ -12,11 +12,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../_components/(buttons)/styledButton";
-import { ZodError } from "zod";
 import GenericButton from "../_components/(buttons)/genericButtton";
-import CloseButton from "../_components/(buttons)/closeButton";
-import { ValidIcon } from "./_components/validIcons";
-import CloseSignUpModal from "./_hooks/closeSignUpModal";
 import { signUp } from "../_actions/signUp";
 import { startTransition } from "react";
 import SubmitMessage from "./_components/submitResults/submitMessage";
@@ -120,7 +116,9 @@ function SignUp() {
                 {validated != undefined && (
                     <SubmitMessage validated={validated} message={message} />
                 )}
-                <Button text="Sign Up" />
+                <div className={style.btnWrap}>
+                    <Button variant="black" text="Sign Up" />
+                </div>
             </form>
             <div className={style.authBorder}>
                 <p>or</p>

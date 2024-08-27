@@ -4,8 +4,8 @@
 
 .landingContainer {
     width: 100%;
-    height: calc(80vh - 3.5rem);
-    margin-bottom: 20vh;
+    height: 80vh;
+    // margin-bottom: 20vh;
     position: relative;
     display: grid;
     place-items: center;
@@ -126,4 +126,13 @@
     .underline {
         text-decoration: underline;
     }
+}
+.mobileBtns {
+    display: none;
+    @include breakpoint-mobile {
+        display: flex;
+    }
+    gap: 0.5rem;
+    width: fit-content;
+    margin: 0 auto;
 }

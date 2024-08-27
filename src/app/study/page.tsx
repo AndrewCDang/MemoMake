@@ -1,8 +1,14 @@
 import { auth } from "@/auth";
-import { Difficulty } from "../_types/types";
+import {
+    Difficulty,
+    Flashcard_collection_with_cards,
+    Flashcard_set_with_cards,
+} from "../_types/types";
 import Study from "./study";
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
+import next, { Metadata } from "next";
+import { fetchStudyDetails } from "../_lib/fetch/fetchStudyDetails";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
     title: "Flashmu | Study",
@@ -34,8 +40,37 @@ async function Page({ searchParams }: any) {
 
     if (!contentType || !ids) return notFound();
 
+    const res = await fetch(
+        `${
+            process.env.NEXT_WEBSITE_URL
+        }/api/fetch/fetchStudyFlashCards?type=${contentType}&ids=${ids.join(
+            "_"
+        )}&tags=${collectionDifficulties?.join("_") || ""}&difficulties=${
+            collectionDifficulties?.join("_") || ""
+        }`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            next: {
+                revalidate: 60 * 60,
+                tags: [ids],
+            },
+        }
+    );
+    if (!res.ok) {
+        redirect("/dashboard");
+    }
+    const responseData = await res.json();
+
+    const data = responseData.data as
+        | Flashcard_collection_with_cards[]
+        | Flashcard_set_with_cards[];
+
     return (
         <Study
+            data={data}
             ids={ids}
             contentType={contentType}
             tags={collectionTags}

@@ -12,7 +12,7 @@ function TryOrCreate() {
             baseCol={"yellow"}
             hoverCol={"white"}
             hoverText="Create Set"
-            handler={() => showSignUpModal}
+            handler={() => showSignUpModal()}
             variant="large"
         />
     );

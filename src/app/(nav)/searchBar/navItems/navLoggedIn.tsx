@@ -18,16 +18,6 @@ import { FiUserMinus } from "react-icons/fi";
 
 function NavLoggedIn({ session }: { session: Session | null }) {
     const [openDropdown, setOpenDropdown] = useState<boolean>(false);
-    // const form = (
-    //     <form
-    //         action={async () => {
-    //             "use server";
-    //             await signOut();
-    //         }}
-    //     >
-    //         <button>Sign Out</button>
-    //     </form>
-    // );
 
     const { showLogInModal } = useLogInModal();
     const { showSignUpModal } = useSignUpModal();
@@ -129,7 +119,7 @@ function NavLoggedIn({ session }: { session: Session | null }) {
                             </DropdownItem>
                             <DropdownItem>
                                 <>
-                                    <span onClick={() => showLogInModal()}>
+                                    <span onClick={() => showSignUpModal()}>
                                         Sign Up
                                     </span>
                                     <FiUserPlus />

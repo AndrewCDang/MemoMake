@@ -40,14 +40,17 @@ function CollectionSets({ collectionItem }: CollectionSetsTypes) {
     }, [popOverStatus]);
 
     // Sorting sets by set name length
-    const sortedSets = collectionItem.set_items.sort((a, b) => {
-        if (a.set_name.length < b.set_name.length) {
-            return -1;
-        } else if (a.set_name.length > b.set_name.length) {
-            return 1;
-        }
-        return 0;
-    });
+    const sortedSets =
+        collectionItem.set_items && collectionItem.set_items.length > 1
+            ? collectionItem.set_items.sort((a, b) => {
+                  if (a.set_name.length < b.set_name.length) {
+                      return -1;
+                  } else if (a.set_name.length > b.set_name.length) {
+                      return 1;
+                  }
+                  return 0;
+              })
+            : collectionItem.set_items;
 
     return (
         <section
@@ -60,24 +63,27 @@ function CollectionSets({ collectionItem }: CollectionSetsTypes) {
         >
             <span className={style.setLabel}>Sets inside</span>
             <div className={style.setsCollection}>
-                {sortedSets.map((item) => {
-                    if (item) {
-                        return (
-                            <div className={style.setItem} key={item.id}>
-                                <span>{item.set_name}</span>
-                                <div
-                                    style={{
-                                        backgroundColor:
-                                            item.theme_colour !== null
-                                                ? colours[item.theme_colour]()
-                                                : colours.lightGrey(),
-                                    }}
-                                    className={style.setItemBg}
-                                ></div>
-                            </div>
-                        );
-                    }
-                })}
+                {sortedSets &&
+                    sortedSets.map((item) => {
+                        if (item) {
+                            return (
+                                <div className={style.setItem} key={item.id}>
+                                    <span>{item.set_name}</span>
+                                    <div
+                                        style={{
+                                            backgroundColor:
+                                                item.theme_colour !== null
+                                                    ? colours[
+                                                          item.theme_colour
+                                                      ]()
+                                                    : colours.lightGrey(),
+                                        }}
+                                        className={style.setItemBg}
+                                    ></div>
+                                </div>
+                            );
+                        }
+                    })}
             </div>
         </section>
     );

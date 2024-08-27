@@ -18,6 +18,8 @@
         width: clamp(8rem, calc(5rem + 2vw), 12rem);
         aspect-ratio: 0.8;
         position: relative;
+        display: grid;
+        place-items: center;
     }
 }
 

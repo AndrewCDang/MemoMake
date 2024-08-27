@@ -70,7 +70,7 @@ const MotionIconContainer = ({
     );
 };
 
-const IconContainer = ({
+export const IconContainer = ({
     children,
     themeColour,
     iconBoxShadows,

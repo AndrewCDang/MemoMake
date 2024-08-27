@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect } from "react";
-import useRevisionFlashItems from "@/app/_hooks/useRevisionFlashItems";
 import InteractButtons from "./components/interactButtons/interactButtons";
 import style from "./study.module.scss";
 import { useState } from "react";
@@ -9,13 +8,20 @@ import { useMotionValue } from "framer-motion";
 import FlashResults from "./flashResults/flashResults";
 import ResultButtons from "./components/resultButtons/resultButtons";
 import InteractiveCard from "./interactiveCard";
-import { ContentType, Difficulty, Flashcard_item } from "../_types/types";
+import {
+    ContentType,
+    Difficulty,
+    Flashcard_collection_with_cards,
+    Flashcard_item,
+    Flashcard_set_with_cards,
+} from "../_types/types";
 import { updateUserHistory } from "./components/userHistory/userHistory";
-import { fetchFlashCards } from "./functions/fetchFlashCards";
 import LoadingCircle from "../_components/loadingUi/loadingCircle";
-import { useRouter } from "next/navigation";
-import TextInput from "../_components/textInput/inputField";
 import StudyTextInput from "./components/textInput/studyTextInput";
+import { shuffleArray } from "../_functions/shuffleArray";
+import { BannerIcon } from "../_components/setAndCollectionCard/generalComponents/bannerBtns/bannerBtns";
+import { IconContainer } from "../_components/setAndCollectionCard/generalComponents/bannerStrip/bannerStrip";
+import { colours } from "../styles/colours";
 
 type FlashCardItemsTest<T> = T & {
     correct: boolean | null;
@@ -30,21 +36,33 @@ type StudyTypes = {
     tags: string[] | undefined;
     difficulties: Difficulty[] | undefined;
     userId: string | undefined;
+    data: Flashcard_collection_with_cards[] | Flashcard_set_with_cards[];
 };
 
-function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
-    const router = useRouter();
-
-    const { collectionItems, questions } = useRevisionFlashItems();
+function Study({
+    data,
+    ids,
+    contentType,
+    tags,
+    difficulties,
+    userId,
+}: StudyTypes) {
     // States for titles/subtitles
-    const [titles, setTitles] = useState<string[]>(
-        collectionItems.map((item) => item.collection_name)
-    );
-    const [subTitles, setSubTitles] = useState<string[]>(
-        collectionItems.flatMap((item) =>
-            item.sets.map((item) => item.set_name)
-        )
-    );
+    const getTitle = () => {
+        if (ids.length === 1 && data[0].content_type === "collection") {
+            return data[0].collection_name;
+        } else if (ids.length === 1 && data[0].content_type === "set") {
+            return data[0].set_name;
+        }
+        if (data.length > 1) {
+            if (contentType === "collection") {
+                return "Multiple Collections";
+            } else if (contentType === "set") {
+                return "Multiple Sets";
+            }
+        }
+        return "";
+    };
 
     // States for flashcard position and content
     const [currentCard, setCurrentCard] = useState<number>(0);
@@ -58,40 +76,15 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
                   return { ...item, correct: null, copy: false };
               }) as CombinedType[])
             : [];
+
+    const flashCards = data.flatMap((col) => col.flashcards);
+    const uniqueFlashCards = flashCards.filter(
+        (item, index, self) => index === self.findIndex((t) => t.id === item.id)
+    );
+
     const [flashCardItemsTest, setFlashCardItemsTest] = useState<
         CombinedType[]
-    >([...initialTestCards(questions)]);
-
-    useEffect(() => {
-        console.log(flashCardItemsTest);
-    }, [flashCardItemsTest]);
-
-    const fetchData = async () => {
-        console.log("fetching");
-        const data = await fetchFlashCards({
-            ids: ids,
-            contentType: contentType,
-            tags: tags,
-            difficulties: difficulties,
-            userId: userId,
-            setSubTitles: setSubTitles,
-            setFlashCardItemsTest: setFlashCardItemsTest,
-            setTitles: setTitles,
-        });
-        if (!data || data.status === 500) {
-            router.push("/dashboard");
-        }
-    };
-
-    useEffect(() => {
-        const debounceFetch = setTimeout(() => {
-            if (questions.length === 0) {
-                fetchData();
-            }
-        }, 100);
-
-        return () => clearTimeout(debounceFetch);
-    }, [questions]);
+    >([...shuffleArray<CombinedType>(initialTestCards(uniqueFlashCards))]);
 
     // States for FlashCard transformations
     const [isFlipped, setIsFlipped] = useState<boolean>(false);
@@ -185,16 +178,49 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
         }
     }, [currentCard]);
 
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     return (
         <section className={style.studyContainer}>
             <section className={style.studyTitle}>
-                {titles.length > 0 ? (
-                    titles.map((item, index) => <h3 key={index}>{item}</h3>)
-                ) : (
-                    <h6>{}</h6>
-                )}
+                <div className={style.studyCreator}>
+                    <img
+                        src={data[0].image}
+                        className={style.bannerStudyImage}
+                        alt=""
+                    ></img>
+                    <h4 className={style.studyTitleText}>{getTitle()}</h4>
+                </div>
+                <div className={style.studyCreator}>
+                    {data.length === 1 && (
+                        <BannerIcon
+                            handler={() => null}
+                            hoverText={data[0].creator.user_name || "OC"}
+                        >
+                            {data[0].creator.image ? (
+                                <img
+                                    src={data[0].creator.image}
+                                    className={style.bannerProfileImage}
+                                    alt=""
+                                ></img>
+                            ) : (
+                                <div
+                                    style={{
+                                        backgroundColor: colours.yellow(),
+                                    }}
+                                    className={style.bannerProfileImage}
+                                ></div>
+                            )}
+                        </BannerIcon>
+                    )}
+                    <div> {data.length === 1 && data[0].creator.user_name}</div>
+                </div>
             </section>
-            {chosenQuestions.length > 0 ? (
+            {chosenQuestions.length > 0 && isClient ? (
                 <AnimatePresence>
                     {currentCard < chosenQuestions.length ? (
                         <InteractiveCard
@@ -279,6 +305,7 @@ function Study({ ids, contentType, tags, difficulties, userId }: StudyTypes) {
                                     }}
                                 >
                                     <ResultButtons
+                                        userId={userId}
                                         flashCardItems={chosenQuestions}
                                         setCurrentCard={setCurrentCard}
                                         testIncorrect={testIncorrect}

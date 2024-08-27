@@ -14,7 +14,7 @@ type FetchFlashCardsTypes = {
     difficulties: string[] | undefined;
     userId: string | undefined;
     setFlashCardItemsTest: React.Dispatch<React.SetStateAction<CombinedType[]>>;
-    setTitles: React.Dispatch<React.SetStateAction<string[]>>;
+    setTitles: React.Dispatch<React.SetStateAction<string>>;
     setSubTitles: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
@@ -74,27 +74,30 @@ export const fetchFlashCards = async ({
                         index === self.findIndex((t) => t.id === item.id)
                 );
 
-                console.log("settting!");
                 setFlashCardItemsTest(
                     shuffleArray<CombinedType>(
                         initialTestCards(uniqueFlashCards)
                     )
                 );
 
-                const collectionTitles = (
-                    data as Flashcard_collection_with_cards[]
-                ).map((item) => item.collection_name);
-                setTitles(collectionTitles);
+                console.log(data[0]);
+                if (ids.length === 1 && data[0].content_type === "collection") {
+                    setTitles(data[0].collection_name);
+                    console.log(data[0].collection_name);
+                } else if (ids.length === 1 && data[0].content_type === "set") {
+                    setTitles(data[0].set_name);
+                    console.log(data[0].set_name);
+                }
 
-                const collectionSubtitles = (
-                    data as Flashcard_collection_with_cards[]
-                )
-                    .flatMap((item) => item.sets)
-                    .filter(
-                        (item, index, self) =>
-                            index === self.findIndex((t) => t === item)
-                    );
-                setSubTitles(collectionSubtitles);
+                // const collectionSubtitles = (
+                //     data as Flashcard_collection_with_cards[]
+                // )
+                //     .flatMap((item) => item.sets)
+                //     .filter(
+                //         (item, index, self) =>
+                //             index === self.findIndex((t) => t === item)
+                //     );
+                // setSubTitles(collectionSubtitles);
 
                 return { status: 200, data: uniqueFlashCards };
             }

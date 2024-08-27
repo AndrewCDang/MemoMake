@@ -8,12 +8,14 @@ import { CombinedType } from "../../study";
 import Link from "next/link";
 
 function ResultButtons({
+    userId,
     flashCardItems,
     setCurrentCard,
     testIncorrect,
     setTestIncorrect,
     setIncorrectQuestions,
 }: {
+    userId: string | undefined;
     flashCardItems: CombinedType[];
     setCurrentCard: Dispatch<SetStateAction<number>>;
     testIncorrect: boolean;
@@ -72,14 +74,16 @@ function ResultButtons({
                 <ResultsGraph progress={percentCorrect} />
             </div>
             <section className={style.buttonsContainer}>
-                <Link href={"/dashboard"}>
-                    <ResultButton variant="Black">
-                        <>
-                            <div>Dashboard</div>
-                            <HiMiniArrowLeftOnRectangle />
-                        </>
-                    </ResultButton>
-                </Link>
+                {userId && (
+                    <Link href={"/dashboard"}>
+                        <ResultButton variant="Black">
+                            <>
+                                <div>Dashboard</div>
+                                <HiMiniArrowLeftOnRectangle />
+                            </>
+                        </ResultButton>
+                    </Link>
+                )}
                 <div className={style.buttonContainer}>
                     {flashCardItems.length - correctItems.length > 0 && (
                         <ResultButton

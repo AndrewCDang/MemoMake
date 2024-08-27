@@ -24,8 +24,16 @@
     //     margin: 0 auto;
     //     margin-top: 1rem;
     // }
+    .btnWrap {
+        display: flex;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
 }
-
+.passwordRequirementsContainer {
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+}
 .authTop {
     display: flex;
     justify-content: space-between;
@@ -79,7 +87,7 @@
 .passwordRequirements {
     padding-left: unset !important;
     li {
-        font-size: 0.875rem;
+        font-size: 0.8rem;
         line-height: 1.5rem;
         list-style: none;
     }

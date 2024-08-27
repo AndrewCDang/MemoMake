@@ -4,8 +4,6 @@ import { NextRequest } from "next/server";
 import { auth } from "@/auth";
 
 export async function GET(request: NextRequest) {
-    console.log("pumba");
-
     const session = await auth();
     const searchParams = request.nextUrl.searchParams;
     const type = searchParams.get("type");

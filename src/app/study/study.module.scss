@@ -8,11 +8,37 @@
     align-items: center;
     width: 100%;
     height: calc(100vh - 2rem);
-    padding-bottom: 8rem;
+    padding-bottom: 13rem;
     position: relative;
     .studyTitle {
         display: flex;
         flex-direction: column;
+        align-items: center;
+        margin-top: 2.5rem;
+        gap: 0.5rem;
+        .studyTitleText {
+            font-weight: 600;
+        }
+    }
+    .bannerStudyImage {
+        border-radius: 0.5rem;
+        width: clamp(2rem, calc(1.5rem + 5vw), 3rem);
+        height: clamp(2rem, calc(1.5rem + 5vw), 3rem);
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+    .bannerProfileImage {
+        border-radius: 2.5rem;
+        width: clamp(1rem, calc(1rem + 2vw), 2rem);
+        height: clamp(1rem, calc(1rem + 2vw), 2rem);
+        object-fit: cover;
+        cursor: pointer;
+        box-shadow: $box-shadow-sm;
+    }
+    .studyCreator {
+        display: flex;
+        gap: 0.5rem;
         align-items: center;
     }
     .newCardLight {
@@ -101,7 +127,7 @@
                     .flashCard {
                         transform-style: preserve-3d;
                         aspect-ratio: 2/3;
-                        width: clamp(260px, calc(200px + 5vw), 400px);
+                        width: clamp(208px, calc(200px + 5vw), 400px);
                         // border: 2px solid $col-grey;
                         border-radius: 1rem;
                         position: relative;

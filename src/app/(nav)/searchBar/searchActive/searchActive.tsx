@@ -114,6 +114,19 @@ function SearchActive({
             <section className={style.subjectsContainer}>
                 <div className={style.subjectGroup}>
                     {searchByOptions.map((item, index) => {
+                        if (index === 0) {
+                            return (
+                                <Link href={"/discover/popular"}>
+                                    <DefaultButton
+                                        key={`${item}-search-${index}`}
+                                        outline={false}
+                                        handler={handler}
+                                    >
+                                        {item}
+                                    </DefaultButton>
+                                </Link>
+                            );
+                        }
                         return (
                             <DefaultButton
                                 key={`${item}-search-${index}`}

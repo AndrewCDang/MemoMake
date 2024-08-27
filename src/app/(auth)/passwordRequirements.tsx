@@ -103,7 +103,7 @@ function PasswordRequirements<T extends FormValues | GetValuesType>({
     }, [errors.password]);
 
     return (
-        <div>
+        <div className={style.passwordRequirementsContainer}>
             <span>Your password should:</span>
             <ul className={style.passwordRequirements}>
                 {passwordRequirements.map((item, index) => {
