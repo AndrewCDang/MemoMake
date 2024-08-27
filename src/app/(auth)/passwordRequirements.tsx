@@ -5,7 +5,7 @@ import {
     UseFormSetError,
     FieldErrors,
 } from "react-hook-form";
-import { PasswordSchema } from "@/schema/authSchema";
+import { PasswordSchema } from "../../schema/authSchema";
 import { ZodError } from "zod";
 import style from "./authForm.module.scss";
 import { useState } from "react";

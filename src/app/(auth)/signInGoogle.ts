@@ -1,6 +1,6 @@
 "use client";
 import { signIn } from "next-auth/react";
-import { defaultLogInRedirect } from "@/routes";
+import { defaultLogInRedirect } from "../../routes";
 
 async function signInGoogle() {
     signIn("google", {

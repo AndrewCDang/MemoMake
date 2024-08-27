@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import { useSearchParams } from "next/navigation";
-import newVerification from "@/app/_actions/newVerification";
+import newVerification from "../../../..//app/_actions/newVerification";
 import { useRouter } from "next/navigation";
 import SubmitMessage from "../../_components/submitResults/submitMessage";
 import style from "./verify.module.scss";

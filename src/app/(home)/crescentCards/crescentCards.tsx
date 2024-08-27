@@ -1,5 +1,5 @@
 "use client";
-import { colours, coloursType } from "@/app/styles/colours";
+import { colours, coloursType } from "../../../app/styles/colours";
 import style from "./crescentCards.module.scss";
 import { motion, useMotionValue } from "framer-motion";
 import { IoFlag } from "react-icons/io5";

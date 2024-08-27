@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import style from "./authForm.module.scss";
 import FormInputField from "../_components/input/formInputField";
-import { EmailSchema, EmailSchemaType } from "@/schema/authSchema";
+import { EmailSchema, EmailSchemaType } from "../../schema/authSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../_components/(buttons)/styledButton";
