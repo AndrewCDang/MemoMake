@@ -24,9 +24,9 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-    title: "Flashmu",
+    title: "Quizmu",
     description:
-        "Flashmu is a free and easy-to-use flashcards app built with Next.js by Andrew Dang",
+        "Quizmu is a free and easy-to-use flashcards app built with Next.js by Andrew Dang",
     // viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 

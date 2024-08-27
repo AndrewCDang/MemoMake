@@ -7,7 +7,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Flashmu | Dashboard",
+    title: "Quizmu | Dashboard",
     description: "View all your Flash Sets and Collections here",
 };
 
