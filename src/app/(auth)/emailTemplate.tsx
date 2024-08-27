@@ -12,14 +12,14 @@ const EmailTemplate = ({
             <h4>Hello {userName}</h4>
             {purpose === "verifyEmail" && (
                 <a
-                    href={`${process.env.WEBSITE_URL}/auth/verify?token=${token}`}
+                    href={`${process.env.NEXT_WEBSITE_URL}/auth/verify?token=${token}`}
                 >
                     Click here to activate your account
                 </a>
             )}
             {purpose === "resetPassword" && (
                 <a
-                    href={`${process.env.WEBSITE_URL}/auth/resetPassword?token=${token}`}
+                    href={`${process.env.NEXT_WEBSITE_URL}/auth/resetPassword?token=${token}`}
                 >
                     Click here to activate your account
                 </a>

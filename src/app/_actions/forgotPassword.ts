@@ -43,7 +43,7 @@ const forgotPassword = async ({ email }: { email: string }) => {
         await db`
             INSERT INTO password_reset_token (email, expires, token)
             VALUES(${email}, ${new Date(
-            new Date().getTime() + 3600 * 1000
+            new Date().getTime() + 3600 * 1000 * 2
         )}, ${verificationToken})
         `;
     } catch (error) {

@@ -12,6 +12,7 @@ import CloseForgotPassword from "./closeForgotPassword";
 import forgotPassword from "../_actions/forgotPassword";
 import { startTransition } from "react";
 import SubmitMessage from "./_components/submitResults/submitMessage";
+import LoadingCircle from "../_components/loadingUi/loadingCircle";
 
 function ForgotPassword() {
     const {
@@ -25,18 +26,25 @@ function ForgotPassword() {
     });
 
     const [validated, setValidated] = useState<boolean | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>();
 
-    const forgotPasswordSubmit = (data: EmailSchemaType) => {
-        startTransition(() => {
-            forgotPassword(data).then((data) => {
-                setValidated(data?.success);
-                if (data?.message) {
-                    setErrorMessage(data.message);
-                }
-            });
-        });
-        reset();
+    const forgotPasswordSubmit = async (data: EmailSchemaType) => {
+        setIsLoading(true);
+
+        try {
+            const response = await forgotPassword(data);
+            setValidated(response?.success);
+            if (response?.message) {
+                setErrorMessage(response.message);
+            }
+        } catch (error) {
+            setErrorMessage("An unexpected error occurred.");
+            setValidated(false);
+        } finally {
+            setIsLoading(false);
+            reset();
+        }
     };
 
     return (
@@ -44,6 +52,11 @@ function ForgotPassword() {
             onSubmit={handleSubmit(forgotPasswordSubmit)}
             className={style.form}
         >
+            {isLoading && (
+                <div className={style.loadingWrap}>
+                    <LoadingCircle />
+                </div>
+            )}
             {!validated && (
                 <>
                     <FormInputField
@@ -55,7 +68,7 @@ function ForgotPassword() {
                         errorMessage={errors.email && errors.email.message}
                         register={register}
                     />
-                    <Button text="Submit" />
+                    <Button disabled={isLoading} text="Submit" />
                 </>
             )}
             {validated !== null && (
