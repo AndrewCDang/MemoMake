@@ -1,11 +1,12 @@
 "use server";
 import { AuthItemTypes } from "@/schema/itemSchema";
 import { db } from "../_lib/db";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
+import { v4 as uuidV4 } from "uuid";
 import { Flashcard_item } from "../_types/types";
 
 export type InsertFlashCardTypes = {
-    data: AuthItemTypes & { id: string };
+    data: AuthItemTypes & { id?: string };
     setId: string;
     userId: string;
 };
@@ -30,7 +31,7 @@ const insertFlashCard = async ({
             INSERT INTO flashcard_item 
             (id, set_id, item_question, item_answer, item_tags, difficulty, last_modified, sequence)
             VALUES (
-                ${data.id},
+                ${data.id || uuidV4()},
                 ${setId}, 
                 ${data.item_question || null}, 
                 ${data.item_answer || null}, 

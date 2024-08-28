@@ -3,7 +3,7 @@ import insertFlashCard from "../../_actions/insertFlashCard";
 
 type BulkInsertTypes = {
     setId: string;
-    dataArray: AuthItemTypes[];
+    dataArray: (AuthItemTypes & { id?: string })[];
     userId: string;
 };
 
