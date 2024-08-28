@@ -41,6 +41,10 @@ function SearchBarContent({ listSet, listCollection }: SearchBarContentTypes) {
                 <AnimatePresence>
                     {searchActive && (
                         <motion.div
+                            transition={{
+                                duration: 0.2,
+                                ease: [0.075, 0.82, 0.165, 1],
+                            }}
                             exit={{ opacity: 0 }}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}

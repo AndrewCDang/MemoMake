@@ -116,6 +116,9 @@ body {
     overflow-x: clip;
     background-color: rgba($col-yellow, 0.2);
     padding: 1.5rem;
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
 }
 
 a {

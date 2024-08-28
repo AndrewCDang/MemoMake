@@ -1,5 +1,11 @@
 import TextInput from "@/app/_components/textInput/inputField";
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import React, {
+    Dispatch,
+    SetStateAction,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import style from "./studyTextInput.module.scss";
 import { CombinedType } from "../../study";
 
@@ -49,20 +55,57 @@ function StudyTextInput({
             setText("");
         }
     };
+
+    // Handles Transition of text input
+    const [expandTextInput, setExpandTextInput] = useState<boolean>(false);
+
+    const handleTextFocus = () => {
+        setExpandTextInput(true);
+    };
+
+    const handleTextDefocus = () => {
+        setExpandTextInput(false);
+    };
+
+    useEffect(() => {
+        const textInput = textRef.current;
+
+        if (textInput) {
+            textInput.addEventListener("focus", handleTextFocus);
+            textInput.addEventListener("blur", handleTextDefocus);
+        }
+
+        // Cleanup function to remove event listeners
+        return () => {
+            if (textInput) {
+                textInput.removeEventListener("focus", handleTextFocus);
+                textInput.removeEventListener("blur", handleTextDefocus);
+            }
+        };
+    }, [textRef]);
+
     return (
-        <div className={style.textInputWrap}>
-            <TextInput
-                refObject={textRef}
-                height="short"
-                id="study-input"
-                placeholder="Type in Answer (Optional)"
-                type={"text"}
-                handler={(e) => setText(e.target.value)}
-                inputValue={text}
-                enterHandler={(enterHandler: string) =>
-                    enterHandlerInput(enterHandler)
-                }
-            />
+        <div
+            className={style.textInputWrap}
+            style={{
+                gridTemplateColumns:
+                    expandTextInput || text.length > 0 ? "1fr" : "0fr",
+            }}
+        >
+            <div className={style.textInputContainer}>
+                <TextInput
+                    refObject={textRef}
+                    height="short"
+                    id="study-input"
+                    placeholder="Type Answer"
+                    type={"text"}
+                    handler={(e) => setText(e.target.value)}
+                    inputValue={text}
+                    enterHandler={(enterHandler: string) =>
+                        enterHandlerInput(enterHandler)
+                    }
+                />
+            </div>
         </div>
     );
 }

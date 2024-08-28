@@ -267,18 +267,6 @@ function Study({
                                     damping: 15,
                                 }}
                             >
-                                {/* Card Label - Stating current card out of all cards in test */}
-                                {currentCard < chosenQuestions.length && (
-                                    <motion.section
-                                        className={style.cardCaption}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                    >
-                                        <p>Card {currentCard + 1}</p>
-                                        <p>out of {chosenQuestions.length}</p>
-                                    </motion.section>
-                                )}
                                 {/* Text Input */}
                                 <StudyTextInput
                                     flipCard={flipCard}
@@ -292,6 +280,22 @@ function Study({
                                     flipCard={flipCard}
                                     answerHandler={answerHandler}
                                 />
+                                {/* Card Label - Stating current card out of all cards in test */}
+                                {currentCard < chosenQuestions.length && (
+                                    <motion.section
+                                        className={style.cardCaption}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                    >
+                                        <p>
+                                            Card {currentCard + 1}{" "}
+                                            <span>
+                                                out of {chosenQuestions.length}
+                                            </span>
+                                        </p>
+                                    </motion.section>
+                                )}
                             </motion.div>
                         )}
                         {chosenQuestions.length > 0 &&

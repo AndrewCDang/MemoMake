@@ -2,16 +2,34 @@
 @import "../../../styles/mixins";
 
 .textInputWrap {
-    padding: 0.5rem;
-    background-color: $col-white;
-    border-radius: 1rem;
-    box-shadow: $box-shadow-sm;
+    place-content: center;
+    display: grid;
     margin-bottom: 1rem;
+    transition: grid-template-columns 1s $cubicBezier;
+    .textInputContainer {
+        min-width: 5rem;
+        overflow: hidden;
+        padding: 0.5rem;
+        background-color: $col-white;
+        border-radius: 1rem;
+        box-shadow: $box-shadow-sm;
+    }
     fieldset {
         background-color: $col-white;
         border: unset;
     }
     input {
+        padding: 0.25rem 0.25rem;
         border: unset;
+    }
+
+    label {
+        left: 0;
+    }
+    input:not(:placeholder-shown) + label {
+        left: 0.5rem;
+    }
+    input:focus + label {
+        left: 0.5rem;
     }
 }
