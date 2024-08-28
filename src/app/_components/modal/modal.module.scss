@@ -12,6 +12,7 @@
 }
 
 .cardModal {
+    overflow: hidden;
     position: absolute;
     inset: 0;
     margin: auto;
@@ -23,7 +24,7 @@
     height: fit-content;
     padding: 1rem;
     padding-top: 1.75rem;
-    overflow: hidden;
+    // height: auto;
 }
 
 .widthWide {
@@ -31,8 +32,9 @@
 }
 
 .overflowY {
+    max-height: calc(80svh - 5rem);
+    height: fit-content;
     overflow-y: auto;
-    max-height: 800px;
     padding: 1rem 0.75rem;
 }
 .footer {

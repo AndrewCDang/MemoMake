@@ -1,4 +1,5 @@
 @import "../../../styles/colours.scss";
+@import "../../../styles/breakpoints.scss";
 
 .resultButtonsContainer {
     display: flex;
@@ -16,6 +17,9 @@
     position: relative;
     margin-bottom: 3rem;
     background-color: $col-white;
+    @include breakpoint-mobile {
+        padding-left: 0.5rem;
+    }
 }
 
 .resultGraphContainer {
@@ -24,12 +28,21 @@
     top: 50%;
     transform: translateY(-50%) translateX(-100%);
     height: fit-content;
+    @include breakpoint-mobile {
+        position: relative;
+        transform: unset;
+        left: unset;
+        top: unset;
+    }
 }
 
 .buttonsContainer {
     display: flex;
     gap: 0.25rem;
     height: 4rem;
+    @include breakpoint-mobile {
+        height: fit-content;
+    }
 }
 
 .resultButton {
@@ -61,6 +74,20 @@
     // border: 1px solid $col-black;
     // padding: 0.25rem;
     border-radius: 0.5rem;
+
+    @include breakpoint-mobile {
+        flex-direction: column;
+        align-items: flex-start;
+        button {
+            width: 100%;
+            justify-content: space-between;
+            div {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    }
+
     .incorrectLabel {
         color: $col-red;
         font-size: 0.8rem;

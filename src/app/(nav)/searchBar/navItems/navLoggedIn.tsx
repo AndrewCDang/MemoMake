@@ -107,21 +107,17 @@ function NavLoggedIn({ session }: { session: Session | null }) {
                         </div>
                     ) : (
                         <div className={style.dropDownContainer}>
-                            <DropdownItem>
+                            <DropdownItem handler={showLogInModal}>
                                 <>
-                                    <span onClick={() => showLogInModal()}>
-                                        Log In
-                                    </span>
+                                    <span>Log In</span>
                                     <div style={{ paddingRight: "0.125rem" }}>
                                         <FiUser />
                                     </div>
                                 </>
                             </DropdownItem>
-                            <DropdownItem>
+                            <DropdownItem handler={showSignUpModal}>
                                 <>
-                                    <span onClick={() => showSignUpModal()}>
-                                        Sign Up
-                                    </span>
+                                    <span>Sign Up</span>
                                     <FiUserPlus />
                                 </>
                             </DropdownItem>

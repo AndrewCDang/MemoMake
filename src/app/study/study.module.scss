@@ -127,7 +127,7 @@
                     .flashCard {
                         transform-style: preserve-3d;
                         aspect-ratio: 2/3;
-                        width: clamp(208px, calc(200px + 5vw), 400px);
+                        width: clamp(160px, calc(132px + 5vw + 5svh), 400px);
                         // border: 2px solid $col-grey;
                         border-radius: 1rem;
                         position: relative;

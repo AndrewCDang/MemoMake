@@ -122,7 +122,7 @@ function FlashResults({
                                         />
                                     }
                                 </aside>
-                                <div>
+                                <div className={style.questionAnswerContainer}>
                                     <MaxHeightToggler
                                         isToggled={toggleOn[item.id]}
                                         isQuestion={true}

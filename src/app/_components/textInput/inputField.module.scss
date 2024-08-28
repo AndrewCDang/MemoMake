@@ -1,4 +1,6 @@
 @import "../../styles/colours.scss";
+@import "../../styles/breakpoints.scss";
+@import "../../styles/mixins.scss";
 
 .fieldset {
     position: relative;
@@ -19,6 +21,12 @@
         background: unset;
         background-color: unset;
         border-radius: 0.5rem;
+    }
+
+    input {
+        @include breakpoint-mobile {
+            padding: 0.5rem 0.5rem;
+        }
     }
 
     label {
