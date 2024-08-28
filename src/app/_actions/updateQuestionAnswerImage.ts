@@ -7,37 +7,49 @@ type UpdateQuestionAnswerImageType = {
     type: "item_question" | "item_answer";
     image: string;
     setId: string;
+    imageId: string;
 };
 export const updateQuestionAnswerImageUrl = async ({
     id,
     type,
     image,
+    imageId,
     setId,
 }: UpdateQuestionAnswerImageType) => {
     try {
         if (type === "item_question") {
             const updateUrl = await db`
                 UPDATE flashcard_item
-                SET question_img = ${image}
+                SET 
+                    question_img = ${image},
+                    question_img_id = ${imageId}
                 WHERE id = ${id}
                 RETURNING question_img
             `;
-            return { message: "success", url: updateUrl };
-        }
-        if (type === "item_answer") {
+            const updatedImage =
+                updateUrl[0]?.question_img || updateUrl[0]?.answer_img;
+            revalidateTag(setId);
+
+            return { message: "success", url: updatedImage };
+        } else if (type === "item_answer") {
             const updateUrl = await db`
                 UPDATE flashcard_item
-                SET answer_img = ${image}
+                SET 
+                    answer_img = ${image},
+                    answer_img_id = ${imageId}
                 WHERE id = ${id}
                 RETURNING answer_img
             `;
-            return { message: "success", url: updateUrl };
+            const updatedImage =
+                updateUrl[0]?.question_img || updateUrl[0]?.answer_img;
+            revalidateTag(setId);
+
+            return { message: "success", url: updatedImage };
+        } else {
+            return { message: "Invalid type", url: null };
         }
-        revalidateTag(setId);
-    } catch (error: unknown) {
-        if (error instanceof Error) {
-            console.log(error.message);
-        }
-        return { message: error, url: null };
+    } catch (error) {
+        console.error("Database update failed:", error);
+        return { message: "error", url: null };
     }
 };

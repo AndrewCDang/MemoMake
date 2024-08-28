@@ -66,16 +66,40 @@ function GenericTableItem({
     const [image, setImage] = useState<File | null>();
     const [uploadImageModal, setUploadImageModal] = useState<boolean>(false);
 
+    const deleteImage = async (id: string) => {
+        const deleteImage = await fetch(`/api/deleteImage?imageId=${id}`, {
+            method: "DELETE",
+        });
+        if (deleteImage.ok) {
+            console.log("Exisitng Image Deleted");
+        }
+    };
+
     const uploadImage = async () => {
         try {
             if (image) {
+                // Deletes existing image from Cloudinary if present
+
+                if (card.question_img_id && item === "item_question") {
+                    await deleteImage(card.question_img_id);
+                } else if (card.answer_img_id && item === "item_answer") {
+                    await deleteImage(card.answer_img_id);
+                }
+
+                // Uploads Image to Cloudinary, returning imageId and Url
                 const imageUpload = await uploadImageHandler(image);
-                if (imageUpload) {
+                console.log(imageUpload);
+                console.log(card);
+                console.log(item);
+
+                // Updating flashcard item with image data in database
+                if (imageUpload && imageUpload.url) {
                     const updateImgDb = await updateQuestionAnswerImageUrl({
                         type: (item as "item_question") || "item_answer",
                         image: imageUpload.url,
                         id: card.id,
                         setId: card.set_id,
+                        imageId: imageUpload.image_id,
                     });
                     console.log(updateImgDb);
                 }

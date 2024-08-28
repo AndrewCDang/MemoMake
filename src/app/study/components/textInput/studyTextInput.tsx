@@ -8,6 +8,8 @@ import React, {
 } from "react";
 import style from "./studyTextInput.module.scss";
 import { CombinedType } from "../../study";
+import { set } from "zod";
+import { debounce } from "@/app/_functions/debounce";
 
 type StudyTextInputTypes = {
     currentCard: number;
@@ -24,8 +26,29 @@ function StudyTextInput({
 }: StudyTextInputTypes) {
     const [text, setText] = useState<string>("");
     const textRef = useRef<HTMLInputElement>(null);
+    const [incorrect, setIncorrect] = useState<boolean>(false);
+    const [correct, setCorrect] = useState<boolean>(false);
+
+    const isAnimating = useRef(false);
+    const enterIncorrectHandler = () => {
+        if (!isAnimating.current) {
+            setIncorrect(true);
+            setTimeout(() => {
+                setIncorrect(false);
+            }, 1000);
+        }
+    };
+    const enterCorrectHandler = () => {
+        if (!isAnimating.current) {
+            setCorrect(true);
+            setTimeout(() => {
+                setCorrect(false);
+            }, 1000);
+        }
+    };
 
     const enterHandlerInput = (answer: string) => {
+        if (answer.length === 0) return;
         const textArray = answer
             .toLocaleLowerCase()
             .replace(/[.!?@\-/,]/g, "")
@@ -38,7 +61,7 @@ function StudyTextInput({
             .split(" ")
             .filter((item) => item !== "");
 
-        const isCorrectMatches = chosenArray?.every((item, index) =>
+        const isCorrectMatches = chosenArray?.every((item) =>
             textArray.includes(item)
         );
         const isCorrect =
@@ -52,9 +75,54 @@ function StudyTextInput({
             setTimeout(() => {
                 answerHandler({ correct: true });
             }, 500);
+            enterCorrectHandler();
+            isAnimating.current = true;
+            setTimeout(() => {
+                isAnimating.current = false;
+            }, 1500);
             setText("");
+        } else {
+            enterIncorrectHandler();
+            isAnimating.current = true;
+            setTimeout(() => {
+                isAnimating.current = false;
+            }, 1500);
         }
     };
+
+    useEffect(() => {
+        if (text.length > 0) {
+            const textArray = text
+                .toLocaleLowerCase()
+                .replace(/[.!?@\-/,]/g, "")
+                .split(" ")
+                .filter((item) => item !== "");
+
+            const chosenArray = chosenQuestions[currentCard - 1].item_answer
+                ?.toLocaleLowerCase()
+                .replace(/[.!?@\-/,]/g, "")
+                .split(" ")
+                .filter((item) => item !== "");
+
+            const isCorrectMatches = chosenArray?.every((item) =>
+                textArray.includes(item)
+            );
+            const isCorrect =
+                chosenQuestions[
+                    currentCard - 1
+                ].item_answer?.toLocaleLowerCase() === text.toLocaleLowerCase();
+
+            if (isCorrectMatches || isCorrect) {
+                enterCorrectHandler();
+                isAnimating.current = true;
+                setTimeout(() => {
+                    isAnimating.current = false;
+                }, 1500);
+            }
+
+            setText("");
+        }
+    }, [currentCard]);
 
     // Handles Transition of text input
     const [expandTextInput, setExpandTextInput] = useState<boolean>(false);
@@ -86,7 +154,11 @@ function StudyTextInput({
 
     return (
         <div
-            className={style.textInputWrap}
+            className={`${style.textInputWrap} ${
+                text.length > 0 ? style.hasChars : ""
+            } ${incorrect ? style.incorrect : ""}
+                ${correct ? style.correct : ""}
+            `}
             style={{
                 gridTemplateColumns:
                     expandTextInput || text.length > 0 ? "1fr" : "0fr",

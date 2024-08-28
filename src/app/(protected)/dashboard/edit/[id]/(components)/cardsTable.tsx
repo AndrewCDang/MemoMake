@@ -93,10 +93,6 @@ function CardsTable({ cardCollection, tagArray, setId }: CardTableTypes) {
             : displayCardCollection;
 
     useEffect(() => {
-        console.log(displayCardCollection);
-    });
-
-    useEffect(() => {
         if (useFlashcard) {
             setDisplayCardCollection((prevState) => [
                 ...prevState,

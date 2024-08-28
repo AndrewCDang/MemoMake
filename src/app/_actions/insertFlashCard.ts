@@ -5,7 +5,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { Flashcard_item } from "../_types/types";
 
 export type InsertFlashCardTypes = {
-    data: AuthItemTypes;
+    data: AuthItemTypes & { id: string };
     setId: string;
     userId: string;
 };
@@ -28,8 +28,9 @@ const insertFlashCard = async ({
 
         const insertedItem: Flashcard_item[] = await db`
             INSERT INTO flashcard_item 
-            (set_id, item_question, item_answer, item_tags, difficulty, last_modified, sequence)
+            (id, set_id, item_question, item_answer, item_tags, difficulty, last_modified, sequence)
             VALUES (
+                ${data.id},
                 ${setId}, 
                 ${data.item_question || null}, 
                 ${data.item_answer || null}, 

@@ -1,5 +1,6 @@
 @import "../styles/colours.scss";
 @import "../styles/_mixins.scss";
+@import "../styles/breakpoints.scss";
 
 .studyContainer {
     margin: 0 auto;
@@ -17,6 +18,9 @@
         align-items: center;
         margin-top: 2.5rem;
         gap: 0.5rem;
+        @include breakpoint-mobile {
+            margin-top: 1rem;
+        }
         .studyTitleText {
             font-weight: 600;
         }
@@ -255,10 +259,18 @@
         }
     }
     .cardCaption {
+        position: relative;
+
         display: flex;
-        flex-direction: column;
         align-items: center;
         margin-bottom: 2rem;
+        justify-content: center;
+        gap: 0.5rem;
+        z-index: 100;
+        @include breakpoint-mobile {
+            margin-bottom: 1rem;
+        }
+
         p:first-child {
             font-weight: 700;
         }
@@ -291,5 +303,10 @@
             flex-direction: column;
             align-items: center;
         }
+    }
+    .cardStudyCaption {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
     }
 }

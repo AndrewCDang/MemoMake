@@ -197,30 +197,6 @@ function Study({
                     ></img>
                     <h4 className={style.studyTitleText}>{getTitle()}</h4>
                 </div>
-                <div className={style.studyCreator}>
-                    {data.length === 1 && (
-                        <BannerIcon
-                            handler={() => null}
-                            hoverText={data[0].creator.user_name || "OC"}
-                        >
-                            {data[0].creator.image ? (
-                                <img
-                                    src={data[0].creator.image}
-                                    className={style.bannerProfileImage}
-                                    alt=""
-                                ></img>
-                            ) : (
-                                <div
-                                    style={{
-                                        backgroundColor: colours.yellow(),
-                                    }}
-                                    className={style.bannerProfileImage}
-                                ></div>
-                            )}
-                        </BannerIcon>
-                    )}
-                    <div> {data.length === 1 && data[0].creator.user_name}</div>
-                </div>
             </section>
             {chosenQuestions.length > 0 && isClient ? (
                 <AnimatePresence>
@@ -280,6 +256,7 @@ function Study({
                                     flipCard={flipCard}
                                     answerHandler={answerHandler}
                                 />
+
                                 {/* Card Label - Stating current card out of all cards in test */}
                                 {currentCard < chosenQuestions.length && (
                                     <motion.section
@@ -288,6 +265,39 @@ function Study({
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
                                     >
+                                        {data.length === 1 && (
+                                            <BannerIcon
+                                                handler={() => null}
+                                                hoverPos="left"
+                                                hoverText={
+                                                    data[0].creator.user_name ||
+                                                    "OC"
+                                                }
+                                            >
+                                                {data[0].creator.image ? (
+                                                    <img
+                                                        src={
+                                                            data[0].creator
+                                                                .image
+                                                        }
+                                                        className={
+                                                            style.bannerProfileImage
+                                                        }
+                                                        alt=""
+                                                    ></img>
+                                                ) : (
+                                                    <div
+                                                        style={{
+                                                            backgroundColor:
+                                                                colours.yellow(),
+                                                        }}
+                                                        className={
+                                                            style.bannerProfileImage
+                                                        }
+                                                    ></div>
+                                                )}
+                                            </BannerIcon>
+                                        )}
                                         <p>
                                             Card {currentCard + 1}{" "}
                                             <span>

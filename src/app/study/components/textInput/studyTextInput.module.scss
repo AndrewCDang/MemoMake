@@ -13,6 +13,7 @@
         background-color: $col-white;
         border-radius: 1rem;
         box-shadow: $box-shadow-sm;
+        transition: all 0.5s $cubicBezier;
     }
     fieldset {
         background-color: $col-white;
@@ -21,15 +22,51 @@
     input {
         padding: 0.25rem 0.25rem;
         border: unset;
+        z-index: 100 !important;
+        transition: all 0.5s $cubicBezier;
     }
 
-    label {
-        left: 0;
-    }
     input:not(:placeholder-shown) + label {
         left: 0.5rem;
+        top: 0% !important;
+        @include breakpoint-mobile {
+            top: 50% !important;
+        }
     }
     input:focus + label {
         left: 0.5rem;
+        top: 0% !important;
+    }
+    label {
+        left: 0;
+        top: 50% !important;
+        z-index: 1;
+        opacity: 1;
+        transition: all 0.5s $cubicBezier;
+    }
+}
+
+.hasChars div fieldset input + label {
+    @include breakpoint-mobile {
+        top: 0% !important;
+        opacity: 0;
+    }
+}
+
+.incorrect {
+    @include multiDirectionalShake;
+    & > div,
+    & input,
+    label {
+        background-color: rgba($col-red, 1) !important;
+    }
+}
+
+.correct {
+    @include bounceOnce2;
+    & > div,
+    & input,
+    label {
+        background-color: rgba($col-green, 1) !important;
     }
 }
