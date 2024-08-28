@@ -31,6 +31,9 @@ async function Page({ searchParams }: { searchParams: any }) {
           })
         : undefined;
 
+    console.log("hahahahaahahah");
+    console.log(fetchFlashSets);
+
     const fetchCollection = searchQuery
         ? await fetchPublicFlashCollections({
               searchQuery,
@@ -47,6 +50,7 @@ async function Page({ searchParams }: { searchParams: any }) {
                 <h2>{capitaliseFirstChar(searchQuery) || "Discover"}</h2>
                 {searchType && <div>{searchType}</div>}
             </section>
+            {/* But data inside section template not... */}
             <SectionTemplate
                 createBtn={false}
                 filter={false}

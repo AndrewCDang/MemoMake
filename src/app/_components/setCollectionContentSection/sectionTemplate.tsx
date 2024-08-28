@@ -17,6 +17,7 @@ import Link from "next/link";
 import DefaultButton from "../(buttons)/defaultButton";
 import { HiChevronRight } from "react-icons/hi2";
 import SetCollectionContainerNeatly from "./setCollectionContainerNeatly";
+import { unstable_noStore } from "next/cache";
 
 // Section Template
 type SectionTemplateTypes = {

@@ -36,6 +36,7 @@ function SetCollectionContainerNeatly({
     dynamicNeat = false,
     publicPage,
 }: SetCollectionContainerType) {
+    console.log(content);
     const [initialContent, setInitialContent] = useState<
         Flashcard_collection_set_joined[] | Flashcard_set[]
     >(content);
@@ -67,6 +68,10 @@ function SetCollectionContainerNeatly({
         return () =>
             window.removeEventListener("resize", gettrailingItemsHandler);
     }, []);
+
+    useEffect(() => {
+        setInitialContent(content);
+    }, [content]);
 
     return (
         <section ref={gridRef} className={style.setGrid}>

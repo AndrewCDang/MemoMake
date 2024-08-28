@@ -99,6 +99,7 @@ function InteractiveCard({
                 {flashCardItemsTest.map((item, index) => {
                     return (
                         <IndividualCard
+                            key={index}
                             index={index}
                             item={item}
                             isFlipped={isFlipped}
