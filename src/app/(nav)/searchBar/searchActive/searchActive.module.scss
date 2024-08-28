@@ -2,6 +2,7 @@
 @import "../../../styles/breakpoints.scss";
 
 .activeSearchBarContainer {
+    overflow: hidden;
     position: fixed;
     top: 3rem;
     left: 50%;
@@ -28,6 +29,9 @@
         flex-wrap: nowrap;
         margin-right: 1rem;
         align-items: center;
+        @include breakpoint-mobile {
+            margin-right: unset;
+        }
     }
     .searchBarContainer {
         min-width: 240px;
@@ -91,6 +95,11 @@
                 line-height: 0.75em;
                 font-weight: 300;
             }
+        }
+    }
+    .cornerCloseWrap {
+        @include breakpoint-mobile {
+            display: none;
         }
     }
 }

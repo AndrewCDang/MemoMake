@@ -131,7 +131,9 @@ function InputSearchBar({
                     )}
                 </AnimatePresence>
             </div>
-            <CornerClose type="withinCorner" handler={handler} />
+            <div className={style.cornerCloseWrap}>
+                <CornerClose type="withinCorner" handler={handler} />
+            </div>
         </section>
     );
 }
