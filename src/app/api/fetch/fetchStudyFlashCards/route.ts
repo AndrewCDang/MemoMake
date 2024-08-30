@@ -31,8 +31,13 @@ export async function GET(request: NextRequest) {
         const userId = session?.user.id;
         if (
             data &&
-            !data.some((item) => item.public_access || item.user_id === userId)
+            !data.some(
+                (item) =>
+                    (item.public_access && item.user_id === userId) ||
+                    item.user_id === userId
+            )
         ) {
+            console.log("no permission");
             return new Response(
                 JSON.stringify({
                     error: "You do not have access to this content",
