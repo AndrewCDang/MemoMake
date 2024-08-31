@@ -190,11 +190,13 @@ function Study({
         <section className={style.studyContainer}>
             <section className={style.studyTitle}>
                 <div className={style.studyCreator}>
-                    <img
-                        src={data[0].image}
-                        className={style.bannerStudyImage}
-                        alt=""
-                    ></img>
+                    {data[0].image && (
+                        <img
+                            src={data[0].image}
+                            className={style.bannerStudyImage}
+                            alt=""
+                        ></img>
+                    )}
                     <h4 className={style.studyTitleText}>{getTitle()}</h4>
                 </div>
             </section>
