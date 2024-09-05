@@ -43,6 +43,7 @@ export const fetchSetsWithItems = async ({
                                                     SELECT fi.*
                                                     FROM flashcard_item fi
                                                     WHERE fi.set_id = fs.id
+                                                    ORDER BY sequence ASC
                                                 ) as flash_item_data
                                             ) as flashcards
                                         FROM flashcard_set fs
@@ -66,7 +67,7 @@ export const fetchSetsWithItems = async ({
                                 WHERE fc.id = ANY(${fetchObject.id})
                             ),
                             cte_set AS (
-                                SELECT fs.id, fs.set_name, fs.theme_colour, json_agg(fi.*) AS flashcards
+                                SELECT fs.id, fs.set_name, fs.theme_colour, json_agg(fi ORDER BY fi.sequence) AS flashcards
                                 FROM flashcard_set fs
                                 JOIN flashcard_item fi ON fi.set_id = fs.id
                                 JOIN cte_collection cc ON TRUE
@@ -89,7 +90,7 @@ export const fetchSetsWithItems = async ({
                     if (!isArray) {
                         // Is NOT Array - Fetching single set item
                         const fetchSet: Flashcard_set_with_cards[] = await db`
-                            SELECT fs.*, COALESCE(json_agg(to_json(fi.*)), '[]'::json) AS flashcards FROM flashcard_set fs
+                            SELECT fs.*, COALESCE(json_agg(to_json(fi ORDER BY fi.sequence)), '[]'::json) AS flashcards FROM flashcard_set fs
                             LEFT JOIN flashcard_item fi ON fi.set_id = fs.id
                             WHERE fs.id = ${fetchObject.id}
                             GROUP BY fs.id
@@ -98,7 +99,7 @@ export const fetchSetsWithItems = async ({
                     } else if (isArray) {
                         // IS ARRAY -  Fetching Multiple set items
                         const results: Flashcard_set_with_cards[] = await db`
-                            SELECT fs.*, array_agg(to_json(fi.*)) AS flashcards FROM flashcard_set fs
+                            SELECT fs.*, array_agg(to_json(fi ORDER BY fi.sequence)) AS flashcards FROM flashcard_set fs
                             LEFT JOIN flashcard_item fi ON fi.set_id = fs.id
                             WHERE fs.id = ANY(${fetchObject.id})
                             GROUP BY fs.id
