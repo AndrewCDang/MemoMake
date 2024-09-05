@@ -105,7 +105,7 @@ function CreateCollectionModal({
             const flashcardsNum =
                 filteredList[
                     filteredList.findIndex((card) => card.id === item.id)
-                ].item_count;
+                ]?.item_count || 0;
             return { ...item, flashcards: Array(flashcardsNum * 1).fill(0) };
         }) as Flashcard_set_with_cards[];
         setInitalSet({ item: selectedSetWithCount });

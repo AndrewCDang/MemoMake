@@ -162,10 +162,11 @@ function ListPickerComponent({
         <section
             style={{
                 display: "grid",
-                gridTemplateRows:
-                    addSetModal && searchList.length > selectedSets.length
-                        ? "1fr"
-                        : "0fr",
+                gridTemplateRows: "1fr",
+                // gridTemplateRows:
+                //     addSetModal && searchList.length > selectedSets.length
+                //         ? "1fr"
+                //         : "0fr",
                 transition: "grid-template-rows 0.2s ease-in-out",
             }}
         >
