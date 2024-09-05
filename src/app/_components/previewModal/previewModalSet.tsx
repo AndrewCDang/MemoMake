@@ -127,20 +127,58 @@ function PreviewModalSet({ previewContent }: PreviewModalSetType) {
                                                                     style.flashCardItem
                                                                 }
                                                             >
-                                                                <div>
-                                                                    {
-                                                                        card.item_question
+                                                                <div
+                                                                    className={
+                                                                        style.flashcardContent
                                                                     }
+                                                                >
+                                                                    {card.question_img && (
+                                                                        <div
+                                                                            className={
+                                                                                style.imageContainer
+                                                                            }
+                                                                        >
+                                                                            <img
+                                                                                src={
+                                                                                    card.question_img
+                                                                                }
+                                                                            />
+                                                                        </div>
+                                                                    )}
+                                                                    <span>
+                                                                        {
+                                                                            card.item_question
+                                                                        }
+                                                                    </span>
                                                                 </div>
                                                                 <div
                                                                     className={
                                                                         style.flashcardVerticalL
                                                                     }
                                                                 ></div>
-                                                                <div>
-                                                                    {
-                                                                        card.item_answer
+                                                                <div
+                                                                    className={
+                                                                        style.flashcardContent
                                                                     }
+                                                                >
+                                                                    {card.answer_img && (
+                                                                        <div
+                                                                            className={
+                                                                                style.imageContainer
+                                                                            }
+                                                                        >
+                                                                            <img
+                                                                                src={
+                                                                                    card.answer_img
+                                                                                }
+                                                                            />
+                                                                        </div>
+                                                                    )}
+                                                                    <span>
+                                                                        {
+                                                                            card.item_answer
+                                                                        }
+                                                                    </span>
                                                                 </div>
                                                             </section>
                                                         );

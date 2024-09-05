@@ -57,6 +57,32 @@
                 margin: 0 0.5rem;
                 border-radius: 0.5rem;
                 background-color: rgba($col-grey, 0.15);
+                .flashcardContent {
+                    width: 100%;
+                    display: flex;
+                    gap: 0.5rem;
+                    align-items: center;
+
+                    span {
+                        flex: 1;
+                    }
+                }
+                .imageContainer {
+                    margin: 0 auto;
+                    width: 33%;
+                    min-width: 80px;
+                    height: fit-content;
+                    pointer-events: none;
+
+                    img {
+                        border-radius: 0.5rem;
+                        overflow: hidden;
+                        width: 100%;
+                        aspect-ratio: 1;
+                        object-fit: cover;
+                    }
+                }
+
                 .flashcardVerticalL {
                     border-radius: 0.5rem;
                     margin-left: 0.5rem;
