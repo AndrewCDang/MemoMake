@@ -1,5 +1,5 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { db } from "../_lib/db";
 
 export const toggleSetPublicAccess = async ({ setId }: { setId: string }) => {
@@ -23,6 +23,8 @@ export const toggleSetPublicAccess = async ({ setId }: { setId: string }) => {
                 WHERE id = ${setId}
                 RETURNING public_access
             `;
+            revalidateTag(setId);
+
             return {
                 status: 200,
                 message: toggleTrue[0],
@@ -34,7 +36,7 @@ export const toggleSetPublicAccess = async ({ setId }: { setId: string }) => {
                 WHERE id = ${setId}
                 RETURNING public_access
             `;
-            revalidatePath("dashboard/edit/");
+            revalidateTag(setId);
             return {
                 status: 200,
                 message: toggleFalse[0],

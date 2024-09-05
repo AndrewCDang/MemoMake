@@ -43,11 +43,14 @@ async function Page({ searchParams }: any) {
     const res = await fetch(
         `${
             process.env.NEXT_WEBSITE_URL
-        }/api/fetch/fetchStudyFlashCards?type=${contentType}&ids=${ids.join(
-            "_"
-        )}&tags=${collectionDifficulties?.join("_") || ""}&difficulties=${
-            collectionDifficulties?.join("_") || ""
-        }`,
+        }/api/fetch/fetchStudyFlashCards?type=${contentType}&ids=${ids
+            .join("_")
+            .toString()}&tags=${
+            collectionDifficulties?.join("_").toString() || ""
+        }&difficulties=${
+            collectionDifficulties?.join("_").toString() || ""
+        }&userId=${userId}
+        `,
         {
             method: "GET",
             headers: {

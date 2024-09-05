@@ -1,13 +1,12 @@
 import { studyFetchFlashCards } from "@/app/_lib/fetch/studyFetchFlashCards";
 import { ContentType, Difficulty } from "@/app/_types/types";
 import { NextRequest } from "next/server";
-import { auth } from "@/auth";
 
 export async function GET(request: NextRequest) {
-    const session = await auth();
     const searchParams = request.nextUrl.searchParams;
     const type = searchParams.get("type");
     const ids = searchParams.get("ids");
+    const userId = searchParams.get("userId");
     const tags = searchParams.get("tags");
     const difficulties = searchParams.get("difficulties");
 
@@ -28,7 +27,6 @@ export async function GET(request: NextRequest) {
             difficulties: difficultiesArray,
         });
 
-        const userId = session?.user.id;
         if (
             data &&
             !data.some((item) => item.public_access || item.user_id === userId)

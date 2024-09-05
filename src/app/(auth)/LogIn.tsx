@@ -15,8 +15,10 @@ import signInGoogle from "./signInGoogle";
 import { useLogInModal } from "../_hooks/useLogIn";
 import { useForgotModal } from "../_hooks/useForgot";
 import { useSignUpModal } from "../_hooks/useSignUp";
+import { useRouter } from "next/navigation";
 
 function LogIn() {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
@@ -30,6 +32,7 @@ function LogIn() {
     const { removeLogInModal } = useLogInModal();
     const { showForgotModal } = useForgotModal();
     const { showSignUpModal } = useSignUpModal();
+    const [isLoading, setIsloading] = useState<boolean>(false);
 
     const [validated, setValidated] = useState<boolean | undefined>(undefined);
     const [errorMessage, setErrorMessage] = useState<string | undefined>(
@@ -54,15 +57,21 @@ function LogIn() {
         );
     };
 
-    const submitHandler = (data: AuthAccountType) => {
-        startTransition(() => {
-            logIn(data).then((data) => {
-                setValidated(data?.validated);
-                if (data?.message) {
-                    setErrorMessage(data.message);
-                }
-            });
-        });
+    const submitHandler = async (data: AuthAccountType) => {
+        setIsloading(true);
+        const dataResponse = await logIn(data);
+
+        if (dataResponse) {
+            setValidated(dataResponse.validated);
+
+            if (dataResponse.message) {
+                setErrorMessage(dataResponse.message);
+            }
+        }
+        if (!dataResponse?.message) {
+            removeLogInModal();
+        }
+        setIsloading(false);
         reset();
     };
 
@@ -91,6 +100,7 @@ function LogIn() {
                     error={errors.password ? true : false}
                     errorMessage={errors.password && errors.password.message}
                     register={register}
+                    enterHandler={handleSubmit(submitHandler)}
                 />
                 {validated != undefined && (
                     <SubmitMessage
@@ -104,7 +114,7 @@ function LogIn() {
                     </GenericButton>
                 </ForgotBtn>
                 <div className={style.centerBtn}>
-                    <Button text="Log In" variant="black" />
+                    <Button loading={isLoading} text="Log In" variant="black" />
                 </div>
             </form>
             <div className={style.authBorder}>

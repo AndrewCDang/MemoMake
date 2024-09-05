@@ -43,11 +43,14 @@ export const fetchFlashCards = async ({
         const res = await fetch(
             `/api/fetch/fetchStudyFlashCards?type=${contentType}&ids=${ids.join(
                 "_"
-            )}&tags=${tags?.join("_") || ""}&difficulties=${
-                difficulties?.join("_") || ""
+            )}&tags=${tags?.join("_").toString() || ""}&difficulties=${
+                difficulties?.join("_").toString() || ""
             }`,
             {
                 method: "GET",
+                body: JSON.stringify({
+                    userId: userId,
+                }),
                 headers: {
                     "Content-Type": "application/json",
                 },

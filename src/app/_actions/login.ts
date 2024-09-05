@@ -38,6 +38,7 @@ export const logIn = async (
             password,
             redirectTo: defaultLogInRedirect,
         });
+        return { validated: true };
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {

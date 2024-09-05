@@ -19,12 +19,22 @@ function Button({
     disabled?: boolean;
 }) {
     const loadingSpinAni = (
-        <div style={{ stroke: "black", width: "100%" }}>
+        <div
+            style={{
+                stroke: variant === "black" ? "white" : "black",
+                width: "100%",
+            }}
+        >
             <LoadingSpin />
         </div>
     );
     const loadingSpinHover = (
-        <div style={{ stroke: "white", width: "100%" }}>
+        <div
+            style={{
+                stroke: variant === "black" ? "black" : "white",
+                width: "100%",
+            }}
+        >
             <LoadingSpin />
         </div>
     );

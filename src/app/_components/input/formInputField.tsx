@@ -1,4 +1,5 @@
-import React, { RefObject } from "react";
+"use client";
+import React, { RefObject, useEffect } from "react";
 import style from "./inputField.module.scss";
 
 type InputRef<T extends string> = {
@@ -12,6 +13,7 @@ type InputRef<T extends string> = {
     textarea?: boolean;
     defaultValue?: string;
     labelText?: string;
+    enterHandler?: () => void;
 };
 
 function FormInputField<T extends string>({
@@ -24,7 +26,23 @@ function FormInputField<T extends string>({
     register,
     textarea,
     defaultValue = "",
+    enterHandler,
 }: InputRef<T>) {
+    const enterListener = (e: KeyboardEvent) => {
+        if (e.key === "Enter") {
+            e.preventDefault(); // This works only in contexts where preventDefault() is applicable (e.g., forms)
+            enterHandler && enterHandler();
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("keydown", enterListener);
+
+        // Cleanup to avoid memory leaks
+        return () => {
+            document.removeEventListener("keydown", enterListener);
+        };
+    }, []);
     return (
         <fieldset className={style.fieldset}>
             {textarea ? (
