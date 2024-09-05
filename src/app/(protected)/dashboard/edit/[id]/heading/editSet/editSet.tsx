@@ -73,7 +73,7 @@ function EditSet({ set }: EditSetTypes) {
     // Touched = if any input fields have been changed
     const defaultItems = [
         set.set_name,
-        set.set_categories.join("-"),
+        set.set_categories?.join("-"),
         set.description,
     ];
     const editedItems = [

@@ -4,48 +4,44 @@ import { db } from "../_lib/db";
 
 export const toggleSetPublicAccess = async ({ setId }: { setId: string }) => {
     try {
+        // Fetch the current public access state
         const previousPublicState: { public_access: boolean }[] = await db`
-        SELECT public_access from flashcard_set
-        WHERE id = ${setId}
+            SELECT public_access FROM flashcard_set
+            WHERE id = ${setId}
         `;
 
-        console.log(previousPublicState[0]);
-
         if (previousPublicState.length === 0) {
-            console.log("Could not find set");
-            return undefined;
+            console.log("Could not find set with ID:", setId);
+            return { status: 404, message: "Set not found" };
         }
 
-        if (previousPublicState[0].public_access === false) {
-            const toggleTrue = await db`
-                UPDATE flashcard_set
-                SET public_access = true
-                WHERE id = ${setId}
-                RETURNING public_access
-            `;
-            revalidateTag(setId);
+        const currentPublicAccess = previousPublicState[0].public_access;
 
-            return {
-                status: 200,
-                message: toggleTrue[0],
-            };
-        } else if (previousPublicState[0].public_access === true) {
-            const toggleFalse = await db`
-                UPDATE flashcard_set
-                SET public_access = false
-                WHERE id = ${setId}
-                RETURNING public_access
-            `;
-            revalidateTag(setId);
-            return {
-                status: 200,
-                message: toggleFalse[0],
-            };
-        }
+        // Toggle the public_access field based on its current state
+        const newPublicAccess = !currentPublicAccess;
+        const updateResult = await db`
+            UPDATE flashcard_set
+            SET public_access = ${newPublicAccess}
+            WHERE id = ${setId}
+            RETURNING public_access
+        `;
+
+        // Revalidate the cache/tag
+        revalidateTag(setId);
+        revalidatePath(`/dashboard/edit/${setId}`);
+
+        // Return success response
+        return {
+            status: 200,
+            message: `Public access toggled to ${newPublicAccess}`,
+        };
     } catch (error: unknown) {
         if (error instanceof Error) {
-            console.log({ status: 500, message: error.message });
+            console.error("Error in toggleSetPublicAccess:", error.message);
+            return { status: 500, message: error.message };
         }
-        return undefined;
+        // Handle unknown errors
+        console.error("Unknown error in toggleSetPublicAccess");
+        return { status: 500, message: "An unknown error occurred" };
     }
 };
