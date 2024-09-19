@@ -6,6 +6,7 @@ import { SetIcon } from "../svgs/svgs";
 import { motion } from "framer-motion";
 import { MdPlayArrow } from "react-icons/md";
 import ExpandHeightToggler from "../expandHeightToggler/expandHeightToggler";
+import { TextListView } from "../textListView/textListView";
 
 type ToggleType = {
     [key: string]: boolean;
@@ -146,9 +147,11 @@ function PreviewModalSet({ previewContent }: PreviewModalSetType) {
                                                                         </div>
                                                                     )}
                                                                     <span>
-                                                                        {
-                                                                            card.item_question
-                                                                        }
+                                                                        <TextListView
+                                                                            text={
+                                                                                card.item_question
+                                                                            }
+                                                                        />
                                                                     </span>
                                                                 </div>
                                                                 <div
@@ -175,9 +178,11 @@ function PreviewModalSet({ previewContent }: PreviewModalSetType) {
                                                                         </div>
                                                                     )}
                                                                     <span>
-                                                                        {
-                                                                            card.item_answer
-                                                                        }
+                                                                        <TextListView
+                                                                            text={
+                                                                                card.item_answer
+                                                                            }
+                                                                        />
                                                                     </span>
                                                                 </div>
                                                             </section>

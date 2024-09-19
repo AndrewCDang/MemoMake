@@ -13,6 +13,7 @@ import { HiArrowUturnLeft } from "react-icons/hi2";
 import ButtonWrap from "@/app/_components/(buttons)/buttonWrap";
 import { uploadImageHandler } from "@/app/_components/uploadImage/uploadImage";
 import { updateQuestionAnswerImageUrl } from "@/app/_actions/updateQuestionAnswerImage";
+import { TextListView } from "@/app/_components/textListView/textListView";
 
 type GenericField = {
     item: ColumnName;
@@ -142,7 +143,13 @@ function GenericTableItem({
                         />
                     </div>
                 )}
-                <span>{text || (card[item] as string)}</span>
+                <span>
+                    {text ? (
+                        <TextListView text={text} />
+                    ) : (
+                        <TextListView text={card[item] as string} />
+                    )}
+                </span>
             </div>
             {/* Invisible Input */}
             <PopToggler

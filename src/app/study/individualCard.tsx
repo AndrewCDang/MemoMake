@@ -19,6 +19,7 @@ import {
 } from "framer-motion";
 import style from "./study.module.scss";
 import { CombinedType } from "./study";
+import { TextListView } from "../_components/textListView/textListView";
 
 type IndividualCardTypes = {
     item: CombinedType;
@@ -315,7 +316,9 @@ function IndividualCard({
                                                 fontSize: questionFontSize,
                                             }}
                                         >
-                                            {item.item_question}
+                                            <TextListView
+                                                text={item.item_question}
+                                            />
                                         </span>
                                     </div>
                                     <CardPattern
@@ -342,7 +345,9 @@ function IndividualCard({
                                                 fontSize: answerFontSize,
                                             }}
                                         >
-                                            {item.item_answer}
+                                            <TextListView
+                                                text={item.item_answer}
+                                            />
                                         </span>
                                     </div>
                                     <CardPattern
